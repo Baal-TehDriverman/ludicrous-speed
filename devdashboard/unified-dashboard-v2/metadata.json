@@ -1,0 +1,6 @@
+{
+  "name": "GitHub Developer Intelligence - Baal-TehDriverman",
+  "description": "Comprehensive GitHub repository management hub, multi-turn Gemini 3 & sovereign local agent orchestrator, local agent harness for Gemma 4 e4b and Qwen 3.8B, arXiv.org research to bugfix & patch compiler, live air-gap mesh synchronization, and Ludicrous Speed Starfleet fleet operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

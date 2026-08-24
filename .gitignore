@@ -1,0 +1,5 @@
+
+# Dashboard build artifacts
+devdashboard/unified-dashboard-v2/node_modules/
+devdashboard/unified-dashboard-v2/dist/
+devdashboard/unified-dashboard-v2/.env.local

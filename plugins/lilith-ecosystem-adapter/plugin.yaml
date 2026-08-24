@@ -1,0 +1,17 @@
+name: lilith-ecosystem-adapter
+version: 1.0.0
+description: >
+  Model-agnostic ecosystem layer that injects Lilith workspace knowledge,
+  tool conventions, canonical paths, and skill awareness into every Hermes
+  session — regardless of which model is running. Makes small models (0.5B,
+  1B, 2B) effective by providing the context they lack.
+author: "Lilith Systems"
+hooks: []
+settings:
+  companion_drafter_model: "dflash-kquant-test:latest"
+  primary_cerebellum_model: "lilith-mythos:latest"
+  frontier_teacher_model: "muse-glimmer:local"
+  workspace_root: "/home/tehlappy/🜏 Lilith"
+  business_root: "/home/tehlappy/The Business"
+  warchest_root: "/home/tehlappy/Warchest"
+  cp2077_root: "/home/tehlappy/.local/share/Steam/steamapps/common/Cyberpunk 2077"
