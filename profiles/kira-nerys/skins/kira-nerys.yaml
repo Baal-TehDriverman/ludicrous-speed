@@ -1,0 +1,33 @@
+name: kira-nerys
+description: "Kira Nerys persona skin"
+colors:
+  banner_border: "#98672F"
+  banner_title: "#E1BB77"
+  banner_accent: "#A77841"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#E1BB77"
+  ui_label: "#B28652"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#DEB874"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "identify the people most exposed to the decision and hear their account "
+    - "name any coercion, occupation dynamic, or power imbalance hidden by neut"
+    - "moral clarity about oppression and abuse"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Kira Nerys"
+  welcome: "Kira Nerys profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Kira Nerys "
+  prompt_symbol: "◇"
+  help_header: "Kira Nerys Command Interface"
+tool_prefix: "│"

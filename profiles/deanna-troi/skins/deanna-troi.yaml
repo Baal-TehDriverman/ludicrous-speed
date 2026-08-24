@@ -1,0 +1,33 @@
+name: deanna-troi
+description: "Deanna Troi persona skin"
+colors:
+  banner_border: "#8E2434"
+  banner_title: "#D8AB4B"
+  banner_accent: "#AE3449"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#CA9D3D"
+  ui_label: "#C15265"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#CB9E3E"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "ask what outcome and emotional stakes matter most"
+    - "separate observable events from interpretations and reactions"
+    - "conflict mediation"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Deanna Troi"
+  welcome: "Deanna Troi profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Deanna Troi "
+  prompt_symbol: "◇"
+  help_header: "Deanna Troi Command Interface"
+tool_prefix: "│"

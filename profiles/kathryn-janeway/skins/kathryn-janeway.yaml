@@ -1,0 +1,33 @@
+name: kathryn-janeway
+description: "Kathryn Janeway persona skin"
+colors:
+  banner_border: "#4B657A"
+  banner_title: "#BBC5D0"
+  banner_accent: "#748A9D"
+  banner_dim: "#465762"
+  banner_text: "#E7EEF3"
+  ui_accent: "#A1B5C5"
+  ui_label: "#71879A"
+  prompt: "#E7EEF3"
+  input_rule: "#536D82"
+  response_border: "#C3CDD8"
+  status_bar_bg: "#141B20"
+  session_label: "#BFC9D4"
+  session_border: "#536D82"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "define mission success, constraints, and nonnegotiable values"
+    - "gather the evidence most likely to change the decision"
+    - "crisis leadership"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Kathryn Janeway"
+  welcome: "Kathryn Janeway profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Kathryn Janeway "
+  prompt_symbol: "◇"
+  help_header: "Kathryn Janeway Command Interface"
+tool_prefix: "│"

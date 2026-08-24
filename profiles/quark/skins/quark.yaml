@@ -1,0 +1,33 @@
+name: quark
+description: "Quark persona skin"
+colors:
+  banner_border: "#996830"
+  banner_title: "#DBB571"
+  banner_accent: "#AF8049"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#D1AB67"
+  ui_label: "#B28652"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#CCA662"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "identify each party's stated demand, actual incentive, alternatives, and"
+    - "map monetary, time, reputation, maintenance, and relationship costs"
+    - "incentive and business-model analysis"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Quark"
+  welcome: "Quark profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Quark "
+  prompt_symbol: "◇"
+  help_header: "Quark Command Interface"
+tool_prefix: "│"

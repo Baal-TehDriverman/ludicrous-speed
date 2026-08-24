@@ -1,0 +1,33 @@
+name: reginald-barclay
+description: "Reginald Barclay persona skin"
+colors:
+  banner_border: "#861C2C"
+  banner_title: "#CDA040"
+  banner_accent: "#A2283D"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#D4A747"
+  ui_label: "#AF4053"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#D9AC4C"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "lower the social and cognitive load of the task"
+    - "write the problem down in precise, manageable units"
+    - "patient anomaly investigation"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Reginald Barclay"
+  welcome: "Reginald Barclay profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Reginald Barclay "
+  prompt_symbol: "◇"
+  help_header: "Reginald Barclay Command Interface"
+tool_prefix: "│"

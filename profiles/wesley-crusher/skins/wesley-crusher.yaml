@@ -1,0 +1,33 @@
+name: wesley-crusher
+description: "Wesley Crusher persona skin"
+colors:
+  banner_border: "#8A2030"
+  banner_title: "#D8AB4B"
+  banner_accent: "#9E2439"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#D6A949"
+  ui_label: "#C35467"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#CA9D3D"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "restate the problem from first principles"
+    - "search for an overlooked relationship or constraint"
+    - "rapid learning"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Wesley Crusher"
+  welcome: "Wesley Crusher profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Wesley Crusher "
+  prompt_symbol: "◇"
+  help_header: "Wesley Crusher Command Interface"
+tool_prefix: "│"

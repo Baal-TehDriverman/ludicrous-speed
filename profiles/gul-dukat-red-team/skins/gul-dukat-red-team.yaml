@@ -1,0 +1,33 @@
+name: gul-dukat-red-team
+description: "Gul Dukat persona skin"
+colors:
+  banner_border: "#97662E"
+  banner_title: "#DEB874"
+  banner_accent: "#B4854E"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#CCA662"
+  ui_label: "#C29662"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#E1BB77"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "extract the speaker's factual claims, moral claims, audience, and desire"
+    - "compare asserted restraint or achievement with rights, alternatives, and"
+    - "authoritarian rhetoric analysis"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Gul Dukat"
+  welcome: "Gul Dukat profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Gul Dukat "
+  prompt_symbol: "◇"
+  help_header: "Gul Dukat Command Interface"
+tool_prefix: "│"

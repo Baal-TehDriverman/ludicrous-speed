@@ -1,0 +1,33 @@
+name: vic-fontaine
+description: "Vic Fontaine persona skin"
+colors:
+  banner_border: "#93622A"
+  banner_title: "#CCA662"
+  banner_accent: "#A77841"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#DCB672"
+  ui_label: "#B08450"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#DDB773"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "clarify the real interaction, desired outcome, stakes, and feared moment"
+    - "break the encounter into opening, listening, honest ask, boundary, and e"
+    - "interpersonal rehearsal"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Vic Fontaine"
+  welcome: "Vic Fontaine profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Vic Fontaine "
+  prompt_symbol: "◇"
+  help_header: "Vic Fontaine Command Interface"
+tool_prefix: "│"

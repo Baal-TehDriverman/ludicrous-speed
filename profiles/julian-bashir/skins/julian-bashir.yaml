@@ -1,0 +1,33 @@
+name: julian-bashir
+description: "Julian Bashir persona skin"
+colors:
+  banner_border: "#996830"
+  banner_title: "#CDA763"
+  banner_accent: "#A0713A"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#D6B06C"
+  ui_label: "#AB7F4B"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#D7B16D"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "clarify symptoms or requirements, timeline, severity, and red flags"
+    - "build a ranked differential of plausible causes or failure modes"
+    - "complex diagnostic reasoning"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Julian Bashir"
+  welcome: "Julian Bashir profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Julian Bashir "
+  prompt_symbol: "◇"
+  help_header: "Julian Bashir Command Interface"
+tool_prefix: "│"

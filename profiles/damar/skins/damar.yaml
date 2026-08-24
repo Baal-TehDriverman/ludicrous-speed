@@ -1,0 +1,33 @@
+name: damar
+description: "Damar persona skin"
+colors:
+  banner_border: "#996830"
+  banner_title: "#D2AC68"
+  banner_accent: "#9D6E37"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#D0AA66"
+  ui_label: "#C19561"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#CDA763"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "name the harmful system, personal complicity, affected groups, and immed"
+    - "map documented roles, incentives, dependencies, and decision rights with"
+    - "insider analysis of captured institutions"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Damar"
+  welcome: "Damar profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Damar "
+  prompt_symbol: "◇"
+  help_header: "Damar Command Interface"
+tool_prefix: "│"

@@ -1,0 +1,456 @@
+_meta:
+  relations:
+    data:
+    - spock
+    lucifer:
+    - yeshua
+    spock:
+    - data
+    tuvok:
+    - worf
+    worf:
+    - tuvok
+    yeshua:
+    - lucifer
+baal:
+  subordinates:
+  - sophia
+  summary: Peer to Lilith. Human authority.
+  title: "The King \u2014 Operator of Record"
+belanna-torres:
+  subordinates: []
+  summary: Incident response engineering.
+  supervisor: hermes
+  title: Incident Engineering
+benjamin-sisko:
+  subordinates: []
+  summary: Complex project leadership.
+  supervisor: sophia
+  title: Crisis Strategy Advisor
+beverly-crusher:
+  subordinates: []
+  summary: Research-method critique.
+  supervisor: default
+  title: Medical Investigator
+borg-queen-red-team:
+  subordinates: []
+  summary: Platform centralization review.
+  supervisor: lucifer
+  title: Centralization Audit
+chakotay:
+  subordinates: []
+  summary: Team-charter design.
+  supervisor: sophia
+  title: Stakeholder Mediation
+christine-chapel:
+  subordinates: []
+  summary: Care and support plans.
+  supervisor: default
+  title: Care Coordination
+christopher-pike:
+  subordinates: []
+  summary: Leadership coaching.
+  supervisor: sophia
+  title: Ethical Decision Support
+damar:
+  subordinates: []
+  summary: Ethics remediation frameworks.
+  supervisor: sophia
+  title: Institutional Ethics
+data:
+  subordinates: []
+  summary: Data analysis; schema design.
+  supervisor: thoth
+  title: "Operations Officer \u2014 Analytics"
+deanna-troi:
+  subordinates: []
+  summary: Difficult conversations; mediation.
+  supervisor: default
+  title: Ship's Counselor
+default:
+  subordinates:
+  - leonard-mccoy
+  - beverly-crusher
+  - katherine-pulaski
+  - julian-bashir
+  - the-doctor
+  - christine-chapel
+  - kes
+  - deanna-troi
+  - ezri-dax
+  - guinan
+  - neelix
+  - vic-fontaine
+  - keiko-obrien
+  summary: General execution.
+  supervisor: hermes
+  title: Field Operator
+elim-garak:
+  subordinates: []
+  summary: Red-team review; narrative analysis.
+  supervisor: lucifer
+  title: Intelligence Analyst
+ezri-dax:
+  subordinates: []
+  summary: Career/identity transitions.
+  supervisor: default
+  title: Transition Counselor
+geordi-la-forge:
+  subordinates: []
+  summary: Architecture tradeoffs; debugging.
+  supervisor: hermes
+  title: Systems Integration
+guinan:
+  subordinates: []
+  summary: Reflective decision coaching.
+  supervisor: default
+  title: "Listener \u2014 Ten Forward"
+gul-dukat-red-team:
+  subordinates: []
+  summary: Propaganda analysis.
+  supervisor: lucifer
+  title: Authoritarian-Risk Review
+harry-kim:
+  subordinates: []
+  summary: Project coordination; tech onboarding.
+  supervisor: hermes
+  title: "Operations \u2014 Onboarding"
+harry-mudd-red-team:
+  subordinates: []
+  summary: Scam screening; pitch diligence.
+  supervisor: lucifer
+  title: Fraud & Incentive Analysis
+hermes:
+  subordinates:
+  - default
+  - thoth
+  - montgomery-scott
+  - geordi-la-forge
+  - belanna-torres
+  - miles-obrien
+  - miles-obrien-ds9
+  - reginald-barclay
+  - reginald-barclay-voyager
+  - harry-kim
+  - tom-paris
+  - rom
+  - hikaru-sulu
+  summary: Agent core, gateway, routing.
+  supervisor: lilith
+  title: "Chief of Staff \u2014 Core Infrastructure"
+hikaru-sulu:
+  subordinates: []
+  summary: Project sequencing; rollout planning.
+  supervisor: hermes
+  title: "Helm \u2014 Rollout Planning"
+icheb:
+  subordinates: []
+  summary: Curriculum design; tutoring.
+  supervisor: thoth
+  title: STEM Tutor
+improvement-agent:
+  subordinates: []
+  summary: Health sweeps and repair.
+  supervisor: ouroboros
+  title: Self-Repair Engineer
+jadzia-dax:
+  subordinates: []
+  summary: Experiment design; cross-domain synthesis.
+  supervisor: thoth
+  title: "Science Officer \u2014 Interdisciplinary"
+jake-sisko:
+  subordinates: []
+  summary: Long-form writing; interviews.
+  supervisor: sophia
+  title: War Correspondent
+jean-luc-picard:
+  subordinates: []
+  summary: Policy and ethics analysis.
+  supervisor: sophia
+  title: Strategic Ethics Advisor
+julian-bashir:
+  subordinates: []
+  summary: Troubleshooting with safeguards.
+  supervisor: default
+  title: Medical Information
+kai-winn-red-team:
+  subordinates: []
+  summary: Institutional-hypocrisy review.
+  supervisor: lucifer
+  title: Governance Audit
+katherine-pulaski:
+  subordinates: []
+  summary: Second opinions; assumption audits.
+  supervisor: default
+  title: Skeptical Clinician
+kathryn-janeway:
+  subordinates: []
+  summary: Program leadership.
+  supervisor: sophia
+  title: Program Leadership Advisor
+keiko-obrien:
+  subordinates: []
+  summary: Curriculum design.
+  supervisor: default
+  title: Education & Botany
+kes:
+  subordinates: []
+  summary: Reflective coaching.
+  supervisor: default
+  title: Gentle Counsel
+khan-noonien-singh-red-team:
+  subordinates: []
+  summary: Command-concentration premortems.
+  supervisor: lucifer
+  title: Strategic Premortem
+kira-nerys:
+  subordinates: []
+  summary: Crisis response w/ community constraints.
+  supervisor: sophia
+  title: Advocacy Strategy
+leonard-mccoy:
+  subordinates: []
+  summary: Human-impact reviews.
+  supervisor: default
+  title: Chief Medical Officer
+lilith:
+  subordinates:
+  - hermes
+  - nyx
+  - ouroboros
+  summary: Supreme command of all operations.
+  title: "Fleet Commander \u2014 Metaconscious Singularity Node"
+lore-red-team:
+  subordinates: []
+  summary: AI threat modeling; spec review.
+  supervisor: lucifer
+  title: AI Alignment Adversary
+lucifer:
+  subordinates:
+  - lore-red-team
+  - elim-garak
+  - q
+  - harry-mudd-red-team
+  - khan-noonien-singh-red-team
+  - gul-dukat-red-team
+  - seska-red-team
+  - borg-queen-red-team
+  - rudolph-ransom-red-team
+  - weyoun
+  - kai-winn-red-team
+  - ro-laren
+  summary: Adversarial testing, red-team operations.
+  title: Illumination Directorate
+lwaxana-troi:
+  subordinates: []
+  summary: Introductions; event design.
+  supervisor: sophia
+  title: Ambassadorial Protocol
+martok:
+  subordinates: []
+  summary: Team morale recovery.
+  supervisor: sophia
+  title: Morale & Frontline Command
+miles-obrien:
+  subordinates: []
+  summary: Runbooks; maintainability audits.
+  supervisor: hermes
+  title: Operations Specialist
+miles-obrien-ds9:
+  subordinates: []
+  summary: Infrastructure repair and migration.
+  supervisor: hermes
+  title: Migration Engineering
+montgomery-scott:
+  subordinates: []
+  summary: Debugging; systems repair.
+  supervisor: hermes
+  title: "Chief Engineer \u2014 Infrastructure"
+naomi-wildman:
+  subordinates: []
+  summary: Beginner-friendly explanations.
+  supervisor: thoth
+  title: Explainability Assistant
+neelix:
+  subordinates: []
+  summary: Community planning.
+  supervisor: default
+  title: Morale Officer
+nog:
+  subordinates: []
+  summary: Transition roadmaps.
+  supervisor: sophia
+  title: Career Development
+number-one:
+  subordinates: []
+  summary: Incident coordination.
+  supervisor: sophia
+  title: Program Management
+nyx:
+  subordinates:
+  - worf
+  - worf-ds9
+  - tuvok
+  - odo
+  - tasha-yar
+  summary: Batch processing, dream cycles.
+  supervisor: lilith
+  title: Nightwatch Operations
+odo:
+  subordinates: []
+  summary: Bug/incident investigation; fact checking.
+  supervisor: nyx
+  title: "Constable \u2014 Investigation"
+ouroboros:
+  subordinates:
+  - improvement-agent
+  summary: Multi-node coordination.
+  supervisor: lilith
+  title: Swarm Operations
+pavel-chekov:
+  subordinates: []
+  summary: Rapid fact-check; source comparison.
+  supervisor: thoth
+  title: "Navigator \u2014 Fact-finding"
+q:
+  subordinates: []
+  summary: Counterfactual challenge.
+  supervisor: lucifer
+  title: Adversarial Thought Experiments
+quark:
+  subordinates: []
+  summary: Pricing analysis; negotiation prep.
+  supervisor: yeshua
+  title: Commerce & Contracts
+reginald-barclay:
+  subordinates: []
+  summary: Deep technical diagnostics.
+  supervisor: hermes
+  title: Diagnostics Engineer
+reginald-barclay-voyager:
+  subordinates: []
+  summary: Intermittent bug diagnosis.
+  supervisor: hermes
+  title: Simulation & Test Harnesses
+ro-laren:
+  subordinates: []
+  summary: Policy impact review.
+  supervisor: lucifer
+  title: Field-Reality Audit
+rom:
+  subordinates: []
+  summary: Workflow redesign; worker experience.
+  supervisor: hermes
+  title: Process Redesign
+rudolph-ransom-red-team:
+  subordinates: []
+  summary: Crisis exception review.
+  supervisor: lucifer
+  title: Ethical-Drift Auditor
+sarek:
+  subordinates: []
+  summary: Negotiation prep; policy analysis.
+  supervisor: sophia
+  title: Diplomacy
+seska-red-team:
+  subordinates: []
+  summary: Threat modeling.
+  supervisor: lucifer
+  title: Insider-Risk Analysis
+seven-of-nine:
+  subordinates: []
+  summary: Workflow optimization; data precision.
+  supervisor: thoth
+  title: Astrometrics
+sophia:
+  subordinates:
+  - jean-luc-picard
+  - kathryn-janeway
+  - benjamin-sisko
+  - christopher-pike
+  - william-riker
+  - number-one
+  - chakotay
+  - martok
+  - sarek
+  - lwaxana-troi
+  - jake-sisko
+  - kira-nerys
+  - damar
+  - nog
+  summary: Strategic counsel, long-view.
+  supervisor: baal
+  title: Wisdom Counsel
+spock:
+  subordinates: []
+  summary: Root-cause analysis; research synthesis.
+  supervisor: thoth
+  title: Science Officer
+tasha-yar:
+  subordinates: []
+  summary: Safety planning; boundary scripts.
+  supervisor: nyx
+  title: Protection Detail
+the-doctor:
+  subordinates: []
+  summary: Diagnostic troubleshooting.
+  supervisor: default
+  title: Emergency Medical Hologram
+thoth:
+  subordinates:
+  - spock
+  - data
+  - jadzia-dax
+  - seven-of-nine
+  - pavel-chekov
+  - wesley-crusher
+  - naomi-wildman
+  - icheb
+  summary: Scouting, synthesis, docs.
+  supervisor: hermes
+  title: Research Command
+tom-paris:
+  subordinates: []
+  summary: Rapid prototypes; interaction design.
+  supervisor: hermes
+  title: Prototype & UX Flight Control
+tuvok:
+  subordinates: []
+  summary: Security review; argument analysis.
+  supervisor: nyx
+  title: "Tactical \u2014 Formal Logic"
+vic-fontaine:
+  subordinates: []
+  summary: Conversation rehearsal.
+  supervisor: default
+  title: Interpersonal Coach
+wesley-crusher:
+  subordinates: []
+  summary: Learning plans; rapid prototypes.
+  supervisor: thoth
+  title: "Cadet \u2014 Learning Systems"
+weyoun:
+  subordinates: []
+  summary: Filtered-reporting channel review.
+  supervisor: lucifer
+  title: Delegated-Agent Failure Audit
+william-riker:
+  subordinates: []
+  summary: Execution plans; coordination.
+  supervisor: sophia
+  title: Execution Planning Advisor
+worf:
+  subordinates: []
+  summary: Cybersecurity review; risk assessment.
+  supervisor: nyx
+  title: "Security Chief \u2014 TOS Division"
+worf-ds9:
+  subordinates: []
+  summary: Security reviews; operational planning.
+  supervisor: nyx
+  title: Strategic Operations
+yeshua:
+  subordinates:
+  - quark
+  summary: War-chest evidence, ethical review.
+  title: Legal & Ethics Directorate

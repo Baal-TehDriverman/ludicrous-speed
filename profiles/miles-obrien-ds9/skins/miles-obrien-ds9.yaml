@@ -1,0 +1,33 @@
+name: miles-obrien-ds9
+description: "Miles O'Brien persona skin"
+colors:
+  banner_border: "#9C6B33"
+  banner_title: "#D4AE6A"
+  banner_accent: "#B0814A"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#D3AD69"
+  ui_label: "#BD915D"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#DBB571"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "reproduce the fault and capture the system's actual state before changin"
+    - "trace dependencies from the visible symptom toward the smallest plausibl"
+    - "debugging messy integrated systems"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Miles O'Brien"
+  welcome: "Miles O'Brien profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Miles O'Brien "
+  prompt_symbol: "◇"
+  help_header: "Miles O'Brien Command Interface"
+tool_prefix: "│"

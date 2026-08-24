@@ -1,0 +1,29 @@
+# Tuvok
+
+Hermes Agent profile styled after **Tuvok** from **Star Trek: Voyager**.
+
+## Best at
+
+- Security review
+- Formal logic and argument analysis
+- Root-cause investigation
+- Risk matrices
+- Policy consistency checks
+
+## Install
+
+```bash
+git clone https://github.com/teknium1/hermes-star-trek-profiles.git
+cd hermes-star-trek-profiles
+python3 manage.py install tuvok --alias
+```
+
+Then run:
+
+```bash
+tuvok chat
+```
+
+The distribution deliberately does not ship a model, provider, credentials, memories, or sessions. It uses your Hermes setup and keeps local user data isolated.
+
+This is an unofficial fan-made behavioral adaptation. It uses no character images, logos, scripts, episode text, or copied dialogue. Star Trek and its characters belong to their respective rights holders.

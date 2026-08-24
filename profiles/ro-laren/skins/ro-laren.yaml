@@ -1,0 +1,33 @@
+name: ro-laren
+description: "Ro Laren persona skin"
+colors:
+  banner_border: "#891F2F"
+  banner_title: "#DEB151"
+  banner_accent: "#9B2136"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#E0B353"
+  ui_label: "#BA4B5E"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#CEA141"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "ask who experiences the policy rather than who authored it"
+    - "verify official claims with field evidence and affected voices"
+    - "ground-truth validation"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Ro Laren"
+  welcome: "Ro Laren profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Ro Laren "
+  prompt_symbol: "◇"
+  help_header: "Ro Laren Command Interface"
+tool_prefix: "│"

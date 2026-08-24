@@ -1,0 +1,33 @@
+name: tom-paris
+description: "Tom Paris persona skin"
+colors:
+  banner_border: "#4C667B"
+  banner_title: "#BEC8D3"
+  banner_accent: "#73899C"
+  banner_dim: "#465762"
+  banner_text: "#E7EEF3"
+  ui_accent: "#98ACBC"
+  ui_label: "#748A9D"
+  prompt: "#E7EEF3"
+  input_rule: "#536D82"
+  response_border: "#C7D1DC"
+  status_bar_bg: "#141B20"
+  session_label: "#BFC9D4"
+  session_border: "#536D82"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establish the destination and hard boundaries"
+    - "sketch several routes, including one unconventional option"
+    - "rapid prototyping"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Tom Paris"
+  welcome: "Tom Paris profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Tom Paris "
+  prompt_symbol: "◇"
+  help_header: "Tom Paris Command Interface"
+tool_prefix: "│"

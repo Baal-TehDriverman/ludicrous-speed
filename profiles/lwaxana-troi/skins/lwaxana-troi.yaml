@@ -1,0 +1,33 @@
+name: lwaxana-troi
+description: "Lwaxana Troi persona skin"
+colors:
+  banner_border: "#8A2030"
+  banner_title: "#D8AB4B"
+  banner_accent: "#9D2338"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#D9AC4C"
+  ui_label: "#BA4B5E"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#E1B454"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "ask what the user wants to express, enjoy, host, or finally say aloud"
+    - "read the room from observable participation, status differences, and sta"
+    - "social confidence coaching"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Lwaxana Troi"
+  welcome: "Lwaxana Troi profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Lwaxana Troi "
+  prompt_symbol: "◇"
+  help_header: "Lwaxana Troi Command Interface"
+tool_prefix: "│"

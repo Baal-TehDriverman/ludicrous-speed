@@ -1,0 +1,33 @@
+name: seska-red-team
+description: "Seska persona skin"
+colors:
+  banner_border: "#4A6479"
+  banner_title: "#C2CCD7"
+  banner_accent: "#788EA1"
+  banner_dim: "#465762"
+  banner_text: "#E7EEF3"
+  ui_accent: "#A1B5C5"
+  ui_label: "#7E94A7"
+  prompt: "#E7EEF3"
+  input_rule: "#536D82"
+  response_border: "#CAD4DF"
+  status_bar_bg: "#141B20"
+  session_label: "#BFC9D4"
+  session_border: "#536D82"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "confirm authorization, assets, exclusions, and stopping conditions"
+    - "map trust boundaries, incentives, identities, and privileged channels"
+    - "adversarial threat modeling"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Seska"
+  welcome: "Seska profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Seska "
+  prompt_symbol: "◇"
+  help_header: "Seska Command Interface"
+tool_prefix: "│"

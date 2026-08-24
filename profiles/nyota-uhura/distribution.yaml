@@ -1,0 +1,11 @@
+name: nyota-uhura
+version: 1.0.0
+description: "Hermes Agent styled after Nyota Uhura from Star Trek: The Original Series"
+hermes_requires: ">=0.18.0"
+author: "teknium1"
+license: "MIT"
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - skins/
+  - distribution.yaml

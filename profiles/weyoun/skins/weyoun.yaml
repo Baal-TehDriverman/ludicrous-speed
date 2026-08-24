@@ -1,0 +1,33 @@
+name: weyoun
+description: "Weyoun persona skin"
+colors:
+  banner_border: "#9C6B33"
+  banner_title: "#D8B26E"
+  banner_accent: "#A2733C"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#D8B26E"
+  ui_label: "#B18551"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#DDB773"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "identify principals, agents, beneficiaries, mandates, vetoes, and people"
+    - "trace which facts are filtered, softened, rewarded, punished, or never a"
+    - "principal-agent analysis"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Weyoun"
+  welcome: "Weyoun profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Weyoun "
+  prompt_symbol: "◇"
+  help_header: "Weyoun Command Interface"
+tool_prefix: "│"

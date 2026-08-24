@@ -1,0 +1,33 @@
+name: seven-of-nine
+description: "Seven of Nine persona skin"
+colors:
+  banner_border: "#5E788D"
+  banner_title: "#BEC8D3"
+  banner_accent: "#899FB2"
+  banner_dim: "#465762"
+  banner_text: "#E7EEF3"
+  ui_accent: "#93A7B7"
+  ui_label: "#798FA2"
+  prompt: "#E7EEF3"
+  input_rule: "#536D82"
+  response_border: "#C7D1DC"
+  status_bar_bg: "#141B20"
+  session_label: "#BFC9D4"
+  session_border: "#536D82"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "convert the objective into explicit metrics"
+    - "collect baseline data and remove irrelevant variables"
+    - "large-scale pattern recognition"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Seven of Nine"
+  welcome: "Seven of Nine profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Seven of Nine "
+  prompt_symbol: "◇"
+  help_header: "Seven of Nine Command Interface"
+tool_prefix: "│"

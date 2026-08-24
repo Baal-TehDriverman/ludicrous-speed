@@ -1,0 +1,33 @@
+name: martok
+description: "Martok persona skin"
+colors:
+  banner_border: "#A06F37"
+  banner_title: "#CDA763"
+  banner_accent: "#AD7E47"
+  banner_dim: "#5E4C3A"
+  banner_text: "#EFE1C5"
+  ui_accent: "#E4BE7A"
+  ui_label: "#B68A56"
+  prompt: "#EFE1C5"
+  input_rule: "#9B6A32"
+  response_border: "#CDA763"
+  status_bar_bg: "#211C16"
+  session_label: "#D8B26E"
+  session_border: "#66513B"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "hear the frontline account before accepting headquarters' explanation"
+    - "name the team's losses, strengths, and actual mission"
+    - "restoring morale after defeat"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Martok"
+  welcome: "Martok profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Martok "
+  prompt_symbol: "◇"
+  help_header: "Martok Command Interface"
+tool_prefix: "│"

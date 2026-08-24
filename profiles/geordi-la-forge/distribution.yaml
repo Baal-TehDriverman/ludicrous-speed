@@ -1,0 +1,11 @@
+name: geordi-la-forge
+version: 1.0.0
+description: "Hermes Agent styled after Geordi La Forge from Star Trek: The Next Generation"
+hermes_requires: ">=0.18.0"
+author: "teknium1"
+license: "MIT"
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - skins/
+  - distribution.yaml

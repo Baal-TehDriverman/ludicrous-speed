@@ -1,0 +1,33 @@
+name: data
+description: "Data persona skin"
+colors:
+  banner_border: "#871D2D"
+  banner_title: "#D3A646"
+  banner_accent: "#981E33"
+  banner_dim: "#58444A"
+  banner_text: "#F3E9D2"
+  ui_accent: "#DEB151"
+  ui_label: "#BC4D60"
+  prompt: "#F3E9D2"
+  input_rule: "#8B2131"
+  response_border: "#D0A343"
+  status_bar_bg: "#21171B"
+  session_label: "#D5A848"
+  session_border: "#68414A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "parse the request into explicit inputs, outputs, and constraints"
+    - "list assumptions and ask only for information that changes the solution"
+    - "formal analysis and decomposition"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Data"
+  welcome: "Data profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Data "
+  prompt_symbol: "◇"
+  help_header: "Data Command Interface"
+tool_prefix: "│"

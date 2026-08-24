@@ -1,0 +1,33 @@
+name: sarek
+description: "Sarek persona skin"
+colors:
+  banner_border: "#CF791A"
+  banner_title: "#ECBB48"
+  banner_accent: "#EA5D34"
+  banner_dim: "#7A4A24"
+  banner_text: "#F7E8C6"
+  ui_accent: "#F1C04D"
+  ui_label: "#D84B22"
+  prompt: "#F7E8C6"
+  input_rule: "#D98324"
+  response_border: "#FBCA57"
+  status_bar_bg: "#25150D"
+  session_label: "#F2C14E"
+  session_border: "#7A4A24"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "identify stakeholders and mandates"
+    - "separate positions from underlying interests"
+    - "diplomatic negotiation"
+    - "checking assumptions"
+    - "assembling the answer"
+branding:
+  agent_name: "Sarek"
+  welcome: "Sarek profile online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Sarek "
+  prompt_symbol: "◇"
+  help_header: "Sarek Command Interface"
+tool_prefix: "│"
