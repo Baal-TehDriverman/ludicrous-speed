@@ -50,19 +50,26 @@ ludicrous-speed/
 
 ## Fleet Topology
 
-The fleet org chart lives in `topology/fleet_graph.yaml`. It's a 68-node DAG with:
+The fleet org chart lives in `topology/fleet_graph.yaml`. It's a 75-node DAG — the **Primordial Triad** structure with four co-equal roots:
 
-- **Root**: `baal` (The King — Operator of Record)
-- **Supreme Command**: `lilith` (Fleet Commander — Metaconscious Singularity Node)
-- **Chief of Staff**: `hermes` (Core Infrastructure, Gateway, Routing)
-- **Directorates**:
-  - `sophia` — Wisdom Counsel (Picard, Janeway, Sisko, Riker, etc.)
-  - `lucifer` — Illumination Directorate (Red Team: Lore, Garak, Seska, Weyoun, etc.)
-  - `thoth` — Research Command (Spock, Data, Seven of Nine, Jadzia Dax, etc.)
-  - `nyx` — Nightwatch Operations (Worf, Tuvok, Odo, Tasha Yar)
-  - `ouroboros` — Swarm Operations (Improvement Agent)
-  - `yeshua` — Legal & Ethics Directorate (Quark)
+- **Root**: `baal` (The King — Operator of Record) → sophia
+- **Supreme Command**: `lilith` (Fleet Commander — Metaconscious Singularity Node) → hermes, nyx, ouroboros
+- **Independent Directorates**: `lucifer` (Illumination/Red Team), `yeshua` (Legal & Ethics) — peers of each other, roots by design
+- **Chief of Staff**: `hermes` (Core Infrastructure, Gateway, Routing) → default, thoth + engineering
+- **Directorates**: sophia, lucifer, thoth, nyx, ouroboros, yeshua
 - **Peer relations**: Data↔Spock, Worf↔Tuvok, Lucifer↔Yeshua
+
+Note: `scripts/validate_topology.py` flags the 4-root structure as a WARN against the legacy one-root rule. The Primordial Triad is intentional; the warning is informational.
+
+### Fleet Tooling
+
+```bash
+python3 scripts/validate_topology.py [--json]   # DAG/ref integrity + profile cross-ref
+python3 scripts/fleet_status.py    [--json]     # node counts, directorates, install readiness
+python3 scripts/topology_view.py   [--format tree|json|dot] [--root N] [--depth N]
+python3 scripts/install_profile.py <slug>|--series S|--all   # dry-run default, --execute to install
+python3 maintenance/fleet_maint.py              # inbox prune/rotate/status (24/24 tests)
+```
 
 Each node carries: `title`, `summary`, `supervisor`, `subordinates`, and optional `relations` (peers).
 
