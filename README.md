@@ -68,7 +68,16 @@ python3 scripts/validate_topology.py [--json]   # DAG/ref integrity + profile cr
 python3 scripts/fleet_status.py    [--json]     # node counts, directorates, install readiness
 python3 scripts/topology_view.py   [--format tree|json|dot] [--root N] [--depth N]
 python3 scripts/install_profile.py <slug>|--series S|--all   # dry-run default, --execute to install
+python3 scripts/sync_research.py                # sync research/ into dream-logger engram store
 python3 maintenance/fleet_maint.py              # inbox prune/rotate/status (24/24 tests)
+```
+
+## Install as a Hermes Skill
+
+This repo ships its own Hermes skill in [`skill/`](./skill/) — SKILL.md, references, and wrapper scripts. To install:
+
+```bash
+cp -r skill/ ~/.hermes/skills/orchestration/ludicrous-speed/
 ```
 
 Each node carries: `title`, `summary`, `supervisor`, `subordinates`, and optional `relations` (peers).
