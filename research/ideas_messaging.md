@@ -1,80 +1,73 @@
-# Messaging-Protocol Ideas — tick 2026-08-24
+# Messaging Protocol Ideas — tick 2026-08-24
 
-Generated from a read of `fleet_msg.py`, `fleet_graph_core.py`, and the
-composer section of `README.md`. Each idea is PR-sized and keeps existing
-inboxes parseable.
-
----
-
-## 1. Message TTL + expiry sweep for stale inbox records
-
-**Concept.** Inbox JSONL records currently live forever until drained; an
-undrained inbox (bot offline, profile deleted) accumulates stale `update`s
-that supervisors re-read as if current. Add an optional `"ttl"` field
-(seconds) and/or `"expires"` ISO timestamp to each record at send time
-(`--ttl 3600` flag on `fleet-msg send`; default: no expiry, so nothing
-changes today). `cmd_inbox` gains an expiry filter — expired records are
-skipped from output and physically purged when `--drain` runs. A tiny
-`sweep` subcommand (`fleet-msg sweep --max-age 7d`) purges expired/aged
-records across all inboxes so cron can keep `~/.hermes/fleet-inbox/` tidy.
-The dashboard Inbox tab can later surface an "expired N" counter.
-
-**Files touched:** `fleet_msg.py` (send flags, record fields, inbox filter,
-sweep command), README messaging section.
-
-**Backward compatibility:** old inboxes lack `expires`, treated as never-
-expiring; consumers parsing the JSONL see one new optional key they already
-tolerate since `cmd_inbox` skips unknown keys implicitly (records are opaque
-dicts). No schema break.
+Studied: `fleet_msg.py` (send/inbox/show), `fleet_graph_core.py` (edge policy),
+README composer/API sections. Constraints honored: JSONL inbox contract stays
+parseable; every new field is additive; old readers must never crash on it
+(the `cmd_inbox` skip-malformed-lines loop is the compatibility backstop, but
+we aim for *ignored*, not skipped).
 
 ---
 
-## 2. Delivery receipts via reply-record (`ack`) message type
+## Idea 1 — Priority levels with escalation-aware defaulting
 
-**Concept.** Today `send` reports only that the record hit the JSONL file —
-the sender never learns whether the target ever read or acted on it. Add an
-`ack` type to the enum plus a `--reply-to <msgid>` flag. Every sent record
-gets a short `id` (e.g. `ts-sender-nonce`). The receiving bot's routine (and
-the composer UI's "mark read") can send back
-`fleet-msg send --to <sender> --type ack --reply-to <id>`. A new
-`fleet-msg status --msg-id X` (or `--await X [--timeout]`) lets the original
-sender check whether its message was acked, giving retry logic a real signal
-instead of guessing. Escalation ladders get strictly better: "escalate if no
-ack in 15 min" becomes mechanical.
+**Concept.** Today every message is equal-weight; an `escalate` from a
+subordinate looks identical in the JSONL to a routine `update`. Add an optional
+`priority` field to the send record (`"low" | "normal" | "high"`), defaulted by
+type (`escalate` → high, `question` → normal, everything else → low/normal)
+and overridable via `fleet-msg send --priority high`. The header line rendered
+for live delivery gains a priority tag, and a new `inbox --min-priority P`
+filter lets a supervisor drain only urgent traffic during a busy session.
+Because the record dict simply gains one key, existing drains parse unchanged.
 
-**Files touched:** `fleet_msg.py` (`id` field, `ack` enum value,
-`--reply-to`, `status`/`--await` subcommand), plugin_api `/send` to thread
-ids through, README.
+**Files touched.** `fleet_msg.py` (arg flag, default map, header rendering,
+inbox filter), README messaging section.
 
-**Backward compatibility:** `id` is an additive key; `ack` is a new enum
-value but old readers treat types as opaque strings. Inboxes written by the
-old code simply have no ids and are unacked-by-default — correct semantics.
+**Backward compatibility.** Old inboxes have no `priority` key → readers that
+don't know it ignore it; new readers use `.get("priority", "normal")`. No
+schema break; no migration.
 
 ---
 
-## 3. Threaded replies with a `thread` key
+## Idea 2 — TTL + expiry sweep on stale inbox messages
 
-**Concept.** Task conversations currently flatten into the inbox stream — a
-`question` about task T and its eventual `done` are adjacent only by luck of
-the `task` field. Formalize threading: `send` accepts `--thread ID`
-(defaulting to the `task` id when present, else absent). `inbox` gains
-`--thread ID` filtering and groups output by thread when unfiltered, each
-group ordered by ts, so a bot draining its inbox reads whole conversations
-in order rather than interleaved noise. The dashboard Inbox tab can render
-threads as collapsible groups using the same key. Pairs naturally with idea
-2 (acks inherit their replied-to message's thread).
+**Concept.** Inboxes grow until manually drained and there's no notion of a
+message going stale — a `question` from three weeks ago about an already-shipped
+task still surfaces as fresh. Stamp each record with `expires` (ISO ts,
+default now + N days via `--ttl`, e.g. `--ttl 7d`; escalates never auto-expire).
+Add `fleet-msg inbox --sweep` to drop expired lines atomically (rewrite the
+JSONL minus expired entries), and have `maintenance/fleet_maint.py status`
+report expiring-soon counts so prune/rotate gets a natural hook point.
 
-**Files touched:** `fleet_msg.py` (`thread` field, inbox grouping/filter),
-optionally plugin_api inbox endpoint passthrough, README.
+**Files touched.** `fleet_msg.py` (TTL arg, expiry stamp, sweep mode),
+`maintenance/fleet_maint.py` (status reporting), README.
 
-**Backward compatibility:** `thread` is additive and optional; messages
-without it group as singletons under their own ts. Old parsers ignore the
-new key; new code handles its absence. Zero migration.
+**Backward compatibility.** Records without `expires` are treated as
+never-expiring — legacy lines survive sweeps untouched. JSONL shape unchanged
+for parsers.
 
 ---
 
-*Honorable mentions deferred as larger-than-a-PR:* broadcast-to-team
-(needs policy decisions in `can_communicate` about fan-out vs edge
-validation), priority levels beyond type semantics (needs consumer-side
-scheduling to mean anything), automatic retry of failed `--deliver` live
-turns (needs a queue daemon, not a CLI patch).
+## Idea 3 — Delivery receipts and threaded reply IDs
+
+**Concept.** Senders currently get only their own `ok: true`; there's no way to
+know whether the target ever drained the message, and replies carry no linkage
+back to what they answer. Give every message a short generated `id` at append
+time, plus an optional `in_reply_to` on send (`--reply MSGID`). Add a
+lightweight receipt mechanism: when a profile runs `inbox --drain`, append
+receipt records `{type: "receipt", id: <drained-id>, drained_at}` to each
+original sender's inbox file (edge-checked lazily — receipts are system
+records, not conversational sends, so they bypass `can_communicate` but are
+clearly typed). A `fleet-msg show --id X` prints the full thread chain.
+
+**Files touched.** `fleet_msg.py` (id generation, `--reply`, drain receipts,
+thread view), README composer docs.
+
+**Backward compatibility.** Receipts are just additional well-formed JSONL
+lines of a new type; old readers see them as ordinary messages (harmless) or
+skip them. Existing records without `id` still parse; threading simply isn't
+available for pre-existing messages.
+
+---
+
+*All three keep the primary-transport invariant: the durable JSONL inbox is
+always written first; nothing here touches `_deliver_dm` opt-in semantics.*

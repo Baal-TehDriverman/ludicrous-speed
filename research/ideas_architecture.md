@@ -1,87 +1,33 @@
-# FleetGraph — Architecture Ideas (tick: 2026-08-24)
+# FleetGraph Architecture Ideas — 2026-08-24 tick
 
-Papers scanned this tick:
-- BOHM: Zero-Cost Hierarchical Attribution for Compound AI Systems (arXiv:2605.22866)
-- SPOQ: Specialist Orchestrated Queuing for Multi-Agent Software Engineering (arXiv:2606.03115)
-- SafeFlow: Semantic Information-Flow Control for Blocking Malicious Propagation in Multi-Agent Systems (arXiv:2607.25255)
+Papers this tick: AgentServeSim (2606.09613), SPOQ (2606.03115), BOHM (2605.22866), Delegated Fair Division (2607.27743), SafeFlow (2607.25255), Token Budgets (2606.04056).
 
 ---
 
-## Idea 1 — Hierarchical outcome attribution on the graph (inspired by BOHM)
+## 1. Zero-cost hierarchical attribution: per-edge message provenance in the DAG
 
-**Concept.** BOHM attributes a compound system's final result back through its
-hierarchy at zero extra cost, instead of treating every node as an
-undifferentiated contributor. FleetGraph already has the full supervisor tree
-(`fleet_graph_core.chain()` / `describe()`) and per-bot session tails, but it
-only shows *current status* — it never answers "which subtree actually
-produced this outcome?" Add an attribution pass: when a bot's latest session
-completes, walk its ancestor chain and stamp each contributing edge with a
-credit marker (e.g., delegation that led to completion vs. escalation that was
-superseded). Render these as weighted/colored edges in `plugin.js` and expose
-them via a new `/attribution?node=` endpoint.
+**Concept.** BOHM (2605.22866) shows compound-AI outcomes can be attributed back through the hierarchy with no extra inference cost, by propagating credit along existing structural edges at read time. FleetGraph's `chain()` in `fleet_graph_core.py` already computes the supervisor-path routing chain for every validated send; that path is exactly the attribution spine. Store the resolved chain (and the `can_communicate` direction — up/down/peer) alongside each delivered message in the inbox records, then expose a `GET /attribution?window=` endpoint that walks stored chains to answer "which supervisor's delegation produced this downstream output" — pure post-processing, no model calls.
 
-**Touches.** `fleet_graph_core.py` (a pure `attribute(graph, sessions)`
-function beside `chain()`), `dashboard/plugin_api.py` (new GET route reading
-existing session-tail data), `desktop-plugins/fleet-graph/plugin.js` (edge
-styling + inspector tab showing "contributed to" rollups).
+**Files.** `fleet_msg.py` (record chain + direction on send), `dashboard/plugin_api.py` (new `/attribution` route), `desktop-plugin/plugin.js` (overlay on the graph canvas: highlight the chains that carried traffic for a selected bot).
 
-**Why it matters.** The operator currently sees 23–26 nodes of activity but no
-signal about where value flows; with the deck view triaging NEEDS ATTENTION,
-attribution tells you which supervisors are dead weight and which subtrees do
-the real work — rewire decisions stop being guesswork. It also directly serves
-the existing initiative-ladder semantics (report-done vs. escalate) by making
-the difference visible.
+**Why it matters.** With 75 nodes and multi-hop delegation, when a subordinate produces something great (or catastrophic) the operator currently has no structural way to trace which upstream decisions fed it. Attribution turns the org chart from a static picture into an accountability instrument, and it costs only a schema field and one read-time walk.
 
 ---
 
-## Idea 2 — Delegation queues with specialist routing hints (inspired by SPOQ)
+## 2. Semantic information-flow labels: taint tracking on lateral peer edges
 
-**Concept.** SPOQ shows orchestrators gaining throughput by queueing work for
-specialists rather than ad-hoc direct sends. FleetGraph already has semantic
-routing (`GET /match?q=` ranks the fleet by capability) and a validated
-`delegate` frame — but delegation is fire-and-forget into the inbox. Add a
-lightweight per-node delegation queue: `POST /send` with a new optional
-`queue=true` parks the task on the target node, visible as a count badge on
-its card/node, drained FIFO when the bot goes from `conversing` back to
-`ready`. The composer can pre-fill the recipient using `/match` evidence
-(already computed server-side), so "delegate" suggests the best-fit specialist
-instead of requiring the operator to know the org chart by heart.
+**Concept.** SafeFlow (2607.25255) blocks malicious propagation by tagging information with semantic flow labels as it moves between agents. FleetGraph's red team directorate (`lucifer`, plus adversarial profiles like Lore/Khan/Seska) is deliberately connected into the same DAG as operational bots. Add an optional per-node `flow_class:` field (e.g. `ops | redteam | legal`) in `fleet_graph.yaml`, validated in `normalize()` like any other node attribute, and enforce it in `can_communicate()`: messages originating from a `redteam` node carry a taint tag that is refused by `ops`-class recipients unless explicitly allow-listed in relations. The dashboard surfaces tainted edges in a distinct color.
 
-**Touches.** `dashboard/plugin_api.py` (`/send` extension + queue state under
-`FLEET_INBOX_DIR`), `fleet_graph_core.py` (nothing — topology SSOT stays
-clean), `desktop-plugins/fleet-graph/plugin.js` (badge on cards/nodes,
-composer suggestion chip from `/match`, queue drain indicator).
+**Files.** `fleet_graph_core.py` (`normalize()` validation, `can_communicate()` policy check, new `flow_label()` helper), `topology/fleet_graph.yaml` (annotate nodes), `dashboard/plugin_api.py` (reject tainted sends in `/send`, expose classes via `/overview`), `desktop-plugin/plugin.js` (edge coloring).
 
-**Why it matters.** Removes the two failure modes documented today: messages
-arriving while a bot is mid-conversation get buried, and operators mis-route
-delegation because they must remember capabilities manually. Queues make load
-visible on the DAG itself (a hot node lights up), turning the org chart into
-a live work-distribution dashboard, not just a communication map.
+**Why it matters.** Right now the only lateral-send guard is "is there a declared peer edge" — a compromised or roleplaying adversarial persona that shares a peer relation can inject content straight into production bots. Flow labels give the Primordial Triad structure a real containment boundary while keeping the intentional Data↔Spock-style collaborations working.
 
 ---
 
-## Idea 3 — Information-flow taint labels on peer edges (inspired by SafeFlow)
+## 3. Specialist orchestrated queuing: per-directorate work queues instead of flat inboxes
 
-**Concept.** SafeFlow blocks malicious propagation by labeling what may flow
-between agents rather than only who may talk to whom. FleetGraph's
-`can_communicate()` is purely structural (up/down/peer). Extend peer relations
-with an optional per-edge flow label stored in `_meta.relations` (e.g.
-`{peer: [other], labels: {"research": ["summaries-only"]}}`) — or simpler for
-a PR-sized cut: a boolean `untrusted` flag per peer edge meaning "messages
-from this peer require operator review before acting." `can_communicate()`
-returns the label alongside allow/deny; the composer UI shows a taint badge;
-`POST /simulate` reports how untrusted edges would propagate. Keep validation
-in `normalize_relations()` so malformed labels fail fast like every other
-relation violation.
+**Concept.** SPOQ (2606.03115) routes tasks to specialist agents through orchestrator-managed queues rather than broadcast, cutting redundant work. FleetGraph's inbox is per-profile and flat: a supervisor delegating to several subordinates duplicates effort and there is no notion of "this task belongs to sophia's directorate." Add queue semantics to the inbox layer: messages tagged with a `queue:` key (derived from the recipient's nearest directorate ancestor, computed by walking `supervisor` links — the same walk `chain()` already does), with endpoints to list queues, claim a message (marks it in-progress so a sibling subordinate doesn't double-handle), and reassign within the directorate.
 
-**Touches.** `fleet_graph_core.py` (`normalize_relations()` label parsing,
-`can_communicate()` return contract), `dashboard/plugin_api.py`
-(`/simulate` + `/relations` payload), `desktop-plugins/fleet-graph/plugin.js`
-(edge styling for tainted peers + Configure-tab editor).
+**Files.** `fleet_msg.py` (tag + claim/reassign subcommands), `maintenance/fleet_maint.py` (prune/status awareness of claimed items), `dashboard/plugin_api.py` (`GET /queues`, `POST /queues/{q}/claim`), `desktop-plugin/plugin.js` (deck view groups NEEDS ATTENTION cards by queue).
 
-**Why it matters.** The fleet passes arbitrary inbox text between bots today;
-one compromised or hallucinating bot can steer any peer laterally with zero
-friction. A structural trust layer matches the plugin's own philosophy ("edges
-can't be faked") and closes the gap README flags around last-write-wins
-external writers — labels are validated server-side, so even raw PUTs can't
-silently open a trusted channel.
+**Why it matters.** The deck view already triages NEEDS ATTENTION but treats every unread message as independent operator work. Queue-by-directorate makes delegation idempotent — one claim, one owner — which is the difference between 68 bots amplifying a task and 68 bots dividing one.

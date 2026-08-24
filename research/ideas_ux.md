@@ -1,88 +1,85 @@
-# FleetGraph UX/Observability Ideas — tick output
+# FleetGraph UX / Observability Ideas — Tick (2026-08-24)
 
-Generated: 2026-08-24 (cron). Lens: what does the operator need to SEE at 2am
-when a fleet of ~25 bots has gone sideways? Current UI shows *now* (status
-chips, glow, unread badges) but almost nothing about *recently* or *trends*.
-
----
-
-## Idea 1 — Escalation Ledger: "who is stuck, for how long, and who knows"
-
-**Concept.** The initiative ladder says bots escalate after >15 min blocked,
-but nowhere in FleetGraph can an operator see escalations as a first-class
-stream. Add a backend endpoint `GET /escalations?window=` that scans inbox
-jsonl files for `frame == "supervisor"` records plus interrupted-session
-markers, and renders a **Ledger tab** in the desktop plugin: a reverse-
-chronological list of escalation events (bot, target supervisor, age, message
-summary), grouped into OPEN (unanswered, aging — sorted worst-first) and
-RESOLVED (a later session completed after the escalation). Each open row
-shows an aging timer that crosses from accent → warning → danger at operator-
-configurable thresholds, with one-click "open inspector" deep-link. At 2am
-the question "is anything blocked and unacknowledged?" becomes one glance.
-
-**Files touched.**
-- `dashboard/plugin_api.py` — new `/escalations` endpoint (inbox scan + session status join)
-- `desktop-plugin/plugin.js` — Ledger view/tab + query hook + deep-link wiring
-- `tests/` — harness branch for the ledger render; integration test for the endpoint
-
-**Operator pain solved.** Blocked bots are currently invisible unless you
-happen to click their card and read the transcript. Interrupted chips exist,
-but there's no notion of *acknowledged vs. unanswered distress* across the
-fleet, and no aging signal — the two things triage actually needs.
+*What does an operator actually need to SEE at 2am when something is wrong?*
+Grounded in the current surface: `dashboard/plugin_api.py` (`/overview`, `/traffic`,
+`/sessions/tail`, `/sessions/{n}/messages`, inbox watermarks, `_latest_session`
+status reclassification) and `desktop-plugin/plugin.js` (tree/canvas views,
+Inspector, StatusChip, traffic-glow edges). Inspiration from this tick's arXiv
+scan: cascading-failure detection in agentic pipelines (CHARM) and drift-aware
+lifecycle monitoring — both argue you need *propagation views*, not just
+per-node status.
 
 ---
 
-## Idea 2 — Fleet Activity Heatmap: 24h rhythm per bot on one screen
+## 1. Incident Timeline — "What happened in the last hour?" scrubber
 
-**Concept.** Status chips answer "what is this bot doing now"; they say
-nothing about whether today's silence is normal. Add `GET /activity/heatmap`
-that buckets each profile's session activity (from `state.db` timestamps and
-inbox traffic) into hour-of-day × bot cells over the last 24–72h, and render
-it as a compact GitHub-style heatmap strip per bot row (or a full grid view).
-Cells shade by message/turn count using only token-layer colors; hours with
-zero activity stay flat. Overlay markers for interruptions (warning-colored
-ticks) so patterns like "this bot dies every night around 03:00" or "this
-team went quiet 6 hours ago" pop immediately. Cheap to compute — same
-read-only state.db access the tail snapshot already uses.
+**Concept.** A fleet-wide timeline strip at the top of the canvas: a horizontal
+band of the last N hours where every inter-agent message (`/traffic` history),
+session state transition (active → interrupted → stale), and inbox spike is a
+tick mark. The operator drags a playhead to any moment and the graph re-paints
+as it looked *then* — which nodes were hot, which edge glowed, what the
+transcript tail said. Backend: extend `plugin_api.py` with a `/history?from=&to=`
+endpoint that replays inbox JSONL files plus session snapshots into a merged,
+sorted event stream (all data already exists on disk — no new instrumentation
+needed). Frontend: a new `TimelineStrip` component beside the existing viewport
+controls in `CanvasGraph`.
 
-**Files touched.**
-- `dashboard/plugin_api.py` — `/activity/heatmap?hours=24|48|72` aggregation endpoint
-- `desktop-plugin/plugin.js` — heatmap strip component + toggle in Deck view header
-- `tests/` — configurability gate (no color literals), harness for empty/partial data
+**Files touched:** `dashboard/plugin_api.py` (new `/history` endpoint + event
+merge helper), `desktop-plugin/plugin.js` (TimelineStrip component, playhead
+state, per-tick graph repaint), `README.md` (endpoint table).
 
-**Operator pain solved.** Anomaly detection by rhythm: a dead bot among busy
-ones is obvious in chips, but a *fleet-wide stall* or a recurring nightly
-crash pattern is invisible in any point-in-time view. This gives the
-operator a temporal dimension without logs or terminals.
+**Operator pain it solves:** Right now the UI only shows *now*. If a bot went
+weird at 1am and the operator looks at 2am, the evidence is scattered across 68
+inbox JSONLs and per-profile state.dbs. One scrubber answers "when did it start,
+who talked to whom, what order" without grepping anything.
+
+---
+
+## 2. Escalation Heatmap — stuck-message and silence detector
+
+**Concept.** Color every node not by its latest session status but by
+*pressure age*: how long has its unread count been nonzero, how long since its
+last successful session activity, and — critically — are there messages in its
+inbox that reference frames it never answered (delegate/supervisor sends with
+no subsequent session touch)? Render as a heatmap mode toggle on the existing
+canvas: green = healthy, amber = unanswered inbound > threshold, red = silent
+bot with a growing backlog (the classic "cron died but inbox keeps filling"
+failure). Backend: a `/pressure` endpoint computing per-node
+{oldest_unread_age_s, last_activity_age_s, backlog_rate} from watermarks +
+state.db mtimes already tracked in `_latest_session`. Frontend: a view-mode
+toggle next to tree/canvas that swaps node fill color for pressure color, with
+hover showing the exact ages.
+
+**Files touched:** `dashboard/plugin_api.py` (`/pressure` endpoint, small
+helper reusing `_unread_counts` / `_latest_session`), `desktop-plugin/plugin.js`
+(view toggle + `pressureColor()` beside existing `statusColor`),
+`tests/` (endpoint unit test).
+
+**Operator pain it solves:** Status chips lie at 2am — "interrupted" can mean
+fine or dead. Pressure age doesn't: a bot with 40 unread and no session touch
+in 6 hours is broken regardless of what the last row says. This turns "check
+every bot one by one" into one glance.
 
 ---
 
-## Idea 3 — Traffic Replay Timeline: scrub the last hour of fleet chatter
+## 3. Chain-of-Command Cost & Token Ledger — who is spending what
 
-**Concept.** Discussion glow shows edges talking *right now*, then the
-moment passes. Extend `/traffic` with a persisted ring buffer (backend keeps
-last N hours of inter-agent events in memory/file) and add a **Replay**
-scrubber: a horizontal timeline under the graph canvas where the operator
-drags through the recent past and the glow/pulse state re-renders for that
-instant — see the burst of delegate messages before a failure, spot which
-edge went silent, watch a conversation cascade spread. Include a speed
-control (1×/10×/60×) and event ticks colored by frame type (`talk`,
-`delegate`, `supervisor`) along the track. Inspired by CHARM-style cascade
-analysis (arXiv 2606.04435): failures in agent systems propagate through
-message chains, so replaying the chain is diagnosis.
+**Concept.** Every Hermes profile's config names a model/provider; sessions
+accumulate token usage. Surface it: a per-bot, per-day cost/token column in the
+deck cards and Inspector, plus a fleet-total header strip ("fleet today: 4.2M
+tokens, $X, top spender: nyx"). Backend: a `/usage?window=` endpoint reading
+per-profile usage records (Hermes session DBs carry token counts; fall back to
+message_count × model-context estimate when absent), joined with each profile's
+`config.yaml` model via the existing `_profile_meta`. Flag anomalies: a bot
+whose spend jumped 10× vs. its trailing average (runaway loop signature).
+Frontend: ledger tab in the Inspector and a compact sparkline on BotCard.
 
-**Files touched.**
-- `dashboard/plugin_api.py` — extend `_recent_traffic` with a bounded persistent buffer; `/traffic?at=<ts>` historical slice
-- `desktop-plugin/plugin.js` — timeline scrubber component, playback state hook, glow re-render from arbitrary ts
-- `tests/` — loop-style harness for scrubber states; adversarial test for malformed ts
+**Files touched:** `dashboard/plugin_api.py` (`/usage` endpoint, model-price
+lookup table), `desktop-plugin/plugin.js` (BotCard sparkline, Inspector ledger
+tab, header strip), `README.md` (feature bullet + endpoint).
 
-**Operator pain solved.** Post-mortems are impossible today: once the glow
-fades, the evidence of *who talked to whom right before things broke* is
-buried in raw jsonl. The scrubber turns the graph canvas itself into a
-forensic instrument — rewind, find the last edge that lit up, open those two
-bots' transcripts.
-
----
-*Next tick candidates:* cost/token visibility per bot (needs model+session
-join), supervisor-load imbalance meter, "stale topology" warnings (nodes in
-graph whose profiles vanished — ties to the known deletion-prune limitation).
+**Operator pain it solves:** Token burn is invisible until the provider bill or
+a rate-limit arrives. At 2am the question "is something looping?" currently has
+no answer in the UI; a per-bot spend delta makes runaway agents visible in
+seconds, and the fleet total makes capacity planning possible without leaving
+the command center.
