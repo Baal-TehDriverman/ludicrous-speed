@@ -64,7 +64,11 @@ def cmd_send(args):
 
     body = args.summary or ""
     if args.file:
-        body += "\n\n" + pathlib.Path(args.file).read_text()
+        try:
+            body += "\n\n" + pathlib.Path(args.file).read_text()
+        except OSError as e:
+            print(json.dumps({"ok": False, "error": f"cannot read --file {args.file}: {e}"}))
+            sys.exit(2)
     if not body.strip():
         print(json.dumps({"ok": False, "error": "empty message (--summary or --file)"}))
         sys.exit(2)
@@ -117,8 +121,13 @@ def cmd_inbox(args):
 
 
 def cmd_show(_args):
-    graph = load_graph()
-    relations = load_relations()
+    try:
+        graph = load_graph()
+        relations = load_relations()
+    except GraphError as e:
+        # same JSON refusal contract as send: never a raw traceback
+        print(json.dumps({"ok": False, "error": f"fleet graph unusable: {e}"}))
+        sys.exit(2)
     d = describe(graph, relations)
     print(json.dumps(d, indent=1))
 

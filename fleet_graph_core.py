@@ -131,8 +131,9 @@ def load_relations() -> dict:
     Disk (`_meta.relations`) is authoritative when present — the UI saves the
     FULL map, so removals stick. Defaults apply only to a fresh file."""
     data = _load_raw()
+    meta = data.get("_meta")
     rel_raw = _relations_from_raw(data)
-    if data.get("_meta", {}).get("relations") is not None:
+    if isinstance(meta, dict) and meta.get("relations") is not None:
         # authoritative disk state — no default merging, removals are real
         merged = {k: list(v) for k, v in rel_raw.items()}
     elif GRAPH_PATH.exists():
