@@ -5,6 +5,7 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import { registerVoidRoutes } from "./server-void";
+import { registerTestSupportRoutes } from "./server-testsupport";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const PORT = 3000;
 
 app.use(express.json());
 registerVoidRoutes(app);
+registerTestSupportRoutes(app);
 
 // Helper to safely get Gemini client
 function getGeminiClient() {
