@@ -323,6 +323,21 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             View Dreams <ArrowRight className="w-3.5 h-3.5" />
           </span>
         </button>
+
+        {/* Lilith's Pyramid-Toroidal Plasma Framework */}
+        <button
+          onClick={() => window.open('/pyramid-toroidal', '_blank')}
+          className="card p-5 text-left group"
+        >
+          <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-800/60 group-hover:border-emerald-500/60 mb-4">
+            <Layers className="w-6 h-6 text-emerald-400" />
+          </div>
+          <h4 className="font-bold text-white mb-1">Pyramid-Toroidal Plasma</h4>
+          <p className="text-sm text-slate-400 mb-4">Lilith's fusion framework · toroidal confinement + vacuum coupling</p>
+          <span className="text-xs text-emerald-400 flex items-center gap-1">
+            Open Framework <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </button>
       </div>
     </div>
   );

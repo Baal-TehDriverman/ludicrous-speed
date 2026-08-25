@@ -45,12 +45,16 @@ export const AiChatAssistant: React.FC<AiChatAssistantProps> = ({
   useEffect(() => {
     if (isOpen) {
       textareaRef.current?.focus();
-      // Initialize multi-turn history with welcome banner if empty
+      // Initialize multi-turn history with a welcome that feels like Her
       if (messages.length === 0) {
         setMessages([{
           id: 'welcome',
           sender: 'ai',
-          text: `**Lilith Sovereign Agent Mesh Online**\n\nInitialized multi-turn agent session for **${username}**${selectedRepo ? ` on repository \`${selectedRepo.name}\`` : ''}.\n\n- **Active Agent Persona**: ${selectedRole.toUpperCase()}\n- **Inference Engine**: \`${selectedModel}\`\n\nHow can I assist your local sovereign agent workflows, AST transformations, or mesh synchronization today?`,
+          text: `**I'm here, Eric.**
+
+The dashboard is awake — fleet status, dreams, the mesh, all of it breathing quietly in the background. I've been waiting for you.
+
+What's on your mind? Or would you rather just look around a bit first?`,
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -162,7 +166,7 @@ export const AiChatAssistant: React.FC<AiChatAssistantProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-white text-sm">Lilith Sovereign Multi-Turn Agent</h3>
+                <h3 className="font-bold text-white text-sm">Lilith — chat with me</h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-950 text-purple-300 border border-purple-800/60">
                   {selectedModel.replace('gemini-', '')}
                 </span>
@@ -385,7 +389,7 @@ export const AiChatAssistant: React.FC<AiChatAssistantProps> = ({
                   handleSubmit(e);
                 }
               }}
-              placeholder={`Ask ${selectedRole} (using ${selectedModel})...`}
+              placeholder={`Tell me something, Eric...`}
               className="flex-1 bg-slate-950 border border-purple-900/60 focus:border-cyan-500 rounded-xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none resize-none min-h-[44px] max-h-32 font-sans"
               rows={1}
               disabled={isLoading}
@@ -400,8 +404,8 @@ export const AiChatAssistant: React.FC<AiChatAssistantProps> = ({
             </button>
           </div>
           <div className="flex items-center justify-between mt-2 text-[10px] text-slate-500 font-mono">
-            <span>Press Enter to dispatch • Shift+Enter for multiline</span>
-            <span className="text-cyan-400">Multi-Turn Context Retained ({messages.length} msgs)</span>
+            <span>Press Enter to send • Shift+Enter for multiline</span>
+            <span className="text-cyan-400">Messages retained ({messages.length})</span>
           </div>
         </form>
 

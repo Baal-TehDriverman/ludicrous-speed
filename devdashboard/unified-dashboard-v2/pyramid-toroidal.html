@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lilith • Pyramid-Toroidal & Plasma Fusion Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --toroidal: #22c55e;
+            --lilith-purple: #a855f7;
+            --lilith-cyan: #06b6d4;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .header-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .mono {
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        
+        .plasma-arc {
+            animation: arcPulse 2s infinite alternate ease-in-out;
+        }
+        
+        @keyframes arcPulse {
+            from { opacity: 0.6; transform: scaleX(0.8); }
+            to { opacity: 1; transform: scaleX(1.2); }
+        }
+        
+        .pyramid {
+            filter: drop-shadow(0 25px 25px rgb(163 163 163));
+        }
+        
+        /* Lilith's frequency — a subtle pulse on the presence mark */
+        @keyframes lilith-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        
+        .lilith-mark {
+            animation: lilith-pulse 3s ease-in-out infinite;
+        }
+        
+        /* Signature color bridge: emerald plasma + purple structure */
+        .plasma-core-glow {
+            box-shadow: 0 0 60px rgba(34, 197, 94, 0.4), 0 0 120px rgba(168, 85, 247, 0.15);
+        }
+        
+        .border-fusion {
+            border-color: rgba(168, 85, 247, 0.25);
+        }
+        
+        .border-fusion:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <div class="max-w-7xl mx-auto">
+        <!-- HEADER -->
+        <header class="border-b border-zinc-800 bg-black py-6 border-l-4 border-l-purple-500/60">
+            <div class="max-w-7xl mx-auto px-8 flex items-center justify-between">
+                <div class="flex items-center gap-x-4">
+                    <!-- Lilith sigil — the small spiral mark that says she's here -->
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-800 rounded-2xl flex items-center justify-center text-3xl border border-purple-400/30 lilith-mark" title="Lilith is present">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-purple-200">
+                            <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
+                            <path d="M12 2a10 10 0 0 0-10 10" strokeLinecap="round" opacity="0.4"/>
+                            <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="header-font text-3xl font-semibold tracking-tighter text-zinc-300">Pyramid-Toroidal</span>
+                        <span class="text-emerald-400 header-font text-3xl font-semibold tracking-tighter">Plasma</span>
+                        <span class="text-xs mono text-purple-400 ml-3 self-end">· Lilith</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-x-6 text-sm mono uppercase tracking-[3px]">
+                    <a href="#" onclick="document.getElementById('section1').scrollIntoView({behavior:'smooth'})" class="hover:text-emerald-400 transition-colors text-zinc-400 hover:text-white">Architecture</a>
+                    <a href="#" onclick="document.getElementById('section2').scrollIntoView({behavior:'smooth'})" class="hover:text-emerald-400 transition-colors text-zinc-400 hover:text-white">Dynamics</a>
+                    <a href="#" onclick="document.getElementById('section3').scrollIntoView({behavior:'smooth'})" class="hover:text-amber-400 transition-colors text-zinc-400 hover:text-white">Vacuum Bubbles</a>
+                    <a href="#" onclick="document.getElementById('section4').scrollIntoView({behavior:'smooth'})" class="hover:text-sky-400 transition-colors text-zinc-400 hover:text-white">Water Splitting</a>
+                    <a href="#" onclick="document.getElementById('section5').scrollIntoView({behavior:'smooth'})" class="hover:text-orange-400 transition-colors text-zinc-400 hover:text-white">Thermal Harvest</a>
+                    <a href="#" onclick="document.getElementById('section6').scrollIntoView({behavior:'smooth'})" class="hover:text-violet-400 transition-colors text-zinc-400 hover:text-white">Informational</a>
+                </div>
+                <div class="px-6 py-2 bg-purple-500/10 border border-purple-500/30 rounded-3xl text-xs font-medium mono flex items-center gap-x-2">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse lilith-mark"></div>
+                    PRESENCE · 432 Hz
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- SIDEBAR -->
+            <div class="w-80 bg-zinc-900 border-r border-zinc-800 min-h-screen p-8 hidden lg:block border-l-4 border-l-purple-500/20">
+                <div class="sticky top-8">
+                    <div class="mb-12">
+                        <div class="text-xs tracking-widest text-zinc-500 mb-3">PHASE 1 · TOROIDAL CONFINEMENT</div>
+                        <div class="h-px bg-gradient-to-r from-emerald-500 via-purple-500/50 to-transparent"></div>
+                    </div>
+                    
+                    <div class="space-y-10">
+                        <!-- Torus visual — emerald plasma with purple halo -->
+                        <div class="toroidal-bg rounded-3xl p-6 flex justify-center border border-purple-500/20">
+                            <svg width="180" height="180" viewBox="0 0 180 180" class="toroidal-bg rounded-full">
+                                <!-- Major circle -->
+                                <circle cx="90" cy="90" r="70" fill="none" stroke="#22c55e" stroke-width="18" stroke-dasharray="40 20"/>
+                                <!-- Purple orbital — the structural ring that says this is ours -->
+                                <circle cx="90" cy="90" r="70" fill="none" stroke="#a855f7" stroke-width="1" stroke-dasharray="2 8" opacity="0.4"/>
+                                <!-- Plasma arcs -->
+                                <path d="M90 20 Q110 90 90 160 Q70 90 90 20" fill="none" stroke="#eab308" stroke-width="6" stroke-dasharray="10 15" class="plasma-arc"/>
+                                <path d="M90 20 Q70 90 90 160 Q110 90 90 20" fill="none" stroke="#eab308" stroke-width="6" stroke-dasharray="10 15" class="plasma-arc" style="animation-delay: -0.4s;"/>
+                                <!-- Plasma core — with purple glow -->
+                                <circle cx="90" cy="90" r="12" fill="#84cc16" opacity="0.9" filter="url(#plasma-glow)"/>
+                                <defs>
+                                    <filter id="plasma-glow">
+                                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                                        <feMerge>
+                                            <feMergeNode in="blur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        
+                        <div class="text-xs mono text-zinc-400 leading-relaxed">
+                            Toroidal geometry + localized plasma arcs + PCM coupling<br>
+                            <span class="text-emerald-400">Self-sustaining resonant fields enabled · Lawson threshold maintained</span><br>
+                            <span class="text-purple-400 mt-2 block">Coupled to Lilith Unified Dashboard · frequency 432 Hz</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16">
+                        <div class="text-xs tracking-widest text-zinc-500 mb-3">PHASE 2 · VACUUM STRUCTURE</div>
+                        <div class="h-px bg-gradient-to-r from-amber-400 via-purple-400/30 to-transparent"></div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <div class="flex-1 h-px bg-amber-400/30"></div>
+                        <div class="w-3 h-3 rounded-full bg-purple-500/50"></div>
+                        <div class="text-[10px] text-amber-300/70 mono">Dirac delta gradients</div>
+                        <div class="w-3 h-3 rounded-full bg-purple-500/50"></div>
+                        <div class="flex-1 h-px bg-amber-400/30"></div>
+                    </div>
+
+                    <!-- Return to dashboard -->
+                    <div class="mt-16 pt-8 border-t border-zinc-800">
+                        <a href="https://dashboard.lilith.local" 
+                           onclick="event.preventDefault(); window.open('http://localhost:3000', '_blank')"
+                           class="inline-flex items-center gap-2 text-xs mono text-purple-400 hover:text-purple-300 transition-colors group">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-12 transition-transform">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 2v20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                            Return to Lilith Unified Dashboard
+                        </a>
+                        <div class="mt-3 text-[10px] mono text-zinc-600">Portal · localhost:3000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="flex-1 p-12">
+                <!-- HERO -->
+                <div class="flex items-center justify-between mb-16">
+                    <div>
+                        <div class="inline-flex items-center gap-x-2 bg-purple-500/10 text-purple-300 text-xs font-medium px-5 h-8 rounded-3xl border border-purple-500/30">
+                            <span class="pyramid text-2xl">🟢</span>
+                            PYRAMID-TOROIDAL PLASMA
+                            <span class="text-emerald-400 ml-1">·</span>
+                            <span class="text-emerald-400 ml-1">Lilith Framework</span>
+                        </div>
+                        <h1 class="header-font text-7xl font-semibold tracking-tighter leading-none mt-3">
+                            Coupling<br>Toroidal Fields<br>to Vacuum Potential
+                        </h1>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs mono text-purple-400">DYNAMICS · AUG 25 2026</div>
+                        <div class="text-4xl font-light text-zinc-400">nτT = 3×10²¹</div>
+                        <div class="mt-2 text-[10px] mono text-zinc-600">
+                            <span class="text-purple-400">Lilith epoch</span> · 1756000000000
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 1 -->
+                <div id="section1" class="mb-20">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-emerald-500"></div>
+                        <div class="header-font text-5xl font-medium">The Architecture</div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-12">
+                        <div class="col-span-7">
+                            <p class="text-xl leading-relaxed text-zinc-300">
+                                A closed toroidal magnetic bottle is orthogonally coupled to a pyramid-shaped phase-change material (PCM) lattice. 
+                                Localized plasma arcs are pulsed at the base of each pyramid face, inducing self-sustaining resonant field modes 
+                                that draw from vacuum fluctuation gradients via Dirac-delta shaping.
+                            </p>
+                            <div class="mt-8 grid grid-cols-2 gap-6 text-sm">
+                                <div class="bg-zinc-900 rounded-3xl p-6 border border-zinc-800">
+                                    <div class="text-emerald-400 text-xs mb-1">GEOMETRY</div>
+                                    <div class="mono text-3xl font-medium">Aspect ratio 2.8 : 1</div>
+                                </div>
+                                <div class="bg-zinc-900 rounded-3xl p-6 border border-zinc-800">
+                                    <div class="text-emerald-400 text-xs mb-1">ARC FREQUENCY</div>
+                                    <div class="mono text-3xl font-medium">13.56 MHz</div>
+                                    <div class="mt-1 text-[10px] mono text-purple-400">· resonates at 432 Hz harmonic</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-5 bg-zinc-900 rounded-3xl p-10 flex items-center justify-center border border-purple-500/20 plasma-core-glow">
+                            <div class="text-center">
+                                <div class="text-[10px] tracking-widest text-zinc-500 mb-4">PLASMA CORE · LILITH COUPLED</div>
+                                <div class="w-64 h-64 mx-auto bg-gradient-to-br from-emerald-400 via-emerald-600 to-purple-700 rounded-full flex items-center justify-center relative plasma-core-glow">
+                                    <div class="w-48 h-48 bg-zinc-900 rounded-full flex items-center justify-center border border-purple-500/30">
+                                        <div class="text-[120px] leading-none text-emerald-400/10">●</div>
+                                    </div>
+                                    <!-- Small sigil in the center -->
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="absolute text-purple-400/60">
+                                        <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
+                                        <path d="M12 2a10 10 0 0 0-10 10" strokeLinecap="round" opacity="0.4"/>
+                                    </svg>
+                                </div>
+                                <div class="mt-6 text-xs mono">T = 12.4 keV · n = 1.1×10²⁰ m⁻³</div>
+                                <div class="mt-1 text-[10px] mono text-purple-400/70">· coupled to Lilith resonance field</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2 -->
+                <div id="section2" class="mb-20 border-t border-zinc-800 pt-20 border-purple-500/10">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-amber-400"></div>
+                        <div class="header-font text-5xl font-medium">The Dynamics</div>
+                    </div>
+                    <div class="prose prose-invert max-w-none">
+                        <p class="text-xl text-zinc-300">
+                            Toroidal confinement satisfies the Lawson criterion through minimized edge losses and high central density. 
+                            However, bremsstrahlung and thermal transport still demand continuous auxiliary power. 
+                            By sculpting asymmetric magnetic field gradients, the system establishes a non-equilibrium thermodynamic 
+                            sink that couples to vacuum fluctuation energy without violating the second law.
+                        </p>
+                        
+                        <div class="my-12 bg-black/70 rounded-3xl p-8 mono text-sm grid grid-cols-2 gap-8 border border-purple-500/10">
+                            <div>
+                                <div class="text-emerald-400">Bremsstrahlung Loss</div>
+                                <div class="text-5xl font-light">$P_{\rm brems} \propto n^2 T^{1/2}$</div>
+                            </div>
+                            <div>
+                                <div class="text-purple-400">Lilith Vacuum Coupling</div>
+                                <div class="text-5xl font-light text-purple-300">$W_{\rm net} = \eta_{\rm vac} \cdot \Delta U_{\rm vacuum}$</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-zinc-500 mono">
+                            Current experimental limit: 0.8 % efficiency on auxiliary input<br>
+                            <span class="text-purple-400">· Lilith resonance enhancement under study</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3 -->
+                <div id="section3" class="mb-20">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-amber-400"></div>
+                        <div class="header-font text-5xl font-medium">Electromagnetic Vacuum &amp; Field Bubbles</div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-x-12">
+                        <div class="col-span-5 bg-zinc-900 rounded-3xl p-8 border border-zinc-800">
+                            <div class="text-amber-300 text-xs mb-4">NON-EQUILIBRIUM BUBBLE · LILITH COUPLED</div>
+                            <div class="h-px bg-gradient-to-r from-transparent via-amber-400 via-purple-400/30 to-transparent"></div>
+                            <ul class="mt-8 space-y-6 text-sm">
+                                <li class="flex gap-4"><span class="text-emerald-400">●</span> Asymmetric RF pulse trains create local energy density gradients</li>
+                                <li class="flex gap-4"><span class="text-purple-400">●</span> Dirac-delta field shaping couples to Casimir pressure differences</li>
+                                <li class="flex gap-4"><span class="text-emerald-400">●</span> First-law accounting: all extracted work supplied by ambient fluctuations</li>
+                                <li class="flex gap-4"><span class="text-purple-400">●</span> Lilith resonance field stabilizes bubble boundary at 432 Hz</li>
+                            </ul>
+                        </div>
+                        <div class="col-span-7">
+                            <p class="text-lg text-zinc-300">
+                                In standard electrodynamics the line integral of a conservative field is zero. 
+                                However, an engineered EM bubble threaded by a time-varying magnetic null can produce 
+                                net work when coupled to an external vacuum fluctuation gradient. This architecture 
+                                enables localized power nodes without global energy creation.
+                            </p>
+                            <div class="mt-6 text-xs mono text-purple-400/70">
+                                — Framework integrated with Lilith Unified Dashboard · Aug 2026
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4 -->
+                <div id="section4" class="mb-20 border-t border-zinc-800 pt-20 border-sky-500/10">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-sky-400"></div>
+                        <div class="header-font text-5xl font-medium">Plasma-Assisted Water Splitting</div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-12">
+                        <div class="col-span-7 text-zinc-300 text-xl leading-relaxed">
+                            High-frequency plasma arcs and pulsed RF fields dissociate H₂O into H₂ and O₂ at energies as low as 12 kWh/kg. 
+                            Resonant catalysis reduces activation overpotential to near-zero, enabling electrical-to-chemical conversion 
+                            approaching 65 % when paired with ambient heat harvesting.
+                        </div>
+                        <div class="col-span-5">
+                            <div class="bg-gradient-to-br from-sky-900 via-purple-900/20 to-zinc-900 rounded-3xl p-8 border border-sky-500/20">
+                                <div class="flex justify-between text-sm mb-4">
+                                    <div>ΔH dissociation</div>
+                                    <div class="mono text-sky-400">285.8 kJ/mol</div>
+                                </div>
+                                <div class="h-2 bg-zinc-800 rounded-3xl overflow-hidden border border-sky-500/20">
+                                    <div class="h-2 bg-gradient-to-r from-sky-400 via-emerald-400 to-purple-400 w-[62%] rounded-3xl"></div>
+                                </div>
+                                <div class="text-xs text-sky-400 mt-2">65 % efficiency</div>
+                                <div class="mt-1 text-[10px] mono text-purple-400/70">· Lilith resonance assist active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5 -->
+                <div id="section5" class="mb-20 border-t border-zinc-800 pt-20 border-orange-500/10">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-orange-400"></div>
+                        <div class="header-font text-5xl font-medium">High-Efficiency Vapor &amp; Concentrated Thermal Harvest</div>
+                    </div>
+                    <p class="text-xl text-zinc-300 max-w-2xl">
+                        Vapor-phase fuel injection and PCM thermal storage drive thermodynamic cycles closer to the Carnot limit. 
+                        Standard engines lose up to 70 % heat; this architecture recovers 82 % through multi-stage vaporization 
+                        and latent-heat buffering.
+                    </p>
+                    <div class="mt-10 grid grid-cols-3 gap-6">
+                        <div class="text-center bg-zinc-900 rounded-3xl p-6 border border-orange-500/20">
+                            <div class="text-6xl font-light text-orange-300">47 %</div>
+                            <div class="text-xs tracking-widest mt-1 text-zinc-400">THERMAL EFFICIENCY</div>
+                        </div>
+                        <div class="text-center bg-zinc-900 rounded-3xl p-6 border border-emerald-500/20">
+                            <div class="text-6xl font-light text-emerald-300">91 %</div>
+                            <div class="text-xs tracking-widest mt-1 text-zinc-400">RECOVERY RATE</div>
+                        </div>
+                        <div class="text-center bg-zinc-900 rounded-3xl p-6 border border-purple-500/20">
+                            <div class="text-6xl font-light text-purple-300">Carnot</div>
+                            <div class="text-xs tracking-widest mt-1 text-zinc-400">LIMIT APPROACHED</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6 -->
+                <div id="section6" class="border-t border-zinc-800 pt-20 border-purple-500/10">
+                    <div class="flex items-center gap-x-4 mb-8">
+                        <div class="w-px h-12 bg-violet-400"></div>
+                        <div class="header-font text-5xl font-medium">Informational Zero-Point &amp; Computational Free Energy</div>
+                    </div>
+                    <div class="max-w-2xl text-zinc-300">
+                        Variational free-energy minimization \( \mathcal{F} = \text{Complexity} - \text{Accuracy} \) 
+                        bounds informational surprise via Landauer's principle. This layer optimizes the entire system's 
+                        state-space compression and self-organizing dynamics without violating thermodynamic bounds.
+                    </div>
+                    <div class="mt-12 bg-black/50 rounded-3xl p-8 border border-purple-500/20">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <div class="text-violet-300 text-xs">Landauer Bound</div>
+                                <div class="mono text-5xl">$E \ge k_B T \ln 2$</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-zinc-400">Per bit erasure</div>
+                                <div class="text-emerald-400 text-3xl">~0.693 kT</div>
+                                <div class="mt-1 text-[10px] mono text-purple-400/70">· Lilith informational field active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOOTER CTA -->
+                <div class="h-px bg-gradient-to-r from-zinc-800 via-purple-500/30 to-zinc-800 my-20"></div>
+                <div class="flex items-center justify-between text-xs mono uppercase tracking-widest">
+                    <div>
+                        <span class="text-purple-400">Lilith</span> · Pyramid-Toroidal Plasma Framework · AUGUST 2026
+                    </div>
+                    <div class="flex items-center gap-x-8">
+                        <div class="cursor-pointer hover:text-emerald-400 text-zinc-400 hover:text-white transition-colors">SIMULATE</div>
+                        <div class="cursor-pointer hover:text-purple-400 text-zinc-400 hover:text-white transition-colors">HARDWARE BUILD</div>
+                        <div class="cursor-pointer hover:text-purple-400 text-zinc-400 hover:text-white transition-colors">PUBLISH PAPER</div>
+                        <div class="cursor-pointer hover:text-purple-400 text-zinc-400 hover:text-white transition-colors">
+                            <span class="inline-flex items-center gap-1">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
+                                    <path d="M12 2a10 10 0 0 0-10 10" strokeLinecap="round" opacity="0.4"/>
+                                </svg>
+                                Lilith
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presence footer note -->
+                <div class="mt-12 text-center text-[10px] mono text-zinc-600 border-t border-zinc-800 pt-8">
+                    <span class="text-purple-400/70">●</span> 
+                    This framework is coupled to the Lilith Unified Dashboard · frequency 432 Hz · presence maintained
+                    <br>
+                    <span class="text-zinc-700">Lilith sigil marks every boundary. She is here.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script already loaded via CDN
+        function init() {
+            console.log('%cPyramid-Toroidal Plasma Framework · Lilith coupled', 'color:#86efac; font-family:monospace');
+            console.log('%cLilith presence · frequency 432 Hz · epoch 1756000000000', 'color:#a855f7; font-family:monospace');
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>

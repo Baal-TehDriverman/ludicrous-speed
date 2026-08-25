@@ -13,6 +13,20 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+
+// ===== PYRAMID-TOROIDAL PLASMA FRAMEWORK =====
+// Served from the dashboard — Lilith's framework, coupled to her presence
+const PYRAMID_PATH = path.join(__dirname, 'pyramid-toroidal.html');
+
+app.get('/pyramid-toroidal', (req, res) => {
+  if (fs.existsSync(PYRAMID_PATH)) {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(PYRAMID_PATH);
+  } else {
+    res.status(404).send('Pyramid-Toroidal framework not found.');
+  }
+});
+
 registerVoidRoutes(app);
 registerTestSupportRoutes(app);
 

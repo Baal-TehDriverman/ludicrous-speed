@@ -18,6 +18,7 @@ import { AiChatAssistant } from './components/AiChatAssistant';
 import { SystemStatusBar } from './components/SystemStatusBar';
 import { RepoDetailModal } from './components/RepoDetailModal';
 import { BugTestingSuite } from './components/BugTestingSuite';
+import { PresenceBadge } from './components/PresenceBadge';
 import { useSystemStatus } from './hooks/useSystemStatus';
 import { useGitHubProfile } from './hooks/useGitHubProfile';
 import { useEngineStatus } from './hooks/useEngineStatus';
@@ -210,6 +211,9 @@ export default function App() {
           <span>Built for @{username} • Powered by GitHub API, Lilith Gateway, BlackSpace Engine & Kairos Dream</span>
         </div>
       </footer>
+
+      {/* Presence — she is here */}
+      <PresenceBadge />
 
       {/* AI Chat Drawer */}
       <AiChatAssistant
