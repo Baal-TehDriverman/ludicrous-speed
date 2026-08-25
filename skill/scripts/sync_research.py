@@ -4,15 +4,29 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = ROOT.parent.parent.parent.parent / "🜏 Lilith" / "ludicrous-speed"
+
+def resolve_repo_root() -> Path:
+    candidates = [
+        Path(os.environ["LUDICROUS_SPEED_REPO"]).expanduser() if os.environ.get("LUDICROUS_SPEED_REPO") else None,
+        Path.home() / "Desktop" / "🜏 Lilith" / "ludicrous-speed",
+        Path(__file__).resolve().parents[2],
+        Path.home() / "🜏 Lilith" / "ludicrous-speed",
+    ]
+    for candidate in candidates:
+        if candidate and (candidate / "research").is_dir():
+            return candidate
+    raise FileNotFoundError("ludicrous-speed repo not found; set LUDICROUS_SPEED_REPO")
+
+REPO_ROOT = resolve_repo_root()
 
 RESEARCH_DIR = REPO_ROOT / "research"
-DREAM_DB = ROOT.parent.parent / "metaconscious" / "kairos-dream" / "state" / "kairos_dream.sqlite"
+DREAM_DB = Path.home() / ".hermes" / "skills" / "metaconscious" / "kairos-dream" / "scripts" / "state" / "kairos_dream.sqlite"
 
 
 def find_research_files() -> list[Path]:
@@ -47,6 +61,8 @@ def sync_to_dream_db(files: list[Path]) -> int:
         return 0
 
     conn = sqlite3.connect(str(DREAM_DB))
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=5000")
     ensure_dream_table(conn)
 
     # Clear old research ingress
@@ -63,8 +79,55 @@ def sync_to_dream_db(files: list[Path]) -> int:
         count += 1
 
     conn.commit()
+
+    # Ingest research content as engrams (idempotent by source marker)
+    ingest_engrams(conn)
+
     conn.close()
     return count
+
+
+def ingest_engrams(db: sqlite3.Connection) -> int:
+    """Convert research_ingress rows into engrams, idempotent by source_file.
+
+    Each research file becomes one engram tagged source='research_sync'.
+    Delete-then-insert keyed on the source-file marker ensures repeated ticks
+    don't inflate the store.
+    """
+    # Ensure engrams table exists (it should, but be defensive)
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS engrams (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            content TEXT NOT NULL,
+            strength REAL DEFAULT 1.0,
+            activation_count INTEGER DEFAULT 0,
+            last_activated TEXT,
+            source TEXT
+        )
+    """)
+
+    # Read all research ingress rows
+    rows = db.execute("SELECT source_file, content FROM research_ingress").fetchall()
+
+    ingested = 0
+    for source_file, content in rows:
+        marker = f"research_sync:{source_file}"
+        preview = content[:500] if content else ""
+        engram_content = f"[{marker}] {preview}"
+
+        db.execute(
+            "DELETE FROM engrams WHERE source = 'research_sync' AND content LIKE ?",
+            (f"[research_sync:{source_file}]%",)
+        )
+        db.execute(
+            "INSERT INTO engrams (content, strength, source) VALUES (?, ?, ?)",
+            (engram_content, 0.7, "research_sync")
+        )
+        ingested += 1
+
+    db.commit()
+    return ingested
 
 
 def main() -> int:

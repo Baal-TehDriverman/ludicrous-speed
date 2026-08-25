@@ -1,109 +1,79 @@
 # FleetGraph ArXiv Research Digest
 
-**Generated:** 2026-08-24 (EDT)  
-**Scout:** Lilith Sovereign Fleet — ArXiv Research Tick  
-**Topics:** Multi-agent orchestration, graph-based agent interfaces, DAG supervisor/subordinate communication
+**Scout Tick:** 2026-08-24 (EDT)
+**Topics:** Multi-agent fleet orchestration, graph-based agent interfaces, directed acyclic supervisor/subordinate communication
 
 ---
 
-## Query 1: "multi-agent orchestration"
+## 1. Consilience: Conformally Calibrated Communication Control for Hidden-Profile Multi-Agent Reasoning
 
-### 1. Consilience: Conformally Calibrated Communication Control for Hidden-Profile Multi-Agent Reasoning
-- **ID:** 2608.20564
+- **arXiv ID:** 2608.20564
 - **URL:** https://arxiv.org/abs/2608.20564
-- **Relevance:** Introduces a communication control framework for multi-agent reasoning where agents have hidden profiles — directly applicable to FleetGraph's need for calibrated inter-agent messaging with uncertainty about peer capabilities.
-- **Implementation Angle:** Adapt conformal calibration to FleetGraph's communication layer for uncertainty-aware message routing between supervisor/subordinate nodes.
+- **Authors:** Abhijith Babu, Ramneet Kaur, Vishal Pramanik, Olivera Kotevska, Nathaniel D. Bastian, Susmit Jha et al.
+- **Category:** Artificial Intelligence
 
-### 2. FL-MAESTRO: Multi-Agent LLM Orchestration for Resource-Constrained Federated Learning
-- **ID:** 2608.20518
+**Relevance to FleetGraph:**
+Addresses communication control between agents with *hidden profiles* — directly maps to FleetGraph's directed acyclic supervisor/subordinate layers where subordinate nodes may have latent state not fully visible to supervisors. The conformal calibration approach provides statistical guarantees on communication reliability.
+
+**Implementation Angle:**
+Adapt the conformal calibration framework to FleetGraph's DAG communication edges — use it to bound message-passing error rates between supervisor→subordinate nodes, ensuring reliable command propagation even when agent internal state is partially unobservable.
+
+---
+
+## 2. FL-MAESTRO: Multi-Agent LLM Orchestration for Resource-Constrained Federated Learning
+
+- **arXiv ID:** 2608.20518
 - **URL:** https://arxiv.org/abs/2608.20518
-- **Relevance:** Addresses orchestration of multiple LLM agents under resource constraints in federated settings — maps to FleetGraph's need for lightweight, distributed agent coordination.
-- **Implementation Angle:** Borrow resource-constrained scheduling heuristics for FleetGraph's edge-deployed agent nodes.
+- **Authors:** Jiajun Wu, Zirui Wang, Jiayu Zhou, Qiang Ye, Steve Drew
+- **Category:** Artificial Intelligence
 
-### 3. Edge-Based Agentic RAG for Autonomous FHWA Bridge Inspection Compliance
-- **ID:** 2608.20372
-- **URL:** https://arxiv.org/abs/2608.20372
-- **Relevance:** Edge-deployed agentic systems with RAG for autonomous inspection — less directly relevant but offers patterns for offline-capable agent reasoning.
-- **Implementation Angle:** Consider edge-side RAG patterns for FleetGraph nodes operating with intermittent connectivity.
+**Relevance to FleetGraph:**
+Multi-agent LLM orchestration under resource constraints — directly applicable to fleet scenarios where agents compete for limited compute/bandwidth. The federated learning angle mirrors FleetGraph's distributed node topology.
+
+**Implementation Angle:**
+Extract the resource-allocation heuristic for agent orchestration under constraints; integrate into FleetGraph's topology manager to dynamically throttle/boost subordinate agent LLM calls based on available fleet budget (token caps, GPU memory, latency SLOs).
 
 ---
 
-## Query 2: "hierarchical agents coordination"
+## 3. Bayesian Partner Modelling enables Adaptive Replanning for LLM Coordination
 
-### 4. Bayesian Partner Modelling enables Adaptive Replanning for LLM Coordination
-- **ID:** 2608.18490
+- **arXiv ID:** 2608.18490
 - **URL:** https://arxiv.org/abs/2608.18490
-- **Relevance:** Proposes Bayesian modeling of partner agents to enable adaptive replanning — highly relevant to FleetGraph's hierarchical supervisor/subordinate dynamics where supervisors must model subordinate state.
-- **Implementation Angle:** Integrate lightweight Bayesian belief updates into FleetGraph's supervisor nodes for real-time subordinate state estimation and replanning triggers.
+- **Authors:** Harsh Goel, Aditya Sai Ellendula, Vaishnav Tadiparthi, Ehsan Moradi Pari, Hossein Nourkhiz Mahjoub, Sandeep P. Chinchali
+- **Category:** Multiagent Systems
 
-### 5. Deep Academic Survey: Stateful Agentic Closed-Loop Paradigm for Academic Survey Automation
-- **ID:** 2608.18034
-- **URL:** https://arxiv.org/abs/2608.18034
-- **Relevance:** Stateful closed-loop agentic systems with feedback — relevant to FleetGraph's need for persistent agent state across orchestration cycles.
-- **Implementation Angle:** Adopt closed-loop state persistence patterns for FleetGraph's long-running agent sessions.
+**Relevance to FleetGraph:**
+Bayesian partner modeling for adaptive replanning — highly relevant to hierarchical coordination where supervisors must model subordinate capabilities and adjust plans when subordinates fail or drift. The "partner model" is analogous to FleetGraph's node capability registry.
 
-### 6. High-Altitude Platforms Beyond Connectivity
-- **ID:** 2608.18587
-- **URL:** https://arxiv.org/abs/2608.18587
-- **Relevance:** Survey of integrated sensing/storage/communication/computing — tangential but offers systems-integration perspective for heterogeneous agent fleets.
-- **Implementation Angle:** Low priority; systems architecture reference only.
+**Implementation Angle:**
+Implement a lightweight Bayesian belief tracker per supervisor node that maintains a posterior over subordinate reliability; use it to trigger adaptive replanning when a subordinate's observed performance drops below a posterior threshold — replacing static DAG routing with probabilistic, self-correcting dispatch.
 
 ---
 
-## Query 3: "graph neural network agents"
+## 4. TH-GNN: Heterogeneous Temporal Graph Neural Networks for LLM-Agent Shilling Attack Detection
 
-### 7. TH-GNN: Heterogeneous Temporal Graph Neural Networks for LLM-Agent Shilling Attack Detection
-- **ID:** 2608.20376
+- **arXiv ID:** 2608.20376
 - **URL:** https://arxiv.org/abs/2608.20376
-- **Relevance:** Heterogeneous temporal GNNs applied to LLM-agent interaction graphs — directly relevant to FleetGraph's graph-based agent interface architecture.
-- **Implementation Angle:** Evaluate TH-GNN architecture for FleetGraph's temporal agent-interaction graph; potential for detecting anomalous agent behavior or coordination failures.
+- **Authors:** Shivam Swarup, Divya Prakash Shrivastava, Rakesh Thakur
+- **Category:** Computation and Language, Machine Learning
 
-### 8. JANUS: Multi-modal Foundation Neural Sampler for Disordered Materials
-- **ID:** 2608.19116
-- **URL:** https://arxiv.org/abs/2608.19116
-- **Relevance:** Materials science application — not relevant to FleetGraph.
-- **Implementation Angle:** None.
+**Relevance to FleetGraph:**
+Heterogeneous temporal GNNs for agent-graph anomaly detection — relevant to FleetGraph's graph-based agent interfaces where node/edge types are heterogeneous and evolve over time. The attack-detection framing maps to fleet integrity monitoring.
 
-### 9. ML-Based Hierarchical Prediction for Energy Scheduling in NTN-WPT Systems
-- **ID:** 2608.08804
-- **URL:** https://arxiv.org/abs/2608.08804
-- **Relevance:** Hierarchical ML prediction for resource scheduling — moderate relevance to FleetGraph's resource allocation across agent hierarchies.
-- **Implementation Angle:** Reference for hierarchical prediction patterns in resource-constrained agent scheduling.
+**Implementation Angle:**
+Adapt the TH-GNN architecture as a FleetGraph integrity monitor — train on normal DAG communication patterns to detect anomalous agent behavior (compromised nodes, prompt injection cascades, deadlock formation) as a real-time graph anomaly scorer.
 
 ---
 
-## Query 4: "directed acyclic graph planning"
+## Summary
 
-### 10. Repo0: Design-Driven Zero-to-All Code Generation
-- **ID:** 2608.19854
-- **URL:** https://arxiv.org/abs/2608.19854
-- **Relevance:** Design-driven code generation pipeline — DAG-based task decomposition for code generation aligns with FleetGraph's DAG-structured supervisor/subordinate communication.
-- **Implementation Angle:** Study Repo0's DAG decomposition strategy for FleetGraph's task-planning layer.
-
-### 11. OrchBench: Evaluating Multi-Agent Orchestration Plans in Isolation via Deterministic Simulation
-- **ID:** 2607.25656
-- **URL:** https://arxiv.org/abs/2607.25656
-- **Relevance:** Benchmark for evaluating multi-agent orchestration plans deterministically — directly applicable to FleetGraph's need for testing orchestration logic without live deployment.
-- **Implementation Angle:** Adopt OrchBench-style deterministic simulation for FleetGraph's CI/CD pipeline to validate orchestration plans before deployment.
-
-### 12. Workload-Aware Caching for Multi-Agent Systems
-- **ID:** 2607.20495
-- **URL:** https://arxiv.org/abs/2607.20495
-- **Relevance:** Caching strategies for multi-agent workloads — relevant to FleetGraph's performance optimization for repeated sub-tasks.
-- **Implementation Angle:** Implement workload-aware caching for frequently-executed FleetGraph subgraphs or common supervisor queries.
+| Paper | FleetGraph Layer | Key Takeaway |
+|-------|-----------------|--------------|
+| Consiliance (2608.20564) | DAG communication edges | Conformal calibration for hidden-profile agent messaging |
+| FL-MAESTRO (2608.20518) | Resource orchestration | Multi-agent LLM dispatch under compute constraints |
+| Bayesian Partner Modelling (2608.18490) | Supervisor hierarchy | Adaptive replanning via posterior tracking |
+| TH-GNN (2608.20376) | Graph interface / monitoring | Temporal GNN anomaly detection on heterogeneous agent graphs |
 
 ---
 
-## Top Picks for FleetGraph Integration
-
-| Priority | Paper | Why |
-|----------|-------|-----|
-| 1 | Bayesian Partner Modelling (2608.18490) | Supervisor-side belief modeling for subordinates |
-| 2 | TH-GNN (2608.20376) | Temporal graph learning on agent interactions |
-| 3 | OrchBench (2607.25656) | Deterministic orchestration plan evaluation |
-| 4 | Consilience (2608.20564) | Calibrated communication under uncertainty |
-| 5 | FL-MAESTRO (2608.20518) | Resource-constrained multi-agent orchestration |
-
----
-
-*Next tick: monitor for updates on the above papers and adjacent topics.*
+*Next tick: scout for "directed acyclic graph agents", "agent message passing", "fleet topology optimization"*

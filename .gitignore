@@ -3,3 +3,21 @@
 devdashboard/unified-dashboard-v2/node_modules/
 devdashboard/unified-dashboard-v2/dist/
 devdashboard/unified-dashboard-v2/.env.local
+
+# Test dependencies
+tests/node_modules/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Void runtime dependencies and rebuildable output
+Void/node_modules/
+Void/squashfs-root/
+Void_build/
+
+# Parked duplicate or broken nested checkouts (see DIRECTORY_MAP.md)
+fleetgraph/
+hermes-star-trek-profiles/
+hermes-agent-self-evolution/
+Hermes Evolution Skill/

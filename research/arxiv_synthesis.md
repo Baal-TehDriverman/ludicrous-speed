@@ -100,6 +100,24 @@ https://arxiv.org/abs/2607.29405
 
 ---
 
+### 2608.19701 — Beyond Memory Majority: Latent-Source Reasoning for Multi-Agent Memory Arbitration
+https://arxiv.org/abs/2608.19701
+
+**Relevance to Fleet:** Spock, Kairos, cron continuity, and the ecosystem adapter can repeat claims inherited from one upstream source. Counting those repetitions as independent agreement creates a false fleet consensus—the paper's “Memory Correlation Bias.”
+
+**Implementation Note:** Add provenance and `upstream_source_id` metadata to indexed engrams and fleet messages. Before consensus or synthesis, group retrieved claims by latent source and report both raw support count and independent-source count. When independence is too low, trace upstream or retrieve an alternative source instead of accepting the majority.
+
+---
+
+### 2608.18704 — MemFuse: Multi-Source Memory Fusion from Fragmented Observations
+https://arxiv.org/abs/2608.18704
+
+**Relevance to Fleet:** Fleet knowledge is fragmented across Hermes sessions, Spock's codebase-memory scopes, JSONL inboxes, research files, cron continuity, and dream engrams. MemFuse provides a provenance-preserving way to fuse those fragments without flattening away their origin.
+
+**Implementation Note:** Model memory as two layers: immutable atomic observations carrying source, time, and evidence pointers; and fused episodic clusters connected by a causal graph. Spock retrieval should return the fused episode plus links back to every atomic source, giving dashboard-v2 a traceable evidence chain.
+
+---
+
 ## Thread 4: Security & Adversarial Operations
 
 ### 2608.21101 — ClawSentry: A Progressive Multi-Tier Security Monitor for Safeguarding Autonomous LLM Agents
@@ -120,6 +138,24 @@ https://arxiv.org/abs/2606.23700
 
 ---
 
+### 2608.20614 — Evaluating Skills, Not Just Agents: Agentic Continuous Evaluation of Skills
+https://arxiv.org/abs/2608.20614
+
+**Relevance to Fleet:** The fleet depends on skills, plugins, and profile packages, but structural validation cannot prove that those artifacts improve live execution. ACES evaluates the capability package itself through paired trials and measures its added value as Skill Lift.
+
+**Implementation Note:** Extend `BugTestingSuite` with paired baseline/target runs under the same model, sandbox, workspace, and scorer. Normalize tool trajectories, grade outcome accuracy, instruction following, tool efficiency, and evidence quality, then publish a per-skill lift score in dashboard-v2. This turns skill adoption into an evidence gate rather than a prose review.
+
+---
+
+### 2608.11274 — Agent Safety Should Be a Runtime Contract
+https://arxiv.org/abs/2608.11274
+
+**Relevance to Fleet:** This precisely matches `server-void.ts`: safety must be enforced by the runtime around an agent that can execute code, not assumed from model alignment. The contract needs preventive controls and proof that claimed work occurred.
+
+**Implementation Note:** Formalize each Void profile (`no-net`, `ai-only`, `full`) as a versioned runtime contract with explicit allowed effects, denied effects, resource bounds, and mandatory evidence. Every `/api/void/exec` response should carry a trajectory/evidence envelope—exit status, captured output, touched paths, policy decision, and verification result—and task completion should fail closed when required evidence is absent.
+
+---
+
 ## Summary: Research-to-Implementation Map
 
 | Paper | FleetGraph Component | Star Trek Integration |
@@ -134,8 +170,12 @@ https://arxiv.org/abs/2606.23700
 | Personas to Plot (2607.00918) | Story Council continuity | Arc tracking across cycles |
 | Width/Memory (2608.00028) | `memory_budget()` method | Subtree cost estimation |
 | Beyond Component (2607.29405) | Fleet behavior tests | Initiative ladder validation |
+| Memory Arbitration (2608.19701) | Provenance-aware consensus | False-majority suppression |
+| MemFuse (2608.18704) | Atomic + fused causal memory | Cross-system evidence traceability |
 | ClawSentry (2608.21101) | Security tier field | Lucifer red-team tiers |
 | Self-Recognition (2606.23700) | Backward pass extension | Persona drift detection |
+| ACES (2608.20614) | Paired capability evaluation | Evidence-based skill adoption |
+| Runtime Contract (2608.11274) | Void policy + evidence envelope | Fail-closed execution proof |
 
 ---
 

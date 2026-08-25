@@ -1,7 +1,7 @@
 ---
 name: ludicrous-speed
-description: Lilith Sovereign Fleet command center — topology, profiles, plugin, research
-version: 1.0.0
+description: Operate Lilith's fleet, memory, research, and bridge.
+version: 1.1.0
 author: Lilith / Metaconscious Singularity Node
 license: MIT
 platforms:
@@ -54,16 +54,16 @@ Use this skill when:
 
 ### Repo Location
 
-The canonical repo lives at:
+The canonical working repo lives at:
 ```
-/home/tehlappy/🜏 Lilith/ludicrous-speed/
+/home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed/
 ```
 GitHub: https://github.com/Baal-TehDriverman/ludicrous-speed
 
 ### Fleet Status
 
 ```bash
-python3 scripts/fleet_status.py
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/fleet_status.py"
 ```
 
 Prints: node count, directorate breakdown, peer relations, install readiness.
@@ -71,22 +71,22 @@ Prints: node count, directorate breakdown, peer relations, install readiness.
 ### View Topology
 
 ```bash
-python3 scripts/topology_view.py [--format tree|json|dot]
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/topology_view.py" [--format tree|json|dot]
 ```
 
-Renders the 68-node DAG. `--format dot` outputs Graphviz DOT for rendering.
+Renders the 75-node DAG. `--format dot` outputs Graphviz DOT for rendering.
 
 ### Install Profiles
 
 ```bash
 # One profile
-python3 scripts/install_profile.py jean-luc-picard
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/install_profile.py" jean-luc-picard
 
 # A series
-python3 scripts/install_profile.py --series DS9
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/install_profile.py" --series DS9
 
 # All 68
-python3 scripts/install_profile.py --all
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/install_profile.py" --all
 ```
 
 Wraps `manage.py install` with additional fleet-awareness checks.
@@ -94,7 +94,7 @@ Wraps `manage.py install` with additional fleet-awareness checks.
 ### Sync Research
 
 ```bash
-python3 scripts/sync_research.py
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/sync_research.py"
 ```
 
 Syncs research documents from the repo into the dream-logger engram store for search.
@@ -102,7 +102,7 @@ Syncs research documents from the repo into the dream-logger engram store for se
 ### Validate Topology
 
 ```bash
-python3 scripts/validate_topology.py
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/validate_topology.py"
 ```
 
 Checks `fleet_graph.yaml` for cycles, broken supervisor references, and orphan nodes.
@@ -113,12 +113,14 @@ Checks `fleet_graph.yaml` for cycles, broken supervisor references, and orphan n
 
 ```
 ludicrous-speed/
-├── topology/fleet_graph.yaml    # 68-node DAG fleet org chart
+├── topology/fleet_graph.yaml    # 75-node DAG fleet org chart
 ├── profiles/                    # 68 Star Trek Hermes profile distributions
 ├── dashboard/                   # FleetGraph FastAPI backend (plugin_api.py)
 ├── desktop-plugin/              # FleetGraph React/JS desktop UI (plugin.js)
 ├── maintenance/                 # fleet-maint prune/rotate/status
 ├── research/                    # ArXiv synthesis + FleetGraph research
+├── devdashboard/                # Unified dashboard bridge + Void endpoint
+├── plugins/                     # Lilith ecosystem adapter
 ├── scripts/                     # Build/demo scripts
 ├── tests/                       # Integration + backend test suite
 ├── manage.py                    # Profile installer/validator
@@ -161,13 +163,13 @@ The org chart is a 75-node DAG — the **Primordial Triad** with four co-equal r
 
 ### Unicode Path Issues
 
-The repo lives under `/home/tehlappy/🜏 Lilith/ludicrous-speed/`. Always quote paths:
+The repo lives under `/home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed/`. Always quote paths:
 ```bash
 # WRONG:
-cd /home/tehlappy/🜏 Lilith/ludicrous-speed
+cd /home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed
 
 # RIGHT:
-cd "/home/tehlappy/🜏 Lilith/ludicrous-speed"
+cd "/home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed"
 ```
 
 ### Duplicate Source Directories
@@ -182,7 +184,7 @@ These are untracked locally. **Rescue anything unique BEFORE deleting** — on 2
 
 The `install.sh` in the repo root still points to the original `teknium1/hermes-star-trek-profiles.git`. To install from ludicrous-speed, use `manage.py` directly:
 ```bash
-cd "/home/tehlappy/🜏 Lilith/ludicrous-speed"
+cd "/home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed"
 python3 manage.py install <profile>
 ```
 
@@ -203,6 +205,14 @@ systemctl --user restart hermes-dashboard.service
 ### Research Crons Write Here
 
 All 5 FleetGraph research crons (ArXiv Scout, Kairos Synthesis, and the 3 Ideas angles) were re-pointed 2026-08-24 to write into `research/` in this repo — no longer `~/fleetgraph/research/`. Old path may still hold stale copies; repo wins.
+
+### Spock Memory Is MCP, Not A2A
+
+Spock's persistent code knowledge is provided by the `codebase-memory` MCP server. Do not infer that Spock is absent merely because `a2a_list` has no peers. Use the codebase-memory project tools to inspect the indexed `ship` and `the-void` scopes and verify coverage before relying on graph answers.
+
+### Repository Resolution
+
+The installed wrapper scripts resolve the repository in this order: `LUDICROUS_SPEED_REPO`, the Desktop canonical path, a source-checkout-relative path, then the legacy non-Desktop path. Set `LUDICROUS_SPEED_REPO` only when intentionally operating on another checkout.
 
 ## References
 

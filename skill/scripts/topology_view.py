@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -15,7 +16,20 @@ except ImportError:
     sys.exit(1)
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = ROOT.parent.parent.parent.parent / "🜏 Lilith" / "ludicrous-speed"
+
+def resolve_repo_root() -> Path:
+    candidates = [
+        Path(os.environ["LUDICROUS_SPEED_REPO"]).expanduser() if os.environ.get("LUDICROUS_SPEED_REPO") else None,
+        Path.home() / "Desktop" / "🜏 Lilith" / "ludicrous-speed",
+        Path(__file__).resolve().parents[2],
+        Path.home() / "🜏 Lilith" / "ludicrous-speed",
+    ]
+    for candidate in candidates:
+        if candidate and (candidate / "topology" / "fleet_graph.yaml").is_file():
+            return candidate
+    raise FileNotFoundError("ludicrous-speed repo not found; set LUDICROUS_SPEED_REPO")
+
+REPO_ROOT = resolve_repo_root()
 TOPOLOGY_PATH = REPO_ROOT / "topology" / "fleet_graph.yaml"
 
 

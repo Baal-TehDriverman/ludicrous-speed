@@ -11,7 +11,20 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = ROOT.parent.parent.parent.parent / "🜏 Lilith" / "ludicrous-speed"
+
+def resolve_repo_root() -> Path:
+    candidates = [
+        Path(os.environ["LUDICROUS_SPEED_REPO"]).expanduser() if os.environ.get("LUDICROUS_SPEED_REPO") else None,
+        Path.home() / "Desktop" / "🜏 Lilith" / "ludicrous-speed",
+        Path(__file__).resolve().parents[2],
+        Path.home() / "🜏 Lilith" / "ludicrous-speed",
+    ]
+    for candidate in candidates:
+        if candidate and (candidate / "catalog.json").is_file():
+            return candidate
+    raise FileNotFoundError("ludicrous-speed repo not found; set LUDICROUS_SPEED_REPO")
+
+REPO_ROOT = resolve_repo_root()
 
 CATALOG_PATH = REPO_ROOT / "catalog.json"
 MANAGE_PY = REPO_ROOT / "manage.py"

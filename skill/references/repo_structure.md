@@ -1,6 +1,6 @@
 # Repo Structure Reference
 
-> Full directory tree with file counts and sizes for `/home/tehlappy/🜏 Lilith/ludicrous-speed/`
+> Full directory tree with file counts and sizes for `/home/tehlappy/Desktop/🜏 Lilith/ludicrous-speed/`
 
 ## Top-Level Layout
 
