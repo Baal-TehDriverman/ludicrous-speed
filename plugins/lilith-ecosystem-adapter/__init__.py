@@ -184,7 +184,9 @@ def register(ctx) -> None:
         id="lilith-ecosystem",
         content=lambda session_info: _build_ecosystem_context(settings),
         position="after_memory",
-        max_chars=12000,
+        # Hermes caps one plugin section at 4K. Keep the stable prefix bounded;
+        # codebase-memory's pre_llm_call hook supplies task-specific structure.
+        max_chars=4000,
     )
 
     logger.info("lilith-ecosystem-adapter: ecosystem context registered "

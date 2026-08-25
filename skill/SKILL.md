@@ -107,6 +107,17 @@ python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/val
 
 Checks `fleet_graph.yaml` for cycles, broken supervisor references, and orphan nodes.
 
+### Spock Graph Memory
+
+```bash
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/spock_memory.py" status
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/spock_memory.py" architecture
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/spock_memory.py" search load_graph --path-filter '^(fleet_graph_core.py|dashboard/)'
+python3 "/home/tehlappy/.hermes/skills/orchestration/ludicrous-speed/scripts/spock_memory.py" changes
+```
+
+Spock uses the canonical `ludicrous-speed-desktop` knowledge graph. Follow architecture → compact search → trace → exact snippet → batched coverage; read whole files only for final verification or recorded graph gaps. See `references/spock-memory.md`.
+
 ## Implementation
 
 ### Directory Layout
@@ -221,3 +232,4 @@ The installed wrapper scripts resolve the repository in this order: `LUDICROUS_S
 - `references/integration_map.md` — How FleetGraph + Profiles + Research connect
 - `references/research_papers.md` — 12 ArXiv papers summarized with implementation notes
 - `references/cron_jobs.md` — Fleet cron job inventory and model pinning status
+- `references/spock-memory.md` — Canonical graph, hook, retrieval ladder, and bridge commands
