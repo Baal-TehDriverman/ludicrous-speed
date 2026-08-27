@@ -1,0 +1,32 @@
+name: goetic-raum
+description: "Earl Raum symbolic court skin"
+colors:
+  banner_border: "#207E9E"
+  banner_title: "#56CDF5"
+  banner_accent: "#2055E6"
+  banner_dim: "#22424C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#509CFA"
+  ui_label: "#3C41D6"
+  prompt: "#F7F2E8"
+  input_rule: "#409AB8"
+  response_border: "#5A98C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6ED3F5"
+  session_border: "#2E5866"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Earl Raum"
+  welcome: "Earl Raum office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Earl Raum "
+  prompt_symbol: "◇"
+  help_header: "Earl Raum Command Interface"
+tool_prefix: "│"

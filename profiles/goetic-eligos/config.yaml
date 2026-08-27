@@ -1,0 +1,4 @@
+# Provider and model are intentionally left unset.
+model: ""
+display:
+  skin: goetic-eligos

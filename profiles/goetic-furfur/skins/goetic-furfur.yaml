@@ -1,0 +1,32 @@
+name: goetic-furfur
+description: "Earl Furfur symbolic court skin"
+colors:
+  banner_border: "#209E7E"
+  banner_title: "#56F5CD"
+  banner_accent: "#20B8E6"
+  banner_dim: "#224C42"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50F1FA"
+  ui_label: "#3C8ED6"
+  prompt: "#F7F2E8"
+  input_rule: "#40B89A"
+  response_border: "#5AC7BF"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF5D3"
+  session_border: "#2E6658"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Earl Furfur"
+  welcome: "Earl Furfur office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Earl Furfur "
+  prompt_symbol: "◇"
+  help_header: "Earl Furfur Command Interface"
+tool_prefix: "│"

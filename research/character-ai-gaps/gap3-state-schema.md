@@ -1,0 +1,65 @@
+## Sweep 2026-08-27 03:00
+
+Query angles this tick: agent memory schema representation; appraisal theory computational model state; social relationship modeling dialogue agent; goal representation language agent; interoperable agent communication protocol; affective state representation continuous. The goal-representation and cognitive-architecture-ontology angles returned zero meaningful arXiv hits — those negative results are themselves signal: nobody is publishing under those names, and the gap remains open on those axes.
+
+### arXiv:2606.04780 — PersonaTree: Structured Lifecycle Memory for Person Understanding in LLM Agents
+URL: https://arxiv.org/abs/2606.04780
+Authors: Yubo Hou, Jingwei Song, Hongbo Zhang, Zhisheng Chen, Bang Xiao, Tao Wan, Zengchang Qin
+Categories: Computation and Language
+
+**Claim:** Treats persistent-agent person understanding as schema formation: situated evidence is abstracted into reusable patterns and stable person-level claims, organized as a three-level persona tree with explicit support paths from evidence to claims. Maintains the tree through conservative writing, confidence-guided consolidation, and query-conditioned path retrieval that returns only the evidence depth required by each query. Across six person-understanding and persistent-memory benchmarks with three answer backbones, ranks first in 12 of 18 compact scores and top two in 16 settings. Ablations show hierarchy improves abstract person understanding on KnowMe; support-path retrieval improves RealPref alignment under a comparable context budget.
+
+**Closes gap:** partially — directly addresses the *identity and relationship state* side of gap 3: a portable character-state schema needs an explicit, hierarchical representation of what the character believes about the people it interacts with, and PersonaTree's evidence-to-claims tree is the most concrete found mechanism for that. It is agent-memory-scoped, not character-state-scoped, but the schema-formation discipline transfers directly to relationship-state blocks.
+
+**Implementation note:** Schema fields inherited: `persona_tree` (hierarchical person-understanding structure), `evidence_support_path` (which observations support which claims), `confidence` (strength of each claim), `consolidation_method` (how transient evidence was folded into stable claims) — the schema's relationship block needs these so a receiving system can reconstruct not just the character's relational stance but the evidential basis for it.
+
+### arXiv:2605.15759 — DimMem: Dimensional Structuring for Efficient Long-Term Agent Memory
+URL: https://arxiv.org/abs/2605.15759
+Authors: Wentao Qiu, Haotian Hu, Fanyi Wang, Jinwei Kong, Yu Zhang
+Categories: Computation and Language
+
+**Claim:** Represents each memory as an atomic, typed, self-contained unit with explicit fields — time, location, reason, purpose, keywords — producing a lightweight dimensional structure that exposes what flat facts or summaries discard. Across LoCoMo-10 and LongMemEval-S, achieves 81.43% and 78.20% overall accuracy respectively, outperforming existing lightweight memory systems while reducing LoCoMo per-query token cost by 24%. Dimensional memory extraction is learnable by compact models: a Qwen3-4B extractor fine-tuned on the DimMem schema surpasses LightMem with GPT-4.1-mini on both benchmarks and reaches performance comparable to or better than much larger extractors in key settings.
+
+**Closes gap:** partially — provides the strongest found *field-level* precedent for a portable schema: DimMem's typed, self-contained unit with explicit typed fields (time / location / reason / purpose / keywords) is a directly usable template for the cardinality and typing discipline a character-state schema needs. The paper also demonstrates that the schema is teachable to small extractors, which is the interoperability argument the schema needs.
+
+**Implementation note:** Schema fields inherited: `atomic_unit` (the memory is self-contained, not a derivative), `field_time` / `field_location` / `field_reason` / `field_purpose` / `field_keywords` (typed, named fields), `dimensional_structure` (fields are first-class, not free-text) — the schema's core unit needs these so different vendors' extractors and consumers share a typed contract rather than free-text blobs.
+
+### arXiv:2608.13030 — InterSAGE: The Secure and Verifiable Interoperability Protocol for An Internet of Agents
+URL: https://arxiv.org/abs/2608.13030
+Authors: Zhenhua Zou, Sheng Guo, Qiuyang Zhan, Lepeng Zhao, Shuo Li, Zhuotao Liu
+Categories: Cryptography and Security, Multiagent Systems
+
+**Claim:** Defines a trust-native protocol suite with four layers — Persistent Identity, Discovery, Trust Negotiation, Accountability — plus four core primitives: Agent Identity Cards (binding developer, code package, operator, deployment context), capability-aware discovery using DID-bound Verifiable Credential manifests, trust negotiation combining monotonic capability attenuation with two-tier access control, and kernel-mediated cryptographic audit trails binding usage, delegation, and execution traces to agent identity without a consensus ledger. Designed to complement MCP, A2A, ANP, and AG-UI so communication protocols can evolve independently while trust semantics stay explicit, portable, and verifiable. Compares against more than 50 efforts spanning agent protocols, decentralized identity, OAuth/OIDC extensions, zero-trust governance, delegation, and audit architectures; claims no prior architecture jointly enforces all four layers as a unified trust substrate.
+
+**Closes gap:** partially — directly addresses the *carrier and trust* side of gap 3: a portable character-state schema must carry identity and authorization metadata alongside state values, and InterSAGE's Identity Cards + capability-aware discovery + monotonic attenuation model is the most complete found substrate for that. It is Internet-of-Agents-scoped, not character-state-scoped, but the identity and trust primitives are directly borrowable for the schema's envelope layer.
+
+**Implementation note:** Schema fields inherited: `agent_identity_card` (who vouches for this state), `capability_manifest` (what the state claims the character can do), `trust_negotiation_context` (under what trust terms this state was exported), `audit_trail_binding` (which execution traces this state is bound to) — the schema envelope needs these so receiving systems can verify that the imported state came from an attested source under understood trust terms.
+
+### arXiv:2605.00943 — ARIS: Agentic and Relationship Intelligence System for Social Robots
+URL: https://arxiv.org/abs/2605.00943
+Authors: Stavya Datta, Fucai Ke, Leimin Tian, Hamid Rezatofighi
+Categories: Robotics
+
+**Claim:** Presents an agentic AI framework for social robots unifying multimodal reasoning, a graph-based Social World Model, and retrieval-augmented generation within a single modular architecture. The Social World Model explicitly maps and updates social relationships between users through a knowledge graph, enabling social reasoning and re-identification across encounters. A user study (N=23) with the Pepper robot in a robot-mediated dyadic conversational setting shows ARIS yields significantly higher perceived intelligence, animacy, anthropomorphism, and likeability versus a large language model baseline. The implementation is to be released as open source upon publication.
+
+**Closes gap:** partially — the most concrete found *operational* model for the relationship-state half of gap 3: ARIS ships a graph-based Social World Model that explicitly updates relational state across encounters, and backs it with a user-study signal (perceived intelligence / animacy / anthropomorphism / likeability all higher). The open-source release commitment is significant for gap 3 because it means the relationship-graph discipline is reproducible rather than proprietary.
+
+**Implementation note:** Schema fields inherited: `social_world_model` (graph-structured relationship state), `relationship_node` (per-user relational record), `relationship_edge` (typed relationship between nodes), `reidentification_key` (how the same person is recognized across encounters), `update_trigger` (what event causes a relationship-state change) — the schema's relationship block needs these so a receiving system can import not just static relationship values but a model that persists and updates across encounters.
+
+### UNRESOLVED — goal representation language agent / cognitive architecture ontology standard
+Searches for "goal representation language agent" and "cognitive architecture ontology standard" returned zero arXiv hits matching the gap's intent. Goal representation exists in planning literature (BDI, planning formalisms) but no paper surfaced this tick that defines a portable, character-scoped goal representation intended for cross-system interchange. The cognitive-architecture-ontology-standard angle similarly returned nothing — the gap's §7 statement that no standard exists for representing mood, relationships, and goals so state can move between systems or vendors holds on the goal and ontology axes this tick.
+
+## Sweep synthesis (2026-08-27 03:00)
+
+This tick moved the schema from "pieces exist" toward "relationship and identity substrate exists":
+
+- **Person understanding as schema:** PersonaTree (2606.04780) provides the hierarchical, evidence-backed person-understanding model — the schema's relationship block needs an explicit persona tree with support paths and confidence, not just scalar relationship values.
+- **Typed field discipline:** DimMem (2605.15759) provides the strongest found precedent for atomic, typed, self-contained units with named fields — the schema's core unit needs a typed contract, and DimMem demonstrates the extractor is teachable to small models.
+- **Identity and trust substrate:** InterSAGE (2608.13030) provides the most complete found trust substrate — Identity Cards, capability-aware discovery, monotonic attenuation, audit-trail binding — the schema envelope needs identity and authorization metadata alongside state values.
+- **Operational relationship model:** ARIS (2605.00943) provides the most concrete operational Social World Model with a user-study signal and an open-source release commitment — the schema's relationship block needs graph structure, re-identification keys, and update triggers, and ARIS demonstrates the discipline in a deployed social robot.
+- **Negative signal — goal axis:** No portable, character-scoped goal representation surfaced this tick; the gap's §7 statement holds on goals.
+- **Negative signal — ontology axis:** No cognitive-architecture ontology standard surfaced this tick; the gap's §7 statement holds on ontology standardization.
+
+Composite draft schema status (carried forward from 2026-08-27 01:18 sweep, unchanged in substance): mood = EmotionML-compatible block + CPM appraisal dynamics + allostatic load + HMM dynamics + BDI/E emotion-cognition coupling + negotiable emotion vocabulary + temporal drift representation + encoding declaration; relationships = lifecycle enums + trust/reputation hysteresis + value-similarity vectors + attributed BDI with confidence + divergence-tolerance band + now PersonaTree evidence-backed persona tree + ARIS graph-based Social World Model with re-identification and update triggers; goals/identity = supersede-chains + intent/constraint/executability + BDI belief/desire/intention core + six-term identity factorization; structure = PHASE-Tree layers + persona-memory graph + five-dimension cognitive taxonomy; history substrate = MemSIF/MindMemOS/DimMem/StateMem; envelope = Portable Agent Memory protocol (JSON-first + Merkle-DAG provenance + capability access control + rehydration) + GPM governance contract (source-binding, conflict isolation, fail-closed release) + MutMem signed transitions + CHAP handoff envelopes + now InterSAGE Identity Cards + capability manifests + monotonic attenuation + audit-trail binding; sync = SSVP verified summaries; governance = CAVA canonical action objects + ARPM governance protocol + TARL five-action ledger; carrier = μACP verbs / A2A-class protocols / MPAC multi-principal semantics; standards anchor = ISO/IEC 21823-3 pattern + BDI Ontology RDF/OWL grounding.
+
+Remaining hole: still no single published document composing these into one character-state interchange spec — db-r-2026-007 §7 gap statement holds by absence. The gap is now fully decomposed with sourced components for every section including relationship and identity substate (new this tick), governance, integrity, evolution, and handoff. The remaining work is one document composing these — a character-state interchange schema spec — and a conformance suite. Next tick: rotate to remaining negative-angle queries (BDI agent belief desire intention implementation, OCC model emotion agent implementation, agent identity portability state, neuro-symbolic state representation) and attempt a non-arXiv verification pass on FIPA-ACL/SL status.

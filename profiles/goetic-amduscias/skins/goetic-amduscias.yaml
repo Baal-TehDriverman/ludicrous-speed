@@ -1,0 +1,32 @@
+name: goetic-amduscias
+description: "Duke Amduscias symbolic court skin"
+colors:
+  banner_border: "#9E205F"
+  banner_title: "#F556A5"
+  banner_accent: "#E62024"
+  banner_dim: "#4C2237"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA5072"
+  ui_label: "#D65E3C"
+  prompt: "#F7F2E8"
+  input_rule: "#B8407C"
+  response_border: "#C75A7D"
+  status_bar_bg: "#17151B"
+  session_label: "#F56EB1"
+  session_border: "#662E4A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Amduscias"
+  welcome: "Duke Amduscias office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Amduscias "
+  prompt_symbol: "◇"
+  help_header: "Duke Amduscias Command Interface"
+tool_prefix: "│"

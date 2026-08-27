@@ -1,0 +1,32 @@
+name: goetic-paimon
+description: "King Paimon symbolic court skin"
+colors:
+  banner_border: "#9E7420"
+  banner_title: "#F5C056"
+  banner_accent: "#C9E620"
+  banner_dim: "#4C3E22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FAF450"
+  ui_label: "#9BD63C"
+  prompt: "#F7F2E8"
+  input_rule: "#B89040"
+  response_border: "#C7B65A"
+  status_bar_bg: "#17151B"
+  session_label: "#F5C86E"
+  session_border: "#66532E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "King Paimon"
+  welcome: "King Paimon office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ King Paimon "
+  prompt_symbol: "◇"
+  help_header: "King Paimon Command Interface"
+tool_prefix: "│"

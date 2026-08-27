@@ -1,0 +1,32 @@
+name: goetic-andromalius
+description: "Earl Andromalius symbolic court skin"
+colors:
+  banner_border: "#9E202A"
+  banner_title: "#F55663"
+  banner_accent: "#E66E20"
+  banner_dim: "#4C2226"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA7550"
+  ui_label: "#D69E3C"
+  prompt: "#F7F2E8"
+  input_rule: "#B8404A"
+  response_border: "#C7645A"
+  status_bar_bg: "#17151B"
+  session_label: "#F56E79"
+  session_border: "#662E33"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Earl Andromalius"
+  welcome: "Earl Andromalius office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Earl Andromalius "
+  prompt_symbol: "◇"
+  help_header: "Earl Andromalius Command Interface"
+tool_prefix: "│"

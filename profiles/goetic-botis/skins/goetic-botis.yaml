@@ -1,0 +1,32 @@
+name: goetic-botis
+description: "President Botis symbolic court skin"
+colors:
+  banner_border: "#749E20"
+  banner_title: "#C0F556"
+  banner_accent: "#45E620"
+  banner_dim: "#3E4C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#8EFA50"
+  ui_label: "#3CD644"
+  prompt: "#F7F2E8"
+  input_rule: "#90B840"
+  response_border: "#8FC75A"
+  status_bar_bg: "#17151B"
+  session_label: "#C8F56E"
+  session_border: "#53662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Botis"
+  welcome: "President Botis office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Botis "
+  prompt_symbol: "◇"
+  help_header: "President Botis Command Interface"
+tool_prefix: "│"

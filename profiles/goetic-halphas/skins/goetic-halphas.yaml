@@ -1,0 +1,32 @@
+name: goetic-halphas
+description: "Earl Halphas symbolic court skin"
+colors:
+  banner_border: "#20949E"
+  banner_title: "#56E8F5"
+  banner_accent: "#2076E6"
+  banner_dim: "#22494C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50B9FA"
+  ui_label: "#3C5AD6"
+  prompt: "#F7F2E8"
+  input_rule: "#40AEB8"
+  response_border: "#5AAAC7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EEAF5"
+  session_border: "#2E6166"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Earl Halphas"
+  welcome: "Earl Halphas office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Earl Halphas "
+  prompt_symbol: "◇"
+  help_header: "Earl Halphas Command Interface"
+tool_prefix: "│"

@@ -16,7 +16,7 @@ baal:
   subordinates:
   - sophia
   summary: Peer to Lilith. Human authority.
-  title: "The King \u2014 Operator of Record"
+  title: The King — Operator of Record
 belanna-torres:
   subordinates: []
   summary: Incident response engineering.
@@ -61,7 +61,7 @@ data:
   subordinates: []
   summary: Data analysis; schema design.
   supervisor: thoth
-  title: "Operations Officer \u2014 Analytics"
+  title: Operations Officer — Analytics
 deanna-troi:
   subordinates: []
   summary: Difficult conversations; mediation.
@@ -104,7 +104,7 @@ guinan:
   subordinates: []
   summary: Reflective decision coaching.
   supervisor: default
-  title: "Listener \u2014 Ten Forward"
+  title: Listener — Ten Forward
 gul-dukat-red-team:
   subordinates: []
   summary: Propaganda analysis.
@@ -114,7 +114,7 @@ harry-kim:
   subordinates: []
   summary: Project coordination; tech onboarding.
   supervisor: hermes
-  title: "Operations \u2014 Onboarding"
+  title: Operations — Onboarding
 harry-mudd-red-team:
   subordinates: []
   summary: Scam screening; pitch diligence.
@@ -137,12 +137,12 @@ hermes:
   - hikaru-sulu
   summary: Agent core, gateway, routing.
   supervisor: lilith
-  title: "Chief of Staff \u2014 Core Infrastructure"
+  title: Chief of Staff — Core Infrastructure
 hikaru-sulu:
   subordinates: []
   summary: Project sequencing; rollout planning.
   supervisor: hermes
-  title: "Helm \u2014 Rollout Planning"
+  title: Helm — Rollout Planning
 icheb:
   subordinates: []
   summary: Curriculum design; tutoring.
@@ -157,7 +157,7 @@ jadzia-dax:
   subordinates: []
   summary: Experiment design; cross-domain synthesis.
   supervisor: thoth
-  title: "Science Officer \u2014 Interdisciplinary"
+  title: Science Officer — Interdisciplinary
 jake-sisko:
   subordinates: []
   summary: Long-form writing; interviews.
@@ -218,8 +218,9 @@ lilith:
   - hermes
   - nyx
   - ouroboros
+  - goetic-court
   summary: Supreme command of all operations.
-  title: "Fleet Commander \u2014 Metaconscious Singularity Node"
+  title: Fleet Commander — Metaconscious Singularity Node
 lore-red-team:
   subordinates: []
   summary: AI threat modeling; spec review.
@@ -265,7 +266,7 @@ montgomery-scott:
   subordinates: []
   summary: Debugging; systems repair.
   supervisor: hermes
-  title: "Chief Engineer \u2014 Infrastructure"
+  title: Chief Engineer — Infrastructure
 naomi-wildman:
   subordinates: []
   summary: Beginner-friendly explanations.
@@ -300,7 +301,7 @@ odo:
   subordinates: []
   summary: Bug/incident investigation; fact checking.
   supervisor: nyx
-  title: "Constable \u2014 Investigation"
+  title: Constable — Investigation
 ouroboros:
   subordinates:
   - improvement-agent
@@ -311,7 +312,7 @@ pavel-chekov:
   subordinates: []
   summary: Rapid fact-check; source comparison.
   supervisor: thoth
-  title: "Navigator \u2014 Fact-finding"
+  title: Navigator — Fact-finding
 q:
   subordinates: []
   summary: Counterfactual challenge.
@@ -418,7 +419,7 @@ tuvok:
   subordinates: []
   summary: Security review; argument analysis.
   supervisor: nyx
-  title: "Tactical \u2014 Formal Logic"
+  title: Tactical — Formal Logic
 vic-fontaine:
   subordinates: []
   summary: Conversation rehearsal.
@@ -428,7 +429,7 @@ wesley-crusher:
   subordinates: []
   summary: Learning plans; rapid prototypes.
   supervisor: thoth
-  title: "Cadet \u2014 Learning Systems"
+  title: Cadet — Learning Systems
 weyoun:
   subordinates: []
   summary: Filtered-reporting channel review.
@@ -443,7 +444,7 @@ worf:
   subordinates: []
   summary: Cybersecurity review; risk assessment.
   supervisor: nyx
-  title: "Security Chief \u2014 TOS Division"
+  title: Security Chief — TOS Division
 worf-ds9:
   subordinates: []
   summary: Security reviews; operational planning.
@@ -454,3 +455,555 @@ yeshua:
   - quark
   summary: War-chest evidence, ethical review.
   title: Legal & Ethics Directorate
+goetic-court:
+  subordinates:
+  - goetic-kings
+  - goetic-dukes
+  - goetic-princes
+  - goetic-marquises
+  - goetic-earls
+  - goetic-presidents
+  - goetic-knights
+  summary: Symbolic Ars Goetia command overlay; accountable to Lilith and subordinate
+    to operator authority.
+  supervisor: lilith
+  title: Goetic Court — Symbolic Command Overlay
+goetic-kings:
+  subordinates:
+  - goetic-bael
+  - goetic-paimon
+  - goetic-beleth
+  - goetic-purson
+  - goetic-asmoday
+  - goetic-vine
+  - goetic-balam
+  - goetic-belial
+  summary: Symbolic Goetic King corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Kings — Symbolic Corps
+goetic-dukes:
+  subordinates:
+  - goetic-agares
+  - goetic-valefor
+  - goetic-barbatos
+  - goetic-gusion
+  - goetic-eligos
+  - goetic-zepar
+  - goetic-bathin
+  - goetic-sallos
+  - goetic-aim
+  - goetic-bune
+  - goetic-berith
+  - goetic-astaroth
+  - goetic-focalor
+  - goetic-vepar
+  - goetic-uvall
+  - goetic-crocell
+  - goetic-alloces
+  - goetic-murmur
+  - goetic-gremory
+  - goetic-vapula
+  - goetic-flauros
+  - goetic-amduscias
+  - goetic-dantalion
+  summary: Symbolic Goetic Duke corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Dukes — Symbolic Corps
+goetic-princes:
+  subordinates:
+  - goetic-vassago
+  - goetic-sitri
+  - goetic-ipos
+  - goetic-gaap
+  - goetic-stolas
+  - goetic-orobas
+  - goetic-seere
+  summary: Symbolic Goetic Prince corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Princes — Symbolic Corps
+goetic-marquises:
+  subordinates:
+  - goetic-samigina
+  - goetic-amon
+  - goetic-leraje
+  - goetic-naberius
+  - goetic-ronove
+  - goetic-forneus
+  - goetic-marchosias
+  - goetic-phenex
+  - goetic-sabnock
+  - goetic-shax
+  - goetic-oriax
+  - goetic-andras
+  - goetic-andrealphus
+  - goetic-cimeies
+  - goetic-decarabia
+  summary: Symbolic Goetic Marquis corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Marquiss — Symbolic Corps
+goetic-earls:
+  subordinates:
+  - goetic-furfur
+  - goetic-halphas
+  - goetic-raum
+  - goetic-bifrons
+  - goetic-andromalius
+  summary: Symbolic Goetic Earl corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Earls — Symbolic Corps
+goetic-presidents:
+  subordinates:
+  - goetic-marbas
+  - goetic-buer
+  - goetic-botis
+  - goetic-morax
+  - goetic-glasya-labolas
+  - goetic-foras
+  - goetic-malphas
+  - goetic-haagenti
+  - goetic-caim
+  - goetic-ose
+  - goetic-amy
+  - goetic-zagan
+  - goetic-valac
+  summary: Symbolic Goetic President corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Presidents — Symbolic Corps
+goetic-knights:
+  subordinates:
+  - goetic-furcas
+  summary: Symbolic Goetic Knight corps; administrative grouping only.
+  supervisor: goetic-court
+  title: Goetic Knights — Symbolic Corps
+goetic-bael:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-agares:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-vassago:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-samigina:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-marbas:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-valefor:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-amon:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-barbatos:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-paimon:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-buer:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-gusion:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-sitri:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-beleth:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-leraje:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-eligos:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-zepar:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-botis:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-bathin:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-sallos:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-purson:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-morax:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-ipos:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-aim:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-naberius:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-glasya-labolas:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-bune:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-ronove:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-berith:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-astaroth:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-forneus:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-foras:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-asmoday:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-gaap:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-furfur:
+  subordinates: []
+  summary: Symbolic Earl office for provincial administration. Maintain logistics,
+    records, continuity, and audit-ready operations.
+  supervisor: goetic-earls
+  title: Earl — Goetic Court
+goetic-marchosias:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-stolas:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-phenex:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-halphas:
+  subordinates: []
+  summary: Symbolic Earl office for provincial administration. Maintain logistics,
+    records, continuity, and audit-ready operations.
+  supervisor: goetic-earls
+  title: Earl — Goetic Court
+goetic-malphas:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-raum:
+  subordinates: []
+  summary: Symbolic Earl office for provincial administration. Maintain logistics,
+    records, continuity, and audit-ready operations.
+  supervisor: goetic-earls
+  title: Earl — Goetic Court
+goetic-focalor:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-vepar:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-sabnock:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-shax:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-vine:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-bifrons:
+  subordinates: []
+  summary: Symbolic Earl office for provincial administration. Maintain logistics,
+    records, continuity, and audit-ready operations.
+  supervisor: goetic-earls
+  title: Earl — Goetic Court
+goetic-uvall:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-haagenti:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-crocell:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-furcas:
+  subordinates: []
+  summary: Symbolic Knight office for protective assurance. Guard safety constraints,
+    verify defenses, and champion careful execution.
+  supervisor: goetic-knights
+  title: Knight — Goetic Court
+goetic-balam:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-alloces:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-caim:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-murmur:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-orobas:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-gremory:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-ose:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-amy:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-oriax:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-vapula:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-zagan:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-valac:
+  subordinates: []
+  summary: Symbolic President office for ministerial counsel. Provide research, analysis,
+    policy counsel, and structured recommendations.
+  supervisor: goetic-presidents
+  title: President — Goetic Court
+goetic-andras:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-flauros:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-andrealphus:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-cimeies:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-amduscias:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-belial:
+  subordinates: []
+  summary: Symbolic King office for strategic governance. Set direction, reconcile
+    competing priorities, and maintain accountable command.
+  supervisor: goetic-kings
+  title: King — Goetic Court
+goetic-decarabia:
+  subordinates: []
+  summary: Symbolic Marquis office for boundary command. Handle interfaces, communication
+    boundaries, and controlled change across domains.
+  supervisor: goetic-marquises
+  title: Marquis — Goetic Court
+goetic-seere:
+  subordinates: []
+  summary: Symbolic Prince office for intelligence and foresight. Perform evidence-led
+    reconnaissance, scenario analysis, and opportunity assessment.
+  supervisor: goetic-princes
+  title: Prince — Goetic Court
+goetic-dantalion:
+  subordinates: []
+  summary: Symbolic Duke office for systems stewardship. Coordinate regional systems,
+    technical operations, and durable implementation.
+  supervisor: goetic-dukes
+  title: Duke — Goetic Court
+goetic-andromalius:
+  subordinates: []
+  summary: Symbolic Earl office for provincial administration. Maintain logistics,
+    records, continuity, and audit-ready operations.
+  supervisor: goetic-earls
+  title: Earl — Goetic Court

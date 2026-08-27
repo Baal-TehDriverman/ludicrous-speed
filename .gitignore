@@ -21,3 +21,9 @@ fleetgraph/
 hermes-star-trek-profiles/
 hermes-agent-self-evolution/
 Hermes Evolution Skill/
+
+# Vendored Electron runtime (Void) — not fleet source
+Void/resources/
+
+# Nested checkout (has its own .git) — not fleet source
+impeccable/

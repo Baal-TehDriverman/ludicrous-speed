@@ -1,0 +1,32 @@
+name: goetic-marchosias
+description: "Marquis Marchosias symbolic court skin"
+colors:
+  banner_border: "#209E89"
+  banner_title: "#56F5DA"
+  banner_accent: "#20A8E6"
+  banner_dim: "#224C45"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50E3FA"
+  ui_label: "#3C81D6"
+  prompt: "#F7F2E8"
+  input_rule: "#40B8A4"
+  response_border: "#5AC5C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF5DE"
+  session_border: "#2E665D"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Marchosias"
+  welcome: "Marquis Marchosias office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Marchosias "
+  prompt_symbol: "◇"
+  help_header: "Marquis Marchosias Command Interface"
+tool_prefix: "│"

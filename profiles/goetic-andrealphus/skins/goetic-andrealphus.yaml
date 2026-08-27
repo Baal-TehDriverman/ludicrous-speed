@@ -1,0 +1,32 @@
+name: goetic-andrealphus
+description: "Marquis Andrealphus symbolic court skin"
+colors:
+  banner_border: "#9E2074"
+  banner_title: "#F556C0"
+  banner_accent: "#E62045"
+  banner_dim: "#4C223E"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA508E"
+  ui_label: "#D6443C"
+  prompt: "#F7F2E8"
+  input_rule: "#B84090"
+  response_border: "#C75A8F"
+  status_bar_bg: "#17151B"
+  session_label: "#F56EC8"
+  session_border: "#662E53"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Andrealphus"
+  welcome: "Marquis Andrealphus office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Andrealphus "
+  prompt_symbol: "◇"
+  help_header: "Marquis Andrealphus Command Interface"
+tool_prefix: "│"

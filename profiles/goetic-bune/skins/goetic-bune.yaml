@@ -1,0 +1,32 @@
+name: goetic-bune
+description: "Duke Bune symbolic court skin"
+colors:
+  banner_border: "#209E2A"
+  banner_title: "#56F563"
+  banner_accent: "#20E68F"
+  banner_dim: "#224C26"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FA91"
+  ui_label: "#3CD6B8"
+  prompt: "#F7F2E8"
+  input_rule: "#40B84A"
+  response_border: "#5AC776"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF579"
+  session_border: "#2E6633"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Bune"
+  welcome: "Duke Bune office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Bune "
+  prompt_symbol: "◇"
+  help_header: "Duke Bune Command Interface"
+tool_prefix: "│"

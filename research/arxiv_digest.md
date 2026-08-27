@@ -1,79 +1,77 @@
-# FleetGraph ArXiv Research Digest
+# FleetGraph ArXiv Digest
 
-**Scout Tick:** 2026-08-24 (EDT)
-**Topics:** Multi-agent fleet orchestration, graph-based agent interfaces, directed acyclic supervisor/subordinate communication
+**Scout tick:** 2026-08-27 04:16:30 EDT (-0400)  
+**Queries:** `multi-agent orchestration`, `agent communication protocols`, `LLM agent monitoring`  
+**Result:** No newly surfaced arXiv IDs since the prior tick; all 9 current results are carried forward below.
 
 ---
 
-## 1. Consilience: Conformally Calibrated Communication Control for Hidden-Profile Multi-Agent Reasoning
+## Multi-Agent Orchestration
 
+### ProgRouter: Online Progress-Guided Orchestration for Multi-Agent LLM Workflows under Quality-Cost Tradeoffs
+- **arXiv ID:** 2608.25992
+- **URL:** https://arxiv.org/abs/2608.25992
+- **FleetGraph relevance:** Step-wise routing from evolving progress, quality, time, and cost signals directly fits dynamic scheduling across a supervisor/subordinate DAG.
+- **Implementation angle:** Add per-node progress deltas and remaining-budget fields, then reweight eligible downstream agents after every completed step rather than routing only once per task.
+
+### JIT-Agent: Scaling Harness Intelligence via Just-in-Time Harness Evolution
+- **arXiv ID:** 2608.25593
+- **URL:** https://arxiv.org/abs/2608.25593
+- **FleetGraph relevance:** Its composable and evolvable memory, planning, action, and tool-orchestration modules map naturally to configurable FleetGraph node harnesses.
+- **Implementation angle:** Represent node harnesses as versioned four-module manifests that supervisors can select or repair before dispatch, retaining outcome measurements for later selection.
+
+### A Few Pages of Markdown: Committed AI Configuration and Lower Quality Cost after Coding-Agent Adoption
+- **arXiv ID:** 2608.25241
+- **URL:** https://arxiv.org/abs/2608.25241
+- **FleetGraph relevance:** The reported link between committed agent configuration and lower quality-cost growth supports explicit, repository-tracked graph contracts.
+- **Implementation angle:** Store roles, edge contracts, escalation rules, and tool policies in tracked Markdown/YAML and expose a configuration-maturity score in the graph UI.
+
+---
+
+## Agent Communication Protocols
+
+### Test-Time Collaborative Classification over Multi-Agent Networks
+- **arXiv ID:** 2608.24787
+- **URL:** https://arxiv.org/abs/2608.24787
+- **FleetGraph relevance:** Finite-round, finite-precision evidence exchange provides a useful model for constrained communication over directed agent edges.
+- **Implementation angle:** Define compact typed evidence messages for subordinate-to-supervisor edges and benchmark accuracy against round, precision, and bandwidth limits.
+
+### Dual-Cache Latent Space Communication between Heterogeneous Language Models
+- **arXiv ID:** 2608.20617
+- **URL:** https://arxiv.org/abs/2608.20617
+- **FleetGraph relevance:** Joint KV-cache transfer suggests a lower-latency communication plane for heterogeneous model fleets than repeated text serialization.
+- **Implementation angle:** Prototype a negotiated `latent-cache` edge transport alongside typed text/JSON, preserving text fallback because translators are model-pair dependent.
+
+### Consilience: Conformally Calibrated Communication Control for Hidden-Profile Multi-Agent Reasoning
 - **arXiv ID:** 2608.20564
 - **URL:** https://arxiv.org/abs/2608.20564
-- **Authors:** Abhijith Babu, Ramneet Kaur, Vishal Pramanik, Olivera Kotevska, Nathaniel D. Bastian, Susmit Jha et al.
-- **Category:** Artificial Intelligence
-
-**Relevance to FleetGraph:**
-Addresses communication control between agents with *hidden profiles* — directly maps to FleetGraph's directed acyclic supervisor/subordinate layers where subordinate nodes may have latent state not fully visible to supervisors. The conformal calibration approach provides statistical guarantees on communication reliability.
-
-**Implementation Angle:**
-Adapt the conformal calibration framework to FleetGraph's DAG communication edges — use it to bound message-passing error rates between supervisor→subordinate nodes, ensuring reliable command propagation even when agent internal state is partially unobservable.
+- **FleetGraph relevance:** Adaptive speaker and intervention selection from uncertainty, disagreement, evidence gain, and redundancy closely matches directed supervisor communication control.
+- **Implementation angle:** Give supervisor edges the actions `challenge`, `clarify`, `seek_evidence`, and `route`, then gate proposed actions with calibrated acceptance thresholds.
 
 ---
 
-## 2. FL-MAESTRO: Multi-Agent LLM Orchestration for Resource-Constrained Federated Learning
+## Monitoring, Guardrails, and Trace Structure
 
-- **arXiv ID:** 2608.20518
-- **URL:** https://arxiv.org/abs/2608.20518
-- **Authors:** Jiajun Wu, Zirui Wang, Jiayu Zhou, Qiang Ye, Steve Drew
-- **Category:** Artificial Intelligence
+### SkillShield: Prompt-Space Security Skills for LLM Coding Agents
+- **arXiv ID:** 2608.25817
+- **URL:** https://arxiv.org/abs/2608.25817
+- **FleetGraph relevance:** Compact failure-derived safety skills can constrain tool-using nodes throughout execution without placing a classifier on every edge.
+- **Implementation angle:** Derive role-specific safety clauses from failure traces and inject fixed-budget bundles into node harnesses, reserving runtime guards for privileged actions.
 
-**Relevance to FleetGraph:**
-Multi-agent LLM orchestration under resource constraints — directly applicable to fleet scenarios where agents compete for limited compute/bandwidth. The federated learning angle mirrors FleetGraph's distributed node topology.
+### StepGuard: Learning Step-Level Guardrails with Scalable Supervision and Safety-Utility Balancing
+- **arXiv ID:** 2608.24777
+- **URL:** https://arxiv.org/abs/2608.24777
+- **FleetGraph relevance:** Pre-execution action checks and post-run trajectory audits fit a supervisor layer that intercepts unsafe subordinate operations while measuring utility loss.
+- **Implementation angle:** Place guard nodes on privileged-action edges and log blocked steps plus utility impact so thresholds can be tuned from real runs.
 
-**Implementation Angle:**
-Extract the resource-allocation heuristic for agent orchestration under constraints; integrate into FleetGraph's topology manager to dynamically throttle/boost subordinate agent LLM calls based on available fleet budget (token caps, GPU memory, latency SLOs).
-
----
-
-## 3. Bayesian Partner Modelling enables Adaptive Replanning for LLM Coordination
-
-- **arXiv ID:** 2608.18490
-- **URL:** https://arxiv.org/abs/2608.18490
-- **Authors:** Harsh Goel, Aditya Sai Ellendula, Vaishnav Tadiparthi, Ehsan Moradi Pari, Hossein Nourkhiz Mahjoub, Sandeep P. Chinchali
-- **Category:** Multiagent Systems
-
-**Relevance to FleetGraph:**
-Bayesian partner modeling for adaptive replanning — highly relevant to hierarchical coordination where supervisors must model subordinate capabilities and adjust plans when subordinates fail or drift. The "partner model" is analogous to FleetGraph's node capability registry.
-
-**Implementation Angle:**
-Implement a lightweight Bayesian belief tracker per supervisor node that maintains a posterior over subordinate reliability; use it to trigger adaptive replanning when a subordinate's observed performance drops below a posterior threshold — replacing static DAG routing with probabilistic, self-correcting dispatch.
+### Automata from Agent Traces: Failure and Next-Step Prediction
+- **arXiv ID:** 2608.23670
+- **URL:** https://arxiv.org/abs/2608.23670
+- **FleetGraph relevance:** Trace-derived finite-state machines can turn FleetGraph's visual topology into a model-agnostic predictor of next actions and failures.
+- **Implementation angle:** Compile event logs into per-harness FSM overlays, label high-risk states, and escalate when live transitions enter failure-prone or invalid regions.
 
 ---
 
-## 4. TH-GNN: Heterogeneous Temporal Graph Neural Networks for LLM-Agent Shilling Attack Detection
+## Scout Assessment
 
-- **arXiv ID:** 2608.20376
-- **URL:** https://arxiv.org/abs/2608.20376
-- **Authors:** Shivam Swarup, Divya Prakash Shrivastava, Rakesh Thakur
-- **Category:** Computation and Language, Machine Learning
-
-**Relevance to FleetGraph:**
-Heterogeneous temporal GNNs for agent-graph anomaly detection — relevant to FleetGraph's graph-based agent interfaces where node/edge types are heterogeneous and evolve over time. The attack-detection framing maps to fleet integrity monitoring.
-
-**Implementation Angle:**
-Adapt the TH-GNN architecture as a FleetGraph integrity monitor — train on normal DAG communication patterns to detect anomalous agent behavior (compromised nodes, prompt injection cascades, deadlock formation) as a real-time graph anomaly scorer.
-
----
-
-## Summary
-
-| Paper | FleetGraph Layer | Key Takeaway |
-|-------|-----------------|--------------|
-| Consiliance (2608.20564) | DAG communication edges | Conformal calibration for hidden-profile agent messaging |
-| FL-MAESTRO (2608.20518) | Resource orchestration | Multi-agent LLM dispatch under compute constraints |
-| Bayesian Partner Modelling (2608.18490) | Supervisor hierarchy | Adaptive replanning via posterior tracking |
-| TH-GNN (2608.20376) | Graph interface / monitoring | Temporal GNN anomaly detection on heterogeneous agent graphs |
-
----
-
-*Next tick: scout for "directed acyclic graph agents", "agent message passing", "fleet topology optimization"*
+No new IDs this tick. The strongest near-term architecture imports remain: **Consilience** for calibrated communication control, **Automata from Agent Traces** for predictive monitoring overlays, and **ProgRouter** for budget-aware online dispatch.

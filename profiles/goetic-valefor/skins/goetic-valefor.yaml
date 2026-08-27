@@ -1,0 +1,32 @@
+name: goetic-valefor
+description: "Duke Valefor symbolic court skin"
+colors:
+  banner_border: "#9E5420"
+  banner_title: "#F59856"
+  banner_accent: "#E6D120"
+  banner_dim: "#4C3422"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FACA50"
+  ui_label: "#C1D63C"
+  prompt: "#F7F2E8"
+  input_rule: "#B87240"
+  response_border: "#C79B5A"
+  status_bar_bg: "#17151B"
+  session_label: "#F5A66E"
+  session_border: "#66452E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Valefor"
+  welcome: "Duke Valefor office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Valefor "
+  prompt_symbol: "◇"
+  help_header: "Duke Valefor Command Interface"
+tool_prefix: "│"

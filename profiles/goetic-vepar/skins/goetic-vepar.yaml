@@ -1,0 +1,32 @@
+name: goetic-vepar
+description: "Duke Vepar symbolic court skin"
+colors:
+  banner_border: "#20699E"
+  banner_title: "#56B3F5"
+  banner_accent: "#2035E6"
+  banner_dim: "#223B4C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#5080FA"
+  ui_label: "#513CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#4086B8"
+  response_border: "#5A86C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EBDF5"
+  session_border: "#2E4F66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Vepar"
+  welcome: "Duke Vepar office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Vepar "
+  prompt_symbol: "◇"
+  help_header: "Duke Vepar Command Interface"
+tool_prefix: "│"

@@ -1,0 +1,32 @@
+name: goetic-sallos
+description: "Duke Sallos symbolic court skin"
+colors:
+  banner_border: "#5F9E20"
+  banner_title: "#A5F556"
+  banner_accent: "#24E620"
+  banner_dim: "#374C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#72FA50"
+  ui_label: "#3CD65E"
+  prompt: "#F7F2E8"
+  input_rule: "#7CB840"
+  response_border: "#7DC75A"
+  status_bar_bg: "#17151B"
+  session_label: "#B1F56E"
+  session_border: "#4A662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Sallos"
+  welcome: "Duke Sallos office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Sallos "
+  prompt_symbol: "◇"
+  help_header: "Duke Sallos Command Interface"
+tool_prefix: "│"

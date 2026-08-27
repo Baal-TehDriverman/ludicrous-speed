@@ -1,104 +1,43 @@
-# FleetGraph UX / Observability Ideas — Tick 2026-08-24
+# FleetGraph UX/Observability Ideas
 
-Generated from a read of `dashboard/plugin_api.py` (overview, traffic, inbox
-watermarks, sessions/tail, send) and `desktop-plugin/plugin.js` (graph canvas,
-discussion glow, inspector). This tick's theme: **the operator needs to
-understand the fleet's *memory* and *relationships*, not just its right-now
-state.** Last tick covered history (timeline), health (stuck-bot), and spend
-(cost). This tick covers search, delegation flow, and activity rhythm.
+Generated: 2026-08-27 · FleetGraph tick · operator-at-2am lens
 
 ---
 
-## 1. Cross-Fleet Session Search — "Who said what about X?"
+## 1. Fleet Activity Heatmap — "When Does the Fleet Actually Live?"
 
-**Concept.** The inspector shows one bot's *latest* session, but the operator's
-real question is fleet-wide: *"Spock mentioned a topology fix three days ago —
-what exactly did he say, and which thread?"* Add a full-text search endpoint
-that walks every profile's `state.db`, extracts message content via the same
-path `/sessions/{name}/messages` already uses, and returns ranked snippets
-with profile + timestamp. Frontend: a global search input in the header (⌘K
-shortcut) that queries `/search?q=&days=7&profile=`, shows results as a
-dropdown with bolded hit snippets, and clicking a result opens that bot's
-inspector with the matching message scrolled into view. Backend reuses
-`_latest_session()` to find each profile's session list, then reads messages
-from each. No new indexing — state.db files are already SQLite FTS-capable.
+**Concept:** A time-dimension overlay on the fleet graph that shows activity density across the last 24 hours (or week). Each node gets a small heatmap strip beneath it; brighter cells = more sessions/messages/tool activity in that time bucket. The deck view gets a fleet-wide density chart. An operator can immediately see which bots are nocturnal, which ones spike on certain days, and whether the fleet is sitting idle at 3am or quietly burning context.
 
-**Files touched:** `dashboard/plugin_api.py` (`GET /search` endpoint, profile
-iteration over `state.db` message reads), `desktop-plugin/plugin.js`
-(global search modal component + ⌘K binding, search query hook).
+**Files touched:**
+- `dashboard/plugin_api.py` — new `GET /activity/heatmap?window=24h` endpoint that aggregates session starts + message counts per bot per time bucket from `state.db` + inbox files
+- `desktop-plugin/plugin.js` — new `HeatmapStrip` component per node; fleet density chart in deck header; time-range selector (1h / 6h / 24h / 7d)
 
-**Operator pain solved:** The fleet has 75 bots, each with days of sessions.
-Today finding a past conversation means clicking bots one-by-one and scrolling
-their latest session. Search turns "I vaguely remember…" into a 2-second
-answer — critical at 2am when the operator needs to confirm whether a bot
-already diagnosed the current problem before waking a fresh session.
+**Operator pain solved:** Right now you see current state — who's talking, who's idle. You can't see PATTERNS. At 2am you don't know if a bot is quietly running long sessions or if the fleet is genuinely asleep. A heatmap turns "current status" into "behavioral rhythm" — which bots need monitoring at odd hours, which ones are consistently busy, whether the fleet has a circadian rhythm you can plan around.
 
 ---
 
-## 2. Delegation Chain Path Highlighter — trace the org chart in motion
+## 2. Incident/Escalation Timeline — "What Just Happened?"
 
-**Concept.** Messages sent via `/send` with `delegate` or `supervisor` frames
-already validate the routing chain through `chain()` and `can_communicate()`,
-but the *sent* message records nothing about the path it took. The operator
-sees two unread badges on two different bots with no visual connection between
-them. Extend the message record to include a `chain` field (the ordered list
-of nodes the message traversed, already computable from the graph). Then, in
-the inbox inspector, add a "Trace on Graph" button that opens the canvas view
-and highlights the full path — each hop glowing in sequence, with the
-message type (talk/delegate/supervisor) labeled at each edge. For multi-hop
-delegation (lilith → hermes → default → specialist), the operator sees the
-exact route instead of guessing which bot handed off to which.
+**Concept:** When a bot interrupts, escalates, or cascades through the chain of command, reconstruct it as a linear timeline the operator can read at a glance. The timeline tracks: message in → escalation up → delegation down → resolution or abandonment, with timestamps. Extended from the existing traffic/inbox system: each message carries its frame (`talk` / `delegate` / `supervisor`), and the timeline stitches consecutive supervisor/delegate frames into an incident arc. A "Needs Attention" bot in the deck view gets a "View timeline" action that opens this reconstruction.
 
-**Files touched:** `dashboard/plugin_api.py` (extend `fleet_send()` to write
-the computed chain into the JSONL record; add a `GET /msg/{profile}/{id}`
-endpoint that returns the chain for a single message),
-`desktop-plugin/plugin.js` (trace button in inbox inspector, graph canvas
-path-highlight overlay, animated edge traversal).
+**Files touched:**
+- `dashboard/plugin_api.py` — new `GET /incidents/{profile}?window=` endpoint that walks the inbox chronologically, groups consecutive supervisor/delegate frames into arcs, returns structured timeline entries `[{ts, from, to, frame, summary, type: escalation|delegation|resolution|abandoned}]`; extend `/traffic` to tag chain hops
+- `desktop-plugin/plugin.js` — new `IncidentTimeline` panel (slides in from inspector or deck card action); visual chain rendering with arrows showing direction; color-coded by frame type; "resolve" / "dismiss" actions that write back to watermark state
 
-**Operator pain solved:** When a delegated task stalls, the operator needs to
-know *where* it stopped — was it handed to the right specialist? Did the
-supervisor-escalation frame reach its destination? Today that means mentally
-piecing together inbox entries from multiple bots. Path highlighting turns the
-org chart from a static diagram into a living record of work in flight.
+**Operator pain solved:** At 2am something goes wrong. You open the fleet graph and see Lilith is "interrupted" and Hermes has an unread inbox. What do you do? Currently you click each bot, read its inbox, read its session tail, piece together what happened. An incident timeline gives you the narrative: *"Lilith tried to delegate to thoth at 01:47, thoth interrupted at 01:49, Lilith escalated to hermes at 01:52, hermes replied at 01:54, thoth recovered at 02:01."* That's the difference between "something's wrong" and "here's what happened and here's where it's stuck."
 
 ---
 
-## 3. Fleet Pulse Heatmap — directorate rhythm at a glance
+## 3. Per-Bot Cost & Session Audit Panel — "What Is Each Bot Actually Doing?"
 
-**Concept.** The discussion glow shows traffic between pairs, but not the
-*aggregate rhythm* of the fleet. Is the Engineering directorate humming at 2am
-while Legal has been dead since midnight? A 4×7 grid of directorate-level
-activity buckets (rows = directorates: Command, Supreme, Staff, Independent,
-Red Team; columns = hours over last 24h) rendered as colored squares from
-the existing token palette — `--fg-quaternary` (silent) through `--fg-accent`
-(active) to `--fg-warning` (overloaded). Each square is hoverable for the
-exact message count, clickable to filter the deck to that directorate's bots.
-Backend: extend `_recent_traffic()` with aggregation into `/pulse?hours=24`
-that groups messages by the recipient's directorate (computed from the graph
-depth/path to root) and buckets them into hourly bins. The data already lives
-in the inbox JSONL files — this is pure read-and-aggregate.
+**Concept:** An audit panel in the inspector that surfaces per-bot operational metrics: session count (last 24h), average session length, total messages sent/received, tool call count (from session tails), context window pressure estimate (session message count vs. model context limit), and — where the provider exposes it — token usage. The deck view gets a fleet-wide "top 5 by session volume" and "top 5 by context pressure" mini-list. This turns the fleet from a static org chart into a measurable operation.
 
-**Files touched:** `dashboard/plugin_api.py` (`GET /pulse` endpoint, directorate
-resolution helper that walks each message's recipient up to its root directorate
-in the graph), `desktop-plugin/plugin.js` (`<FleetPulse/>` component — grid
-render with hover tooltips, click-to-filter wiring into the existing deck
-status filter).
+**Files touched:**
+- `dashboard/plugin_api.py` — extend `/sessions/{name}/messages` to return tool-call metadata (tool name, status: `started` / `completed` / `failed`) alongside message text; new `GET /audit/{name}` endpoint aggregating session stats from `state.db` (session count, message counts, tool call counts, last session timestamp); new `GET /audit/fleet` for fleet-wide ranking
+- `desktop-plugin/plugin.js` — new `AuditPanel` component in the inspector (replaces or supplements the session tail); deck view "pressure list" mini-widget; tooltip on each node showing session count + context pressure indicator
 
-**Operator pain solved:** The header strip already counts "conversing" and
-"needs attention" bots, but that's a snapshot — it tells you nothing about
-*trends*. A directorate that's been silently accumulating unread escalations
-for 3 hours looks identical to one that's idle because nothing was asked. The
-heatmap makes the silent accumulation visible: a row of dim squares (dead) vs.
-a row of glowing ones (chattering) vs. a sudden spike (storm). At 2am, one
-glance at the heatmap tells the operator whether the fleet is winding down or
-ramping up — and where to look.
+**Operator pain solved:** You're running 68 bots. Some are specialists used once a week. Others are workhorses handling every inbound task. Without visibility, you can't tell which bots are burning context windows, which ones are sitting idle, which ones are carrying disproportionate load. A bot with 200 messages in its latest session is probably near its context limit and about to degrade — you want to know BEFORE it starts giving bad answers. This closes the loop from "who's in the fleet" to "how is the fleet actually running."
 
 ---
 
-### Inspiration noted (arXiv, this tick)
-- Trustworthy Self-Composable Big-Data-as-a-Service (2606.17915) — lifecycle
-  and cross-agent signal aggregation support Idea 3: fleet rhythm as a
-  first-class observability surface.
-- CHARM cascading-hallucination framework (2606.04435) — chain-of-custody
-  tracking supports Idea 2: delegation paths need the same audit trail as
-  hallucination chains.
+*ArXiv inspiration this tick:* multi-drone safety-critical oversight (2608.21444), drift-aware lifecycle monitoring (2606.17915), process-based conversational agent monitoring (2606.17789) — all reinforce the gap between "current state" and "operational narrative" that ideas 1 and 2 target.

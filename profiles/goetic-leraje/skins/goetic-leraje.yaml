@@ -1,0 +1,32 @@
+name: goetic-leraje
+description: "Marquis Leraje symbolic court skin"
+colors:
+  banner_border: "#949E20"
+  banner_title: "#E8F556"
+  banner_accent: "#76E620"
+  banner_dim: "#494C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#B9FA50"
+  ui_label: "#5AD63C"
+  prompt: "#F7F2E8"
+  input_rule: "#AEB840"
+  response_border: "#AAC75A"
+  status_bar_bg: "#17151B"
+  session_label: "#EAF56E"
+  session_border: "#61662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Leraje"
+  welcome: "Marquis Leraje office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Leraje "
+  prompt_symbol: "◇"
+  help_header: "Marquis Leraje Command Interface"
+tool_prefix: "│"

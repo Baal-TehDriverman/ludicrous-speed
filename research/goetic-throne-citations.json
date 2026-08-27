@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://www.gutenberg.org/files/72679/72679-h/72679-h.htm",
+      "title": "The Lesser Key of Solomon (Project Gutenberg)",
+      "accessed": "2026-08-27"
+    },
+    {
+      "id": 2,
+      "url": "https://www.esotericarchives.com/solomon/goetia.htm",
+      "title": "Lemegeton, Part 1: Goetia (Esoteric Archives)",
+      "accessed": "2026-08-27"
+    }
+  ]
+}

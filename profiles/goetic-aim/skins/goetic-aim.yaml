@@ -1,0 +1,32 @@
+name: goetic-aim
+description: "Duke Aim symbolic court skin"
+colors:
+  banner_border: "#359E20"
+  banner_title: "#70F556"
+  banner_accent: "#20E65E"
+  banner_dim: "#294C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FA67"
+  ui_label: "#3CD691"
+  prompt: "#F7F2E8"
+  input_rule: "#54B840"
+  response_border: "#5AC75B"
+  status_bar_bg: "#17151B"
+  session_label: "#85F56E"
+  session_border: "#37662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Aim"
+  welcome: "Duke Aim office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Aim "
+  prompt_symbol: "◇"
+  help_header: "Duke Aim Command Interface"
+tool_prefix: "│"

@@ -1,0 +1,32 @@
+name: goetic-purson
+description: "King Purson symbolic court skin"
+colors:
+  banner_border: "#549E20"
+  banner_title: "#98F556"
+  banner_accent: "#20E62D"
+  banner_dim: "#344C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#64FA50"
+  ui_label: "#3CD66B"
+  prompt: "#F7F2E8"
+  input_rule: "#72B840"
+  response_border: "#73C75A"
+  status_bar_bg: "#17151B"
+  session_label: "#A6F56E"
+  session_border: "#45662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "King Purson"
+  welcome: "King Purson office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ King Purson "
+  prompt_symbol: "◇"
+  help_header: "King Purson Command Interface"
+tool_prefix: "│"

@@ -1,0 +1,32 @@
+name: goetic-focalor
+description: "Duke Focalor symbolic court skin"
+colors:
+  banner_border: "#20749E"
+  banner_title: "#56C0F5"
+  banner_accent: "#2045E6"
+  banner_dim: "#223E4C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#508EFA"
+  ui_label: "#443CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#4090B8"
+  response_border: "#5A8FC7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EC8F5"
+  session_border: "#2E5366"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Focalor"
+  welcome: "Duke Focalor office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Focalor "
+  prompt_symbol: "◇"
+  help_header: "Duke Focalor Command Interface"
+tool_prefix: "│"

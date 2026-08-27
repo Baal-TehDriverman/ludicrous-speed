@@ -1,0 +1,32 @@
+name: goetic-uvall
+description: "Duke Uvall symbolic court skin"
+colors:
+  banner_border: "#20359E"
+  banner_title: "#5670F5"
+  banner_accent: "#5E20E6"
+  banner_dim: "#22294C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#6750FA"
+  ui_label: "#913CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#4054B8"
+  response_border: "#5B5AC7"
+  status_bar_bg: "#17151B"
+  session_label: "#6E85F5"
+  session_border: "#2E3766"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Uvall"
+  welcome: "Duke Uvall office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Uvall "
+  prompt_symbol: "◇"
+  help_header: "Duke Uvall Command Interface"
+tool_prefix: "│"

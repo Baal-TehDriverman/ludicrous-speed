@@ -1,0 +1,32 @@
+name: goetic-gaap
+description: "Prince Gaap symbolic court skin"
+colors:
+  banner_border: "#209E74"
+  banner_title: "#56F5C0"
+  banner_accent: "#20C9E6"
+  banner_dim: "#224C3E"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FAF4"
+  ui_label: "#3C9BD6"
+  prompt: "#F7F2E8"
+  input_rule: "#40B890"
+  response_border: "#5AC7B6"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF5C8"
+  session_border: "#2E6653"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Prince Gaap"
+  welcome: "Prince Gaap office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Prince Gaap "
+  prompt_symbol: "◇"
+  help_header: "Prince Gaap Command Interface"
+tool_prefix: "│"

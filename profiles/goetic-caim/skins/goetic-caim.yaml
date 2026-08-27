@@ -1,0 +1,32 @@
+name: goetic-caim
+description: "President Caim symbolic court skin"
+colors:
+  banner_border: "#4A209E"
+  banner_title: "#8B56F5"
+  banner_accent: "#C120E6"
+  banner_dim: "#30224C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#BC50FA"
+  ui_label: "#D63CCE"
+  prompt: "#F7F2E8"
+  input_rule: "#6840B8"
+  response_border: "#925AC7"
+  status_bar_bg: "#17151B"
+  session_label: "#9B6EF5"
+  session_border: "#412E66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Caim"
+  welcome: "President Caim office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Caim "
+  prompt_symbol: "◇"
+  help_header: "President Caim Command Interface"
+tool_prefix: "│"

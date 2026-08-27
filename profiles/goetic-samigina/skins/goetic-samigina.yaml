@@ -1,0 +1,32 @@
+name: goetic-samigina
+description: "Marquis Samigina symbolic court skin"
+colors:
+  banner_border: "#9E3F20"
+  banner_title: "#F57D56"
+  banner_accent: "#E6B020"
+  banner_dim: "#4C2D22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FAAD50"
+  ui_label: "#D6D23C"
+  prompt: "#F7F2E8"
+  input_rule: "#B85E40"
+  response_border: "#C7895A"
+  status_bar_bg: "#17151B"
+  session_label: "#F5906E"
+  session_border: "#663C2E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Samigina"
+  welcome: "Marquis Samigina office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Samigina "
+  prompt_symbol: "◇"
+  help_header: "Marquis Samigina Command Interface"
+tool_prefix: "│"

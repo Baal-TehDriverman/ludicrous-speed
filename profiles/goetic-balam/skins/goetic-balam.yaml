@@ -1,0 +1,32 @@
+name: goetic-balam
+description: "King Balam symbolic court skin"
+colors:
+  banner_border: "#35209E"
+  banner_title: "#7056F5"
+  banner_accent: "#A020E6"
+  banner_dim: "#29224C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#9F50FA"
+  ui_label: "#C53CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#5440B8"
+  response_border: "#7F5AC7"
+  status_bar_bg: "#17151B"
+  session_label: "#856EF5"
+  session_border: "#372E66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "King Balam"
+  welcome: "King Balam office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ King Balam "
+  prompt_symbol: "◇"
+  help_header: "King Balam Command Interface"
+tool_prefix: "│"

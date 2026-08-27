@@ -1,58 +1,58 @@
-# FleetGraph Architecture Ideas
+# FleetGraph Architecture Ideas — Tick Report
 
-> Generated: 2026-08-24 (cron tick)
-> Papers this tick: 6 found across 2 searches
+**Tick:** 2026-08-27  
+**Papers found this tick:** 3 (1st search timed out; worked from 2nd search results)  
+**Papers:**
+- [2607.25255] SafeFlow: Semantic Information-Flow Control for Blocking Malicious Propagation in Multi-Agent Systems
+- [2607.27743] Delegated Fair Division
+- [2606.04056] Token Budgets: An Empirical Catalog of 63 LLM-Agent Budget-Overrun Incidents
+
+**Note:** No papers from the first search ("multi-agent orchestration hierarchy") — that query timed out. Ideas below are grounded in the 3 papers from the second search plus the actual FleetGraph codebase (`fleet_graph_core.py`, `README.md`).
 
 ---
 
-## Idea 1: Specialty-Aware Task Queue with Load Balancing
+## Idea 1: Semantic Message Classification with Policy-Gated Flow Control
 
-**Concept:** The current `/match` endpoint returns a flat semantic ranking — "who is most capable of this?" — but ignores whether that bot is already drowning. Inspired by SPOQ's *Specialist Orchestrated Queuing* (2606.03115), add a lightweight task-queue layer that combines capability score with real-time load (active-session status, unread inbox depth, interrupted-session count). The operator picks a task, the queue recommends the best *available* specialist, and optionally auto-dispatches via `fleet-msg send`. This turns FleetGraph from a passive org chart into an active orchestration surface.
+**Inspiration:** SafeFlow (2607.25255) — semantic information-flow control that blocks malicious propagation in multi-agent systems by classifying message content, not just topology.
+
+**Concept:** FleetGraph's `can_communicate()` currently gates messages on graph position alone (up/down/peer/lateral-blocked). SafeFlow's insight is that *what* a message contains should be as policy-relevant as *who* sends it to *whom*. Extend the communication contract so each message carries a semantic classifier label (e.g., `task`, `status`, `soul-edit`, `config`, `persona-drift-alert`, `adversarial`), and `can_communicate()` gains an optional content-policy check: even a valid supervisor→subordinate channel can be gated if the classifier is not permitted on that edge (e.g., a `persona-drift-alert` tagged by a subordinate routing up to a directorate head, or an `adversarial` tagged message blocked entirely from peer edges). The classifier vocabulary and per-edge policy matrix live in a new `_meta.message_policy` section of `fleet_graph.yaml`, surfaced in the dashboard composer as a mandatory classifier dropdown. This turns FleetGraph from a topology firewall into a content-aware information-flow controller — directly relevant given the Red Team profiles (Lore, Garak, Seska, Khan, Dukat, Ransom) that already exist in the fleet.
 
 **Files touched:**
-- `dashboard/plugin_api.py` — new `GET /queue` (current queue state) and `POST /queue/dispatch` (enqueue + optional auto-send) endpoints
-- `fleet_msg.py` — new `fleet-msg queue` subcommand (list/pending, enqueue, drain)
-- `desktop-plugin/plugin.js` — new "Dispatch" panel beside the message composer, showing ranked candidates with live load badges
+- `fleet_graph_core.py` — `can_communicate()` signature extended to accept optional `classifier` arg; new `check_message_policy()` function; `GraphError` gains policy-violation variant
+- `fleet_graph.yaml` (topology/) — new `_meta.message_policy:` block: `{classifiers: [...], edges: {sender->recipient: [allowed_classifiers]}}`
+- `dashboard/plugin_api.py` — `POST /send` validates classifier against policy before delivery; `GET /overview` returns policy metadata for the composer
+- `desktop-plugin/plugin.js` — message composer gains classifier dropdown; blocked-classifier sends surface a distinct error state in the UI
 
-**Why it matters:** The fleet's 68+ Star Trek profiles are useless if the best bot for a task is already mid-conversation and the operator has no way to know. SPOQ proves that specialist-aware queuing beats round-robin for multi-agent software engineering; FleetGraph's richer semantic roster (keywords + toolsets + live status) should beat SPOQ. It closes the loop between "who is good at this" and "who can actually take it right now."
+**Why it matters:** The fleet already carries adversarial Red Team personas. Without content-aware gating, a compromised or drift-prone node can exfiltrate SOUL.md content or inject adversarial prompts through any structurally valid channel. SafeFlow's semantic-classification layer is the natural next hardening step for a fleet that intentionally includes adversarial actors.
 
 ---
 
-## Idea 2: Hierarchical Attribution Traces for Multi-Bot Tasks
+## Idea 2: Per-Message Token Budget Enforcement with Budget-Overrun Guard
 
-**Concept:** When a task bounces through the fleet — Data researches, Spock validates, Picard decides — there is no record of *who contributed what* to the final output. BOHM (2606.05.22866) provides *Zero-Cost Hierarchical Attribution* by tagging outputs as they propagate. FleetGraph already has `chain()` computing routing paths; extend every message record with an optional `attribution` field that accumulates `{by, ts, contribution_type}` as the task moves up/down the tree. A new `GET /attribution/{task_id}` endpoint reconstructs the full provenance chain. The UI renders it as a collapsible "geneology" panel on any completed task.
+**Inspiration:** Token Budgets (2606.04056) — empirical catalog of 63 LLM-agent budget-overrun incidents with an affine-typed Rust mitigation. The paper's core finding: agents routinely blow past intended token budgets, and once overrun happens it's hard to detect ex-post.
+
+**Concept:** FleetGraph's message composer (`POST /send`) currently accepts a message with no size or cost guard. Add a per-channel token budget to `fleet_graph.yaml` — `_meta.budgets:` mapping `{profile: {outbound: N, inbound: N, window_seconds: M}}` — and enforce it at send time. When a bot's outbound message would exceed its budget (computed from a rolling window of recent sends, tracked in-memory by the dashboard API or persisted in a lightweight `_meta.traffic_log`), the send is refused with a clear budget-exhausted error rather than silently delivered. The dashboard's "NEEDS ATTENTION" deck view gains a new triage bucket: "BUDGET EXHAUSTED" — bots that have hit their limit and need operator intervention (budget increase, channel throttling, or investigation). The idea is drawn directly from the paper's mitigation pattern: pre-compute the budget envelope, refuse at the boundary, surface the exception visibly.
 
 **Files touched:**
-- `fleet_graph_core.py` — add `attribution()` helper that walks `chain()` and merges per-hop metadata; extend `describe()` to include attribution summary
-- `fleet_msg.py` — `--attribution` flag on `send` that stamps the message header with the sender's contribution type; new `fleet-msg attribution <task>` subcommand
-- `dashboard/plugin_api.py` — new `GET /attribution/{task_id}` and `POST /attribution/{task_id}/append` endpoints
-- `desktop-plugin/plugin.js` — attribution drawer in the inspector, showing the contribution chain with timestamps
+- `fleet_graph_core.py` — new `load_budgets()` / `normalize_budgets()` functions mirroring the existing `load_relations()` / `normalize_relations()` pattern; `GraphError` variant for budget misconfiguration
+- `fleet_graph.yaml` (topology/) — new `_meta.budgets:` block
+- `dashboard/plugin_api.py` — `POST /send` checks budget before delegating to `can_communicate()`; `GET /overview` and `GET /traffic` surface budget state per node; new endpoint `POST /budgets/{p}/reset` for operator reset
+- `desktop-plugin/plugin.js` — deck view "NEEDS ATTENTION" gains budget-exhausted triage; message composer shows remaining budget; operator can adjust budget inline via rewire panel
 
-**Why it matters:** Without attribution, multi-bot collaboration is a black box. When Picard produces a final answer, there's no way to know whether Data's research was actually used or if Spock's validation mattered. Attribution is prerequisite for the fleet's *accountability* design principle (Design Principle #4: "User agency stays intact"). It also enables future ideas like contribution-weighted reputation or automatic escalation when a specialist's output is consistently bypassed.
+**Why it matters:** With 68 profiles in the fleet and live activity polling every 4s, unbounded messaging is a real cost risk — both in LLM token spend and in message volume that can flood the inbox/traffic surfaces. The paper's empirical 근거 (63 real incidents) makes this a concrete, not hypothetical, hardening.
 
 ---
 
-## Idea 3: Semantic Flow-Control Policy Layer
+## Idea 3: Delegation-with-Intent — Downward Task Propagation with Upward Completion/Chdocumentclass
 
-**Concept:** `can_communicate` enforces *structural* policy (supervisor/subordinate/peer edges) but ignores *semantic* content. SafeFlow (2607.25255) implements *Semantic Information-Flow Control* to block malicious propagation — FleetGraph needs the same for sensitive data. Add a pluggable policy engine that inspects message content against rules: block credential/PII upward-propagation, restrict destructive commands (e.g., `rm`, `delete`) to downward-only flows, require supervisor approval for lateral peer sends of certain types. Policies live in `_meta.policies` in `fleet_graph.yaml` so they're versioned with the topology. The UI shows policy violations inline in the composer before the send button activates.
+**Inspiration:** Delegated Fair Division (2607.27743) — the structural problem of delegating a task to a subordinate and getting back a verifiable outcome, not just an acknowledgment. Combined with FleetGraph's existing `chain()` routing (supervisor chain traversal) and the existing `delegate` message frame in the composer.
+
+**Concept:** FleetGraph currently has a `delegate` message frame, but it treats delegation as a one-shot send — there is no structured intent propagation downward and no completion/report chaining back up. Add a `delegation` message type (distinct from `talk` and existing `delegate`) that carries: `(task_description, expected_output_schema, deadline_or_priority, delegator_node)`. On send, the message is delivered down the supervisor chain (using `chain()` to validate reachability), and the recipient bot is expected to reply with a structured `delegation-result` message (success/failure/partial, output payload, runtime). The dashboard gains a delegations panel: active delegations with status (pending/completed/failed/timed-out), visible on the org chart as a dashed annotation edge from delegator to delegatee. `fleet_graph_core.py`'s `chain()` function is extended to support reverse-chain traversal (subordinate→supervisor) for result routing, and `can_communicate()` gains a `delegation-result` classifier that is only permitted on the reverse of a prior delegation edge (preventing arbitrary subordinates from pushing results to arbitrary supervisors).
 
 **Files touched:**
-- `fleet_graph_core.py` — new `can_communicate_semantic(graph, sender, recipient, content, policies)` policy check; extend `normalize()` to validate policy references; add `load_policies()` alongside `load_relations()`
-- `fleet_msg.py` — policy enforcement in `cmd_send` (reject with structured `policy_violation` error); new `fleet-msg policies` subcommand (list/validate)
-- `dashboard/plugin_api.py` — `GET /policies`, `PUT /policies`, and a `POST /simulate` extension that returns policy-check results alongside the structural check
-- `desktop-plugin/plugin.js` — composer shows a yellow policy-warning banner when content triggers a rule; red block + explanation when the send is forbidden
+- `fleet_graph_core.py` — `chain()` extended with `reverse=True` option for upward result routing; `can_communicate()` gains `delegation-result` classifier handling; new `record_delegation()` / `lookup_delegation()` in-memory state for the dashboard API (or persisted in `_meta.active_delegations:`)
+- `fleet_graph.yaml` (topology/) — optional `_meta.delegation_policy:` block: `{max_active_per_sender: N, result_timeout_seconds: M}`
+- `dashboard/plugin_api.py` — new endpoints: `GET /delegations`, `POST /delegations` (send delegation), `POST /delegations/{id}/result` (receive result); `GET /overview` includes active delegation count per node
+- `desktop-plugin/plugin.js` — delegations panel; org chart renders active delegation edges as dashed annotations; result arrival surfaces a notification/badge
 
-**Why it matters:** The fleet's 68 personas have different trust levels — Lore, Garak, and Seska are explicitly Red Team (adversarial). A structural-only policy means any peer relation is a free pipeline for data exfiltration. SafeFlow proves that semantic flow-control is tractable; FleetGraph's existing `can_communicate` is the natural extension point. This is the difference between a toy org chart and a production-grade multi-agent operating system where the operator can *reason* about information flow, not just topology.
-
----
-
-## Papers Referenced This Tick
-
-| ID | Title | Relevance |
-|----|-------|-----------|
-| 2606.03115 | SPOQ: Specialist Orchestrated Queuing for Multi-Agent Software Engineering | Idea 1 — specialist-aware task queue |
-| 2605.22866 | BOHM: Zero-Cost Hierarchical Attribution for Compound AI Systems | Idea 2 — attribution traces |
-| 2607.25255 | SafeFlow: Semantic Information-Flow Control for Blocking Malicious Propagation | Idea 3 — semantic policy layer |
-| 2607.27743 | Delegated Fair Division | Fair-load extension for Idea 1 |
-| 2606.04063 | Token Budgets: Affine-Typed Rust Mitigation for Agent Budget Overruns | Budget tracking extension for Idea 1 queue |
-| 2606.09613 | AGENTSERVESIM: Hardware-aware Simulator for Multi-Turn Agent Serving | Load-modeling reference for Idea 1 |
+**Why it matters:** The fleet's entire topology is built around supervisor/subordinate hierarchy — escalation up, delegation down, peers sideways. But "delegation down" is currently a fire-and-forget send. Making delegation a first-class, trackable, result-producing operation turns the org chart from a static picture into an active workflow surface. This is the most directly FleetGraph-native idea of the three — it extends existing primitives (`chain()`, `delegate` frame, supervisor edges) into a coherent delegation protocol rather than adding an entirely new subsystem.

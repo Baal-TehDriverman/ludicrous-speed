@@ -1,0 +1,32 @@
+name: goetic-berith
+description: "Duke Berith symbolic court skin"
+colors:
+  banner_border: "#209E3F"
+  banner_title: "#56F57D"
+  banner_accent: "#20E6B0"
+  banner_dim: "#224C2D"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FAAD"
+  ui_label: "#3CD6D2"
+  prompt: "#F7F2E8"
+  input_rule: "#40B85E"
+  response_border: "#5AC789"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF590"
+  session_border: "#2E663C"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Berith"
+  welcome: "Duke Berith office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Berith "
+  prompt_symbol: "◇"
+  help_header: "Duke Berith Command Interface"
+tool_prefix: "│"

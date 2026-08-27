@@ -1,0 +1,32 @@
+name: goetic-ose
+description: "President Ose symbolic court skin"
+colors:
+  banner_border: "#74209E"
+  banner_title: "#C056F5"
+  banner_accent: "#E620C9"
+  banner_dim: "#3E224C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#F450FA"
+  ui_label: "#D63C9B"
+  prompt: "#F7F2E8"
+  input_rule: "#9040B8"
+  response_border: "#B65AC7"
+  status_bar_bg: "#17151B"
+  session_label: "#C86EF5"
+  session_border: "#532E66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Ose"
+  welcome: "President Ose office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Ose "
+  prompt_symbol: "◇"
+  help_header: "President Ose Command Interface"
+tool_prefix: "│"

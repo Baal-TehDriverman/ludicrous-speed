@@ -1,0 +1,32 @@
+name: goetic-flauros
+description: "Duke Flauros symbolic court skin"
+colors:
+  banner_border: "#9E207E"
+  banner_title: "#F556CD"
+  banner_accent: "#E62055"
+  banner_dim: "#4C2242"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA509C"
+  ui_label: "#D63C41"
+  prompt: "#F7F2E8"
+  input_rule: "#B8409A"
+  response_border: "#C75A98"
+  status_bar_bg: "#17151B"
+  session_label: "#F56ED3"
+  session_border: "#662E58"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Flauros"
+  welcome: "Duke Flauros office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Flauros "
+  prompt_symbol: "◇"
+  help_header: "Duke Flauros Command Interface"
+tool_prefix: "│"

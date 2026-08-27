@@ -1,0 +1,32 @@
+name: goetic-shax
+description: "Marquis Shax symbolic court skin"
+colors:
+  banner_border: "#20549E"
+  banner_title: "#5698F5"
+  banner_accent: "#2D20E6"
+  banner_dim: "#22344C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#5064FA"
+  ui_label: "#6B3CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#4072B8"
+  response_border: "#5A73C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EA6F5"
+  session_border: "#2E4566"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Shax"
+  welcome: "Marquis Shax office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Shax "
+  prompt_symbol: "◇"
+  help_header: "Marquis Shax Command Interface"
+tool_prefix: "│"

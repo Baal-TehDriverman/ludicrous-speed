@@ -1,0 +1,32 @@
+name: goetic-glasya-labolas
+description: "President Glasya-Labolas symbolic court skin"
+colors:
+  banner_border: "#209E20"
+  banner_title: "#56F556"
+  banner_accent: "#20E67F"
+  banner_dim: "#224C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FA83"
+  ui_label: "#3CD6AB"
+  prompt: "#F7F2E8"
+  input_rule: "#40B840"
+  response_border: "#5AC76D"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF56E"
+  session_border: "#2E662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Glasya-Labolas"
+  welcome: "President Glasya-Labolas office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Glasya-Labolas "
+  prompt_symbol: "◇"
+  help_header: "President Glasya-Labolas Command Interface"
+tool_prefix: "│"

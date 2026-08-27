@@ -15,7 +15,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 CATALOG_PATH = ROOT / "catalog.json"
-SERIES = ("TOS", "TNG", "DS9", "Voyager")
+SERIES = ("TOS", "TNG", "DS9", "Voyager", "Goetia")
 
 
 def load_catalog() -> list[dict[str, Any]]:

@@ -1,0 +1,32 @@
+name: goetic-buer
+description: "President Buer symbolic court skin"
+colors:
+  banner_border: "#9E7E20"
+  banner_title: "#F5CD56"
+  banner_accent: "#B8E620"
+  banner_dim: "#4C4222"
+  banner_text: "#F7F2E8"
+  ui_accent: "#F1FA50"
+  ui_label: "#8ED63C"
+  prompt: "#F7F2E8"
+  input_rule: "#B89A40"
+  response_border: "#C7BF5A"
+  status_bar_bg: "#17151B"
+  session_label: "#F5D36E"
+  session_border: "#66582E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Buer"
+  welcome: "President Buer office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Buer "
+  prompt_symbol: "◇"
+  help_header: "President Buer Command Interface"
+tool_prefix: "│"

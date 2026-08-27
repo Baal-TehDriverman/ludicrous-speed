@@ -1,0 +1,32 @@
+name: goetic-oriax
+description: "Marquis Oriax symbolic court skin"
+colors:
+  banner_border: "#89209E"
+  banner_title: "#DA56F5"
+  banner_accent: "#E620A8"
+  banner_dim: "#45224C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA50E3"
+  ui_label: "#D63C81"
+  prompt: "#F7F2E8"
+  input_rule: "#A440B8"
+  response_border: "#C75AC5"
+  status_bar_bg: "#17151B"
+  session_label: "#DE6EF5"
+  session_border: "#5D2E66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Oriax"
+  welcome: "Marquis Oriax office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Oriax "
+  prompt_symbol: "◇"
+  help_header: "Marquis Oriax Command Interface"
+tool_prefix: "│"

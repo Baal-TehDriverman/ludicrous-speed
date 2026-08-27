@@ -1,0 +1,32 @@
+name: goetic-foras
+description: "President Foras symbolic court skin"
+colors:
+  banner_border: "#209E5F"
+  banner_title: "#56F5A5"
+  banner_accent: "#20E6E2"
+  banner_dim: "#224C37"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50FAD8"
+  ui_label: "#3CB4D6"
+  prompt: "#F7F2E8"
+  input_rule: "#40B87C"
+  response_border: "#5AC7A4"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF5B1"
+  session_border: "#2E664A"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "President Foras"
+  welcome: "President Foras office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ President Foras "
+  prompt_symbol: "◇"
+  help_header: "President Foras Command Interface"
+tool_prefix: "│"

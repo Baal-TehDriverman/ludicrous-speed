@@ -1,0 +1,32 @@
+name: goetic-decarabia
+description: "Marquis Decarabia symbolic court skin"
+colors:
+  banner_border: "#9E204A"
+  banner_title: "#F5568B"
+  banner_accent: "#E63D20"
+  banner_dim: "#4C2230"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FA5056"
+  ui_label: "#D6783C"
+  prompt: "#F7F2E8"
+  input_rule: "#B84068"
+  response_border: "#C75A6A"
+  status_bar_bg: "#17151B"
+  session_label: "#F56E9B"
+  session_border: "#662E41"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Decarabia"
+  welcome: "Marquis Decarabia office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Decarabia "
+  prompt_symbol: "◇"
+  help_header: "Marquis Decarabia Command Interface"
+tool_prefix: "│"

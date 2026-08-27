@@ -1,0 +1,11 @@
+name: goetic-flauros
+version: 1.0.0
+description: "Symbolic Goetic Court officer: Duke Flauros"
+hermes_requires: ">=0.18.0"
+author: "Lilith Sovereign Fleet"
+license: "MIT"
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - skins/
+  - distribution.yaml

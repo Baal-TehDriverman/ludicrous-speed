@@ -1,0 +1,32 @@
+name: goetic-zepar
+description: "Duke Zepar symbolic court skin"
+colors:
+  banner_border: "#7E9E20"
+  banner_title: "#CDF556"
+  banner_accent: "#55E620"
+  banner_dim: "#424C22"
+  banner_text: "#F7F2E8"
+  ui_accent: "#9CFA50"
+  ui_label: "#41D63C"
+  prompt: "#F7F2E8"
+  input_rule: "#9AB840"
+  response_border: "#98C75A"
+  status_bar_bg: "#17151B"
+  session_label: "#D3F56E"
+  session_border: "#58662E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Duke Zepar"
+  welcome: "Duke Zepar office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Duke Zepar "
+  prompt_symbol: "◇"
+  help_header: "Duke Zepar Command Interface"
+tool_prefix: "│"

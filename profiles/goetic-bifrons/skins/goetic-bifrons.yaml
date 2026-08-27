@@ -1,0 +1,32 @@
+name: goetic-bifrons
+description: "Earl Bifrons symbolic court skin"
+colors:
+  banner_border: "#203F9E"
+  banner_title: "#567DF5"
+  banner_accent: "#4E20E6"
+  banner_dim: "#222D4C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#5850FA"
+  ui_label: "#843CD6"
+  prompt: "#F7F2E8"
+  input_rule: "#405EB8"
+  response_border: "#5A61C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6E90F5"
+  session_border: "#2E3C66"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Earl Bifrons"
+  welcome: "Earl Bifrons office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Earl Bifrons "
+  prompt_symbol: "◇"
+  help_header: "Earl Bifrons Command Interface"
+tool_prefix: "│"

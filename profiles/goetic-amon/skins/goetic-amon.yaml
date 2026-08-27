@@ -1,0 +1,32 @@
+name: goetic-amon
+description: "Marquis Amon symbolic court skin"
+colors:
+  banner_border: "#9E5F20"
+  banner_title: "#F5A556"
+  banner_accent: "#E6E220"
+  banner_dim: "#4C3722"
+  banner_text: "#F7F2E8"
+  ui_accent: "#FAD850"
+  ui_label: "#B4D63C"
+  prompt: "#F7F2E8"
+  input_rule: "#B87C40"
+  response_border: "#C7A45A"
+  status_bar_bg: "#17151B"
+  session_label: "#F5B16E"
+  session_border: "#664A2E"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Amon"
+  welcome: "Marquis Amon office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Amon "
+  prompt_symbol: "◇"
+  help_header: "Marquis Amon Command Interface"
+tool_prefix: "│"

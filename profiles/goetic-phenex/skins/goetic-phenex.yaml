@@ -1,0 +1,32 @@
+name: goetic-phenex
+description: "Marquis Phenex symbolic court skin"
+colors:
+  banner_border: "#209E9E"
+  banner_title: "#56F5F5"
+  banner_accent: "#2087E6"
+  banner_dim: "#224C4C"
+  banner_text: "#F7F2E8"
+  ui_accent: "#50C7FA"
+  ui_label: "#3C67D6"
+  prompt: "#F7F2E8"
+  input_rule: "#40B8B8"
+  response_border: "#5AB3C7"
+  status_bar_bg: "#17151B"
+  session_label: "#6EF5F5"
+  session_border: "#2E6666"
+spinner:
+  waiting_faces: ["[·]", "[o]", "[O]", "[o]"]
+  thinking_faces: ["[◇]", "[◆]", "[◇]", "[·]"]
+  thinking_verbs:
+    - "establishing scope"
+    - "gathering evidence"
+    - "checking constraints"
+    - "assembling a verified response"
+branding:
+  agent_name: "Marquis Phenex"
+  welcome: "Marquis Phenex office online. State the objective."
+  goodbye: "Session closed."
+  response_label: " ◇ Marquis Phenex "
+  prompt_symbol: "◇"
+  help_header: "Marquis Phenex Command Interface"
+tool_prefix: "│"
