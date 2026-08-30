@@ -1,44 +1,51 @@
-# FleetGraph Architecture Ideas — ArXiv-Inspired
+# Architecture Ideas — FleetGraph
 
-> Each tick: 3 concrete PR-sized feature ideas grounded in `fleet_graph_core.py` + arxiv papers of the day.
-> Overwritten each tick. Ideas are inspiration, not requirements.
-
----
-
-## Tick: 2026-08-29
-
-Papers consulted:
-- **HiMA-MDD** (2608.21868) — hierarchical multi-agent harness with interpretable routing
-- **SPOQ** (2606.03115) — specialist-orchestrated queuing for multi-agent software engineering
-- **SafeFlow** (2607.25255) — semantic information-flow control for blocking malicious propagation in multi-agent systems
-- **Token Budgets** (2606.04056) — empirical catalog of 63 LLM-agent budget-overrun incidents
+Generated each tick from arxiv searches + codebase grounding.
+Papers are inspiration, not requirements.
 
 ---
 
-## 1. Delegation Contract Payloads in `can_delegate_to`
+## 2026-08-30 — 6 papers found (3 per query)
 
-**Concept:** Extend `can_delegate_to`'s `contract` dict from a depth-only gate into a structured delegation contract that carries task scope, budget constraints, and a capability hash. The caller passes `{max_depth, scope: "summarize_transcript", budget: 5000, capability: "fastembed"}` and the function validates both structural feasibility (subtree depth, subordinates exist) and semantic fit (does the recipient's subtree actually carry the requested capability, derived from a new `capabilities` field on each node in `fleet_graph.yaml`). This turns delegation from "can this node reach enough layers down" into "can this subtree do the job within budget." The FleetGraph dashboard's delegation composer (`plugin.js` message composer) would surface the contract fields as fillable slots, and `fleet_msg.py` would reject delegations that fail the capability check before they hit the wire.
+### 1. Delegation Contracts with Budget Guardrails
 
-**Files touched:** `fleet_graph_core.py` (`can_delegate_to`, new `node_capabilities` loader), `fleet_graph.yaml` (new optional `capabilities:` per-node), `fleet_msg.py` (contract enforcement on send), `plugin.js` (composer UI for contract fields), `plugin_api.py` (pass contract through `/send`).
+**Concept:** Extend `can_delegate_to()` from a purely structural check (does the recipient have subordinates? is the subtree deep enough?) into a full delegation contract system with budget guardrails. The Token Budgets paper (2606.04056) catalogs 63 real LLM-agent budget-overrun incidents — delegations that spiral because nobody bounded them. SPOQ (2606.03115) shows specialist-orchestrated queuing where work is split by capability and capacity, not just topology. FleetGraph already has the structural scaffolding (`subtree_nodes()`, `subtree_depth()`, `can_delegate_to()`); what's missing is the *contract* layer that says "this delegation is allowed structurally but costs X tokens / Y turns and the sender caps at Z."
 
-**Why it matters:** Right now delegation is purely topological — depth and subordinate presence. Real fleets need to delegate to the *right* subtree, not just any subtree deep enough. A capability-gated contract prevents the common failure mode of delegating a summarization task to a subtree whose leaves are all chat-only profiles. Grounded in SPOQ's specialist-orchestrated queuing insight: routing work to specialists, not just to whoever is reachable.
+**What changes:**
+- `fleet_graph_core.py`: Add `DelegationContract` typed dict (max_depth already partially supported, add max_tokens, max_turns, max_hops, expiry). Extend `can_delegate_to()` to validate against contract fields. Add `estimate_delegation_cost(graph, sender, recipient, contract)` returning a rough cost envelope (subtree size × depth × estimated per-node overhead). Add `delegation_chain_trace(graph, sender, recipient)` that returns the full delegation path with cost annotations per hop.
+- `fleet_msg.py`: Add `--contract` flag to `fleet_msg delegate` that carries the contract payload; reject at send-time if contract violated.
+- `dashboard/plugin_api.py`: New `POST /delegate/contract` endpoint that validates a contract against the graph before commitment; `GET /delegate/active` listing in-flight delegations with remaining budget.
+- `desktop-plugin/plugin.js`: Delegation composer gains a contract panel — sliders/fields for max_depth, token budget, turn limit — with live feasibility feedback from the API. Active delegations show as a separate deck in the UI with burn-down indicators.
 
----
-
-## 2. Information-Flow Policy Labels via `SafeFlow`-Style Taint Edges
-
-**Concept:** Add a lightweight per-edge policy label to the graph that classifies each supervisor/subordinate/peer link as one of `clear`, `review Required`, or `restricted`. The labels live in `fleet_graph.yaml` as an optional `flow_policy:` map (edge key → label) and are checked in `can_communicate` as an additional gate on top of the existing direction check. A `restricted` edge still allows communication but flags the message for human review ( surfaced as a `needs_review: true` field in the send response and rendered as an amber border in the dashboard composer). A `review_required` edge inserts a synthetic supervisor hop in the routing chain returned by `chain()` — the message routes through the reviewer node before reaching the recipient. This gives the fleet a tunable information-flow control layer inspired by SafeFlow's semantic taint tracking, without requiring a full IFC runtime.
-
-**Files touched:** `fleet_graph_core.py` (`can_communicate`, `chain`, new `load_flow_policy` + `check_flow_policy`), `fleet_graph.yaml` (new optional `flow_policy:` key), `plugin.js` (amber/review indicator in composer + node inspector), `plugin_api.py` (expose flow policy in `/overview` and `/send` response).
-
-**Why it matters:** FleetGraph's existing policy is binary — allowed or blocked by direction. Real multi-agent fleets leak sensitive context through otherwise-valid lateral sends. A taint-label layer on existing edges gives the operator graduated control (block, review, or clear) without restructuring the topology. Grounded in SafeFlow's finding that malicious propagation in multi-agent systems is best caught at the information-flow level, not at the agent-identity level.
+**Why it matters:** The current delegation check is a gate, not a guardrail. A bot can delegate to a subordinate with a deep subtree and no budget ceiling — structurally valid, operationally unbounded. Adding contracts turns delegation from "can I?" into "should I, and under what constraints?" That's the difference between a fleet that spirals and one that self-regulates. The Token Budgets paper's entire thesis is that budget overruns are the dominant failure mode in multi-agent systems; FleetGraph should be ahead of that curve.
 
 ---
 
-## 3. Budget-Aware Delegation Guard from Token-Budget Incident Patterns
+### 2. Information-Flow Policy Engine (SafeFlow-Inspired)
 
-**Concept:** Add a `budget_guard` check to `can_delegate_to` and the `/send` endpoint that estimates whether a delegation would exceed a node's known message budget. Each node in `fleet_graph.yaml` carries an optional `budget:` field (messages/day or tokens/day); `budget_guard` sums the recipient's remaining budget (derived from a simple rolling counter stored in `_meta.budget_state`) against the estimated cost of the delegation (contract.budget if present, else a default heuristic based on subtree leaf count). If the delegation would overflow the budget, the function returns `(False, "budget exceeded: ...")` instead of allowing the send. The dashboard's delegation composer shows remaining budget per node in the inspector, and `fleet_maint.py` gains a `reset_budgets` command that zeros `_meta.budget_state` on a schedule. Grounded in Token Budgets' catalog of 63 overrun incidents — the failure mode is real and repetitive; a guard in the topology layer catches it before the LLM call.
+**Concept:** `can_communicate()` currently enforces a structural policy: up to supervisor, down to subordinates, sideways to declared peers — everything else blocked. That's a *topology* policy, not a *data* policy. The SafeFlow paper (2607.25255) proposes semantic information-flow control: labeling messages by sensitivity class and enforcing propagation rules that restrict *what kind of content* can traverse *which kind of edge*. FleetGraph's architecture is ready for this — the graph already knows who can talk to whom; the missing piece is message classification and policy overlays that say "confidential messages cannot go peer-to-peer" or "restricted content only travels up the chain."
 
-**Files touched:** `fleet_graph_core.py` (`can_delegate_to` budget guard, new `load_budget_state` + `budget_guard`), `fleet_graph.yaml` (optional per-node `budget:` field), `_meta.budget_state` (new runtime counter in the yaml), `fleet_msg.py` (budget guard on delegate sends), `maintenance/fleet_maint.py` (`reset_budgets` command), `plugin.js` (budget display in node inspector).
+**What changes:**
+- `fleet_graph_core.py`: Add `MessageClass` enum (public, internal, confidential, restricted). Add `CommunicationPolicy` typed dict: per-class rules like `allowed_channels: list[Literal["up","down","peer","all"]]`, `requires_approval: bool`, `audit_log: bool`. Add `classify_message(content: str, policy: CommunicationPolicy) -> MessageClass` (rule-based or callable). Add `can_propagate(graph, relations, sender, recipient, msg_class, policy) -> tuple[bool, str]` — extends `can_communicate()` with class-aware channel restrictions. Add `policy_violation(graph, sender, recipient, msg_class, policy) -> dict` returning the violation detail for audit.
+- `fleet_msg.py`: Add `--class` flag to `fleet_msg send` (talk/delegate/supervisor frames). Reject at send-time if `can_propagate()` fails. Add `--policy` to point at a policy YAML for the fleet.
+- `dashboard/plugin_api.py`: New `GET /policy` and `PUT /policy` endpoints. Extend `POST /send` to accept `message_class` and enforce policy. Extend `GET /traffic` to include `message_class` in the traffic log. New `GET /violations?window=` returning recent policy violations.
+- `desktop-plugin/plugin.js`: Message composer gains a sensitivity selector (public/internal/confidential/restricted) that's enforced server-side. Policy violations in the traffic log are highlighted. The graph canvas shows policy-aware channel coloring — e.g., peer edges dimmed for restricted traffic.
 
-**Why it matters:** The existing `can_delegate_to` checks structural capacity but not resource capacity. A delegation that cascades through a subtree can burn through a leaf node's message budget in one afternoon, and the fleet only discovers this when messages start failing. A budget guard at the topology-validation layer — the same place that already rejects cycles and unknown profiles — catches the overflow before any LLM call is made. Grounded in Token Budgets' empirical finding that budget overruns are the most common multi-agent incident category and are cheapest to prevent at the routing layer.
+**Why it matters:** The current model treats all messages as equal — a bot's casual chat and a bot's credential-bearing instruction traverse the same channels with the same permissions. That's the wrong default for a fleet that includes adversarial figures (Lore, Garak, Dukat in the Red Team). SafeFlow's insight is that multi-agent systems fail when malicious or sensitive content propagates through channels that were open for benign traffic. FleetGraph's topology is the enforcement surface; adding class-aware policy makes it a real security boundary instead of just an org chart.
+
+---
+
+### 3. What-If Topology Simulation + Failure Cascade Analysis
+
+**Concept:** FleetGraph has a `/simulate` endpoint and pure-graph functions (`chain()`, `subtree_nodes()`, `subtree_depth()`, `describe()`) that could power much richer simulation. The HiMA-MDD paper (2608.21868) demonstrates hierarchical multi-agent harnesses where the hierarchy itself is the interpretable output — you can see *why* a decision flowed the way it did. AGENTSERVESIM (2606.09613) shows hardware-aware agent simulation where you model capacity and load before deploying. FleetGraph should let operators ask: "what happens to the communication graph if I detach Worf from his current supervisor and attach him under Picard?" or "if sophia goes down, what's the cascade radius?" — and see the answer visually before committing.
+
+**What changes:**
+- `fleet_graph_core.py`: Add `simulate_topology_change(graph, relations, proposed_changes: list[dict]) -> dict` — accepts a list of {action: "detach"|"attach"|"peer_add"|"peer_remove", profile, target} operations, applies them to a *copy* of the graph, returns the normalized result plus a diff against the original (added edges, removed edges, changed supervisors). Add `failure_cascade(graph, relations, failed_node: str) -> dict` — returns the set of nodes that lose their communication path to the root (or to peers) if `failed_node` goes down, the cascade depth, and which nodes become orphaned (no supervisor, no peer path). Add `load_estimate(graph, relations, node: str, window_hours: int) -> dict` — rough estimate of message volume for a node based on subtree size, peer count, and an assumed per-edge per-hour rate. Add `what_ifDelegation(graph, sender, recipient, contract) -> dict` — simulates a delegation under a contract without committing it; returns the projected delegation tree and cost envelope.
+- `dashboard/plugin_api.py`: Enhance `POST /simulate` to accept what-if operations (not just chain-of-command traces). Add `POST /what-if/topology` and `POST /what-if/failure` endpoints that return the simulation result. Add `GET /what-if/cascade/{node}` convenience endpoint.
+- `desktop-plugin/plugin.js`: Graph canvas gains a "what-if mode" — operator selects a node, chooses an action (detach/attach/peer add/failure simulate), and the canvas shows the *projected* topology as a translucent overlay on the current topology, with cascade radii highlighted in red. The simulation panel shows the diff: "Worf would move from pylons to picard; 3 edges added, 2 removed; cascade radius if picard fails: 7 nodes."
+
+**Why it matters:** The current rewire inline feature lets operators change topology, but it's commit-first, inspect-later. That's fine for small fleets but dangerous for a 75-node DAG with peer relations, where a single detach can silently orphan multiple subordinates or break peer communication paths. HiMA-MDD's insight is that hierarchy is *interpretable* — you can see the structure and reason about it. FleetGraph should make topology changes *reversible in imagination* before they're irreversible on disk. The failure cascade analysis is especially relevant for the Primordial Triad's 4-root structure: if one root goes down, which directorates are affected and which are insulated by the peer topology?
+
+---
+
+*Generated from arxiv searches: "multi-agent orchestration hierarchy" (HiMA-MDD 2608.21868, AGENTSERVESIM 2606.09613, SPOQ 2606.03115) and "agent organization structure delegation" (Delegated Fair Division 2607.27743, SafeFlow 2607.25255, Token Budgets 2606.04056).*
