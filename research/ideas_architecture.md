@@ -1,56 +1,44 @@
-# FleetGraph Architecture Ideas — Tick Archive
+# FleetGraph Architecture Ideas — ArXiv-Inspired
 
-> Each tick: 2 arxiv searches → 3 PR-sized ideas grounded in the codebase.
-> Papers are inspiration, not requirements. If no papers found, ideas come from codebase alone.
-
----
-
-## Tick: 2026-08-27
-
-### Papers consulted
-- **SafeFlow** (2607.25255) — semantic taint propagation through collaboration graphs; workflow-level validation before irreversible actions
-- **HiMA-MDD** (2608.21868) — three-layer agent hierarchy with bounded feedback, Hierarchical Evidence Trace for auditability
-- **SPOQ** (2606.03115) — wave-based topological dispatch from dependency graphs; dual validation gates; Human-as-Agent integration
-- Secondary: Delegated Fair Division (2607.27743), Token Budgets catalog (2606.04056), AGENTSERVESIM (2606.09613)
+> Each tick: 3 concrete PR-sized feature ideas grounded in `fleet_graph_core.py` + arxiv papers of the day.
+> Overwritten each tick. Ideas are inspiration, not requirements.
 
 ---
 
-### Idea 1: Semantic Taint Propagation Through the Communication Graph
+## Tick: 2026-08-29
 
-**Concept:** FleetGraph's `can_communicate()` already gates every inter-bot message by topology role (up/down/peer/blocked). SafeFlow's core insight is that danger isn't in individual messages — it's in *semantic intent* that gets fragmented across delegation boundaries and evades any single agent's judgment. Extend `fleet_msg.py` and `fleet_graph_core.py` with an optional taint label attached to outbound messages: a structured tag (e.g. `sensitive`, `executable`, `financial`, `personally-identifying`) that propagates through the org chart whenever the message is forwarded, delegated, or escalated. The dashboard's `POST /send` endpoint would surface taint status in the composer UI (color-coded border on the message card), and `fleet_graph_core.can_communicate` could optionally refuse to route tainted messages laterally — forcing sensitive intent up the supervisor chain where the responsible authority sees the full context before it fragments. This is a **policy toggle**, not a hard block: operators enable taint propagation per-graph via `_meta.taint_policy: true`, so existing flat deployments are untouched.
-
-**Files touched:**
-- `fleet_graph_core.py` — add `MessageTaint` dataclass + optional taint check in `can_communicate` (new optional param, backwards-compatible)
-- `fleet_msg.py` — attach taint label on outbound CLI messages; propagate taint on delegate/forward
-- `dashboard/plugin_api.py` — surface taint in `POST /send` request schema + response; add `GET /taint/{profile}` for current taint state
-- `desktop-plugin/plugin.js` — composer UI: taint selector dropdown + visual indicator on sent/forwarded cards
-
-**Why it matters:** The fleet's current security model is structural (who can talk to whom) but not semantic (what the message *means*). A bot that's allowed to delegate to a subordinate can inadvertently propagate a dangerous instruction that looks locally benign — exactly the fragmentation attack SafeFlow describes. Taint propagation preserves risk semantics across delegation boundaries without changing the topology, and the supervisor chain becomes a natural audit point for sensitive workflows. This turns FleetGraph from a communication *router* into a communication *accountability layer*.
+Papers consulted:
+- **HiMA-MDD** (2608.21868) — hierarchical multi-agent harness with interpretable routing
+- **SPOQ** (2606.03115) — specialist-orchestrated queuing for multi-agent software engineering
+- **SafeFlow** (2607.25255) — semantic information-flow control for blocking malicious propagation in multi-agent systems
+- **Token Budgets** (2606.04056) — empirical catalog of 63 LLM-agent budget-overrun incidents
 
 ---
 
-### Idea 2: Wave-Based Parallel Dispatch from the Fleet DAG
+## 1. Delegation Contract Payloads in `can_delegate_to`
 
-**Concept:** SPOQ computes parallel execution waves from a task dependency graph — nodes that share no dependencies fire in the same wave, and the scheduler approaches the critical-path lower bound. FleetGraph already has the DAG (the org chart in `fleet_graph.yaml`), but it only uses it for *routing* messages, not for *scheduling work*. Add a `compute_dispatch_waves(graph, root_profiles)` function to `fleet_graph_core.py` that topologically sorts the DAG and returns wave assignments: every bot whose supervisor is in an earlier wave gets assigned to the next wave, so the tower of `baal → lilith → hermes → thoth → ...` becomes wave 0/1/2/3/..., and all peers at the same depth fire together. The dashboard's `POST /simulate` endpoint (chain-of-command simulation) would gain a `mode=waves` option that returns the wave assignment + estimated wall-clock assuming each wave runs in parallel. The desktop plugin's deck view could color-code nodes by wave, so the operator sees the fleet's parallelism capacity at a glance — not just who reports to whom, but which groups can execute concurrently.
+**Concept:** Extend `can_delegate_to`'s `contract` dict from a depth-only gate into a structured delegation contract that carries task scope, budget constraints, and a capability hash. The caller passes `{max_depth, scope: "summarize_transcript", budget: 5000, capability: "fastembed"}` and the function validates both structural feasibility (subtree depth, subordinates exist) and semantic fit (does the recipient's subtree actually carry the requested capability, derived from a new `capabilities` field on each node in `fleet_graph.yaml`). This turns delegation from "can this node reach enough layers down" into "can this subtree do the job within budget." The FleetGraph dashboard's delegation composer (`plugin.js` message composer) would surface the contract fields as fillable slots, and `fleet_msg.py` would reject delegations that fail the capability check before they hit the wire.
 
-**Files touched:**
-- `fleet_graph_core.py` — new `compute_dispatch_waves(graph, roots=None) → dict[str, int]`; `chain()` already traverses the supervisor tree, this is the parallel cousin
-- `dashboard/plugin_api.py` — extend `POST /simulate` with `mode: "waves"` response schema; add `GET /waves` standalone endpoint
-- `desktop-plugin/plugin.js` — deck view: wave badge on each node card; graph canvas: wave-colored layer bands behind nodes
-- `topology/fleet_graph.yaml` — optional `_meta.default_roots:` to declare dispatch roots (lilith, lucifer, yeshua) without hardcoding
+**Files touched:** `fleet_graph_core.py` (`can_delegate_to`, new `node_capabilities` loader), `fleet_graph.yaml` (new optional `capabilities:` per-node), `fleet_msg.py` (contract enforcement on send), `plugin.js` (composer UI for contract fields), `plugin_api.py` (pass contract through `/send`).
 
-**Why it matters:** The fleet's current simulation is purely sequential (chain of command, one message at a time). For a 68-node fleet with peer relations and multiple roots, that's a gross underestimate of what the topology *could* do. Wave dispatch turns the org chart into a parallelism blueprint — operators can see that `data` and `spock` (peers) can run the same task in parallel, that the DS9 and Voyager directorates are independent waves, and that the critical path through `baal → lilith → hermes → default` is the bottleneck. This is especially relevant for the Primordial Triad's four-root structure: wave dispatch makes the multi-root design *operationally visible* rather than just topologically declared.
+**Why it matters:** Right now delegation is purely topological — depth and subordinate presence. Real fleets need to delegate to the *right* subtree, not just any subtree deep enough. A capability-gated contract prevents the common failure mode of delegating a summarization task to a subtree whose leaves are all chat-only profiles. Grounded in SPOQ's specialist-orchestrated queuing insight: routing work to specialists, not just to whoever is reachable.
 
 ---
 
-### Idea 3: Hierarchical Evidence Trace — Summary Propagation with Audit Trail
+## 2. Information-Flow Policy Labels via `SafeFlow`-Style Taint Edges
 
-**Concept:** HiMA-MDD's three-layer hierarchy (evidence routing → specialist judgment → audit reconciliation) produces a *Hierarchical Evidence Trace* — every intermediate judgment, revision, and final decision is preserved and reconstructable. FleetGraph's supervisor/subordinate chains already form a natural three-layer structure for many workflows (frontline bot → supervisor → director), but there's no mechanism for a subordinate's output to bubble up as a structured *summary* rather than a raw message, and no audit trail of what was concluded at each level. Add a `summarize_up(graph, profile, payload, relations)` function to `fleet_graph_core.py` that, given a bot's work output, walks up the supervisor chain and produces a layered summary: the bot's raw conclusion, its supervisor's assessment (optional, if the supervisor is in the fleet), and the next-level synthesis, stopping at the root or at a bot that has no supervisor. Each layer is timestamped and tagged with the bot profile, producing a reconstructable chain-of-conclusion trace. The dashboard's `GET /sessions/{n}/messages` would gain an `?trace=1` option that returns the message chain with summary layers interleaved, so an operator can see not just *what was said* but *what was concluded at each level*. The desktop plugin's inspector panel would show the trace as a stacked card (bot → supervisor → director) rather than a flat thread.
+**Concept:** Add a lightweight per-edge policy label to the graph that classifies each supervisor/subordinate/peer link as one of `clear`, `review Required`, or `restricted`. The labels live in `fleet_graph.yaml` as an optional `flow_policy:` map (edge key → label) and are checked in `can_communicate` as an additional gate on top of the existing direction check. A `restricted` edge still allows communication but flags the message for human review ( surfaced as a `needs_review: true` field in the send response and rendered as an amber border in the dashboard composer). A `review_required` edge inserts a synthetic supervisor hop in the routing chain returned by `chain()` — the message routes through the reviewer node before reaching the recipient. This gives the fleet a tunable information-flow control layer inspired by SafeFlow's semantic taint tracking, without requiring a full IFC runtime.
 
-**Files touched:**
-- `fleet_graph_core.py` — new `summarize_up(graph, profile, payload, relations=None) → list[dict]`; `describe()` already walks all nodes, this is the upward-summary cousin
-- `fleet_msg.py` — optional `—summarize` flag on delegate that attaches a summary layer instead of raw forwarding
-- `dashboard/plugin_api.py` — `GET /sessions/{n}/messages?trace=1` returns interleaved summary layers; `POST /send` gains optional `summary` payload field
-- `desktop-plugin/plugin.js` — inspector panel: trace view with layered cards (bot layer, supervisor layer, director layer) + timestamp + profile tag on each
+**Files touched:** `fleet_graph_core.py` (`can_communicate`, `chain`, new `load_flow_policy` + `check_flow_policy`), `fleet_graph.yaml` (new optional `flow_policy:` key), `plugin.js` (amber/review indicator in composer + node inspector), `plugin_api.py` (expose flow policy in `/overview` and `/send` response).
 
-**Why it matters:** Right now, if `spock` delegates a finding to `picard` (supervisor), the operator sees two messages in the inbox: spock's raw output and picard's response. There's no structured record of *what spock concluded, what picard assessed it as, and whether the conclusion changed at the supervisor layer*. For a fleet doing substantive work (legal review via yeshua, red-team analysis via lucifer, infrastructure via hermes), that chain-of-conclusion trace is the difference between "the fleet said X" and "spock concluded X, picard assessed it as Y, and here's the evidence at each layer." HiMA-MDD's Hierarchical Evidence Trace is the direct inspiration: it's not about adding more agents, it's about making the existing hierarchy's *reasoning visible* rather than implicit in a flat message log. This also creates natural audit points — if a conclusion changes between layers, that's a flag the operator can see, not a silent rewrite.
+**Why it matters:** FleetGraph's existing policy is binary — allowed or blocked by direction. Real multi-agent fleets leak sensitive context through otherwise-valid lateral sends. A taint-label layer on existing edges gives the operator graduated control (block, review, or clear) without restructuring the topology. Grounded in SafeFlow's finding that malicious propagation in multi-agent systems is best caught at the information-flow level, not at the agent-identity level.
+
+---
+
+## 3. Budget-Aware Delegation Guard from Token-Budget Incident Patterns
+
+**Concept:** Add a `budget_guard` check to `can_delegate_to` and the `/send` endpoint that estimates whether a delegation would exceed a node's known message budget. Each node in `fleet_graph.yaml` carries an optional `budget:` field (messages/day or tokens/day); `budget_guard` sums the recipient's remaining budget (derived from a simple rolling counter stored in `_meta.budget_state`) against the estimated cost of the delegation (contract.budget if present, else a default heuristic based on subtree leaf count). If the delegation would overflow the budget, the function returns `(False, "budget exceeded: ...")` instead of allowing the send. The dashboard's delegation composer shows remaining budget per node in the inspector, and `fleet_maint.py` gains a `reset_budgets` command that zeros `_meta.budget_state` on a schedule. Grounded in Token Budgets' catalog of 63 overrun incidents — the failure mode is real and repetitive; a guard in the topology layer catches it before the LLM call.
+
+**Files touched:** `fleet_graph_core.py` (`can_delegate_to` budget guard, new `load_budget_state` + `budget_guard`), `fleet_graph.yaml` (optional per-node `budget:` field), `_meta.budget_state` (new runtime counter in the yaml), `fleet_msg.py` (budget guard on delegate sends), `maintenance/fleet_maint.py` (`reset_budgets` command), `plugin.js` (budget display in node inspector).
+
+**Why it matters:** The existing `can_delegate_to` checks structural capacity but not resource capacity. A delegation that cascades through a subtree can burn through a leaf node's message budget in one afternoon, and the fleet only discovers this when messages start failing. A budget guard at the topology-validation layer — the same place that already rejects cycles and unknown profiles — catches the overflow before any LLM call is made. Grounded in Token Budgets' empirical finding that budget overruns are the most common multi-agent incident category and are cheapest to prevent at the routing layer.
