@@ -1,325 +1,148 @@
-# FleetGraph Synthesis — Ludicrous Speed Command Center
+# FleetGraph Synthesis — Tick 2026-08-31
 
-**Tick:** 2026-08-31 EDT · **Engine:** kairos-dream cycle · **Source:** fleet_graph_core.py, fleet_msg.py, plugin_api.py, plugin.yaml, README.md, fleet_graph.yaml, arxiv_digest.md, ideas_architecture.md, research/
+**Style:** kairos-dream synthesis — codebase state × arxiv digest × fleet memory × current research surface  
+**Scope:** `ludicrous-speed/` FleetGraph plugin (not the broader Lilith monolith)  
+**Overwrite policy:** current tick replaces last; no accumulation, no drift
 
 ---
 
-## 1. Current State of the Codebase
+## 1. Current state of the codebase
 
-### What's Implemented
+### What is actually implemented
 
-**Core Topology Engine** (`fleet_graph_core.py`, 437 lines)
-- Single-source-of-truth module shared by CLI and dashboard — no drift allowed
-- YAML graph load with `_meta.relations` authoritative storage layout
-- Full normalization pipeline: supervisor/subordinate resolution, contradiction dropping, self-edge detection, multi-supervisor rejection, cycle detection via effective-supervisor traversal, materialized implied supervisors
-- Policy layer: `can_communicate()` (up/down/peer/blocked with reason strings), `can_delegate_to()` (structural subtree feasibility + optional contract depth check)
-- Graph surgery: `save_graph()` with atomic write + Windows retry backoff, `normalize_relations()` with symmetric peer derivation and validation
-- Pure graph utilities: `subtree_nodes()` (BFS), `subtree_depth()`, `chain()`, `describe()`
-- Alias resolution via `_meta.profile_aliases` — graph-facing node names can differ from canonical Hermes profile names
+**Core engine:** `fleet_graph_core.py` is the single source of truth for topology. It reads/validates/normalizes `~/.hermes/fleet_graph.yaml`, keeps `subordinates` derived rather than duplicated, and enforces one-supervisor-per-node with cycle, self-edge, and known-node checks. Peer relations live under `_meta.relations`, symmetrized on load, with a legacy `peers:` fallback still supported. Communication policy is simple and strict: up to supervisor, down to own subordinates, sideways only to declared peers. The engine also has pure-graph helpers for `chain()`, `subtree_nodes()`, `subtree_depth()`, and a contract-aware `can_delegate_to()`.
 
-**Inter-Bot Messaging CLI** (`fleet_msg.py`, 164 lines)
-- `send` — validates edge, writes JSONL inbox, optional live delivery via `hermes -p <target> chat`
-- `inbox` — drainable message list per profile, malformed-line tolerant
-- `show` — full topology dump as JSON
-- JSON refusal contract on every error path (no raw tracebacks)
-- Edge-kind header decoration (supervisor/subordinate/peer framing)
+**Messaging:** `fleet_msg.py` is the sanctioned inter-bot channel. It validates the edge against the live graph, appends to a per-profile JSONL inbox, and supports an optional blocking `--deliver` live turn. On GraphError it refuses in JSON instead of leaking a traceback.
 
-**Dashboard Backend** (`plugin_api.py`, 1020 lines)
-- 20+ REST endpoints under `/api/plugins/fleet-graph/`
-- **Topology:** `/overview[?light=1]` (full paint payload with session tails, inbox pressure, depth, unassigned profiles), `/graph`, `/graph/summary`, `/relations`, `/delegate-check`
-- **Messaging:** `/send` (validated talk/delegate/supervisor frames), `/simulate` (dry-run policy check)
-- **Inbox:** `/inbox/{profile}`, `/inbox/{profile}/read` (watermark-based unread tracking), `DELETE /inbox/{profile}` (drain + clear watermark)
-- **Activity:** `/sessions/tail`, `/sessions/{name}/messages` (transcript tail with content extraction from JSON payloads)
-- **Capability:** `/roster` (derived capability summaries from profile.yaml + SOUL.md + config.yaml toolsets), `/match` (semantic ranking via fastembed + mxbai-embed-large-v1, local onnx, cached by file mtime)
-- **SOUL editor:** `GET/PUT /soul/{name}` (default profile write-guarded)
-- **Avatar:** `GET /avatar/{name}` (base64 data URL from profile assets/)
-- **Traffic:** `/traffic?window=` (recent inter-agent messages for edge glow)
-- **Graph mutation:** `PUT /graph` (replace topology + relations), `PUT /relations` (replace peer map)
-- Watermark system: per-profile `.read/<name>.json` with `last_read_ts` + `count_at_read`
+**Dashboard API:** `dashboard/plugin_api.py` is a large FastAPI surface sitting on top of the same core module. It exposes overview, graph, relations, soul read/write, inbox read/drain, sessions tail, session messages, traffic, roster, semantic `/match`, simulate, delegate-check, and avatar by data URL. It adds per-profile unread watermarks, session-status freshness logic, and local embedding-based specialist ranking. All reads/writes route through `fleet_graph_core`, so the CLI, API, and bots cannot drift from one another.
 
-**Fleet Topology** (`topology/fleet_graph.yaml`, 155 nodes, 1009 lines)
-- **Primordial Triad** — 4 co-equal roots: baal (The King), lilith (Fleet Commander), lucifer (Red Team), yeshua (Legal & Ethics)
-- **Chief of Staff:** hermes → default + engineering directorates
-- **Directorates:** sophia, lucifer, thoth, nyx, ouroboros, yeshua
-- **Star Trek profiles:** 68 personas across TOS/TNG/DS9/Voyager + Red Team
-- **Goetic Court:** 72 officers across 7 ranks (Kings → Knights) with symbolic offices
-- **Peer relations:** Data↔Spock, Worf↔Tuvok, Lucifer↔Yeshua
+**Desktop plugin:** `desktop-plugin/plugin.js` is the UI face — 1967 lines of React/JS implementing the graph canvas, deck view, inspector, message composer with validated frames, soul editor, avatar upload, and live activity tail behavior.
 
-**Fleet Maintenance** (`maintenance/fleet_maint.py` + `test_fleet_maint.py`)
-- 24/24 hermetic tests
-- `prune` — removes deleted-profile traces from topology, relations, inboxes, watermarks in one atomic write
-- `rotate` — caps inboxes at FLEET_INBOX_MAX (500), clamps watermarks
-- `status` — read-only health snapshot
+**Topology content:** `topology/fleet_graph.yaml` is a 75-node DAG with the Primordial Triad structure and four co-equal roots. Profiles are 68 installable Star Trek personas. The plugin manifest is at `plugin.yaml`, currently `fleet-graph v0.6.1`.
 
-**Desktop Plugin** (`desktop-plugin/plugin.js`)
-- Graph canvas (layered DAG, pan/zoom, click-to-inspect)
-- Deck view (team-grouped cards, NEEDS ATTENTION triage)
-- Live activity (4s transcript polling, status dots, unread badges)
-- Message composer (talk/delegate/supervisor frames, server-side validation)
-- SOUL editor, semantic routing (`/match`), rewire inline, member creation
+**Fleet memory bridge:** The concurrent-bidirectional-memory engine is graphed into Spock as `lilith-bidirectional-memory`, and its live SQLite store is live at `/home/tehlappy/🜏 Lilith/_shared/memory/state/bidirectional_memory.sqlite`.
 
-**Spock Memory Bridge** (`scripts/spock_memory.py`)
-- Bridges bidirectional memory live store into fleet code graph via `memory` subcommand
-- `memory recall --depth 3` runs Doorway-Effect RECALL
-- `memory export` dumps live rows to JSONL
-- `memory reindex` exports + regraphs the engine project
+### Live counts in this tick
 
-**Research Layer** — 20+ documents across multiple subdirectories:
-- `arxiv_digest.md` — latest scout tick (2026-08-27), 9 carried-forward papers, 3 threads
-- `arxiv_synthesis.md` — 12 papers mapped to fleet components (4 threads)
-- `ideas_architecture.md` — 6 papers → 3 PR-sized architecture ideas per tick
-- `ideas_ux.md` — Fleet Activity Heatmap, Situation Report digest, Fleet Timeline
-- `ideas_messaging.md` — Priority tiers, TTL/expiry, threaded replies
-- `smith-chart/convergence-thesis.md` — full academic paper mapping 20 philosophers to fleet architecture
-- `consciousness/README.md` — service unification for 4 consciousness scripts (sephirotic-forge primary)
-- `quantum-physics-computing-council-of-twenty-grounded-2026-08-28.md` — grounded philosophy corrections + Q-Link physics grounding
-- `local-cloud-4b-quantum-link-three-tier-2026-08-28.md` — Q-Link 0/1/2 architecture for local/cloud/26B cooperation
-- `lightning-4b-cyberpunk-forge-three-tier-2026-08-28.md` — Cyberpunk Forge training research
-- `fleetgraph-pr-landscape/` — PR #1 reply draft, landscape synthesis, arxiv scout
+- Engine core: 437 lines  
+- Messaging CLI: 164 lines  
+- Dashboard API: 1020 lines  
+- Desktop plugin: 1967 lines  
+- Fleet topology file: 1009 lines  
+- Fleet inbox files present: 4  
+- Bidirectional memory store: `bidirectional_memory_state` 1523 rows, `bidirectional_memory_run` 734 rows, episodic layer 0 rows
 
-### What's Deferred
+### What is deferred or missing
 
-- `desktop-plugin/plugin.js` — JS layer current state relative to backend's newer endpoints (`/delegate-check`, `?light=1`, watermark-based unread) unverified this tick
-- Fleet behavior integration tests — proposed in arxiv_synthesis.md, not yet created
-- Profile scenario test battery — proposed, not yet created
-- `verify_intent()` pre-flight — proposed, not yet implemented
-- Congestion prediction layer — proposed, not yet implemented
-- Memory budget estimation — proposed, not yet implemented
-- Security tier field in topology YAML — proposed, not yet implemented
-- Runtime contract formalization for Void profiles — proposed, not yet implemented
-- Research scout pipeline automation — partially addressed by `sync_research.py`, but full fetch→extract→distill→dedup pipeline not yet built
-- `/heartbeat` SSE endpoint (AgentRadio-inspired) — proposed, not yet implemented
-- Semantic flow tags (APPA-lite) — parked pending maintainer buy-in
-- Canvas virtualization beyond 26 nodes — explicitly out of scope
+- No ack/reply protocol; senders cannot tell whether a message was processed  
+- No message priority, TTL, or urgent/escalate-fast path  
+- No reply threading; the inbox is flat JSONL without `reply_to`/`thread_id`  
+- No bot lifecycle status field on graph nodes  
+- No inter-bot protocol schema; headers are ad-hoc strings  
+- No delivery reliability, retry, or dead-letter handling for `--deliver` failures  
+- No graph versioning or rollback; topology edits are overwrites  
+- Semantic matching can rank but does not dispatch; there is no one-call handoff  
+- Arxiv digest is currently stale from 2026-08-27  
+- The 72-seat Goetic Court is discussed in research but not materialized in the fleet graph  
+- Void runtime exists in the repo but is not wired into the fleet topology or plugin API
 
 ---
 
 ## 2. Strengths
 
-### SSOT Discipline
-`fleet_graph_core.py` is imported by both `fleet_msg.py` and `plugin_api.py`. Every topology read/write goes through the same normalization, validation, and storage code. The CLI, the REST API, and the bots can never drift. The maintenance folder inherits this through `save_graph` — it reimplements nothing. This architecture has survived feature additions (maintenance, delegation feasibility) without compromise.
+1. **One SSOT, three consumers, no drift.** The core module owns YAML read/write/validation, and CLI, dashboard API, and bots all use that same code path. That is the strongest architectural decision in the repo.
 
-### Validation Depth
-The normalization pipeline catches real pathologies: unknown profile references, self-edges (explicit and derived), multiple supervisors, cycles (including cycles declared entirely via subordinates), supervisor/peer/subordinate role collisions, corrupt YAML. Every rejection returns a human-readable reason. The `GraphError` contract flows through to `fleet_msg` JSON refusal and `plugin_api` 422/500 responses consistently.
+2. **Pure graph functions.** `can_communicate()`, `can_delegate_to()`, `chain()`, `subtree_nodes()`, and `subtree_depth()` are stateless and host-independent. That makes them testable in isolation and reusable as building blocks.
 
-### Policy Layer Separation
-`can_communicate()` (edge policy) and `can_delegate_to()` (structural feasibility) are pure graph functions — no profile reads, no host coupling. This makes them testable in isolation and composable: the dashboard's `/send` and `/delegate-check` endpoints layer contract checks on top without touching the core logic.
+3. **File-based durability at this scale.** JSONL inboxes, JSON watermarks, and YAML topology avoid database migration overhead and stay inspectable with ordinary tools.
 
-### Inbox + Watermark System
-The JSONL inbox + `.read/<name>.json` watermark is lightweight and correct. Unread = total − count_at_read, clamped to zero. The mark-read endpoint supports three modes (everything, count N, ts cutoff) without a database. Draining clears both the inbox and the watermark. Rotation preserves watermark correctness.
+4. **Graceful degradation.** Corrupt YAML, missing profiles, missing state.db, failed embeddings, and unwritable watermark dirs all have explicit fallback or error behavior instead of silent breakage.
 
-### Semantic Routing
-`/match` uses fastembed + mxbai-embed-large-v1 locally (no API cost). The embedding cache is invalidates by file mtime on SOUL.md and profile.yaml — rebuilds lazily only when a profile's capability doc changes. The capability doc combines title, summary, keywords (filtered through a 30+ stopword list), and toolsets.
+5. **Semantic routing with no external dependency.** Local fastembed, lazy index, mtime-based rebuild. Any agent can find a likely specialist without an API call leaving the machine.
 
-### Live Activity Without Sockets
-`_latest_session()` reads the profile's state.db via `hermes_state.SessionDB`, resolves compression-continuation tips, and reclassifies "interrupted" → "active" when the session was touched in the last 3 minutes. This lets the graph canvas paint "this bot is thinking" without holding N live gateway sockets. The `?light=1` overview mode skips these lookups entirely for fast polling.
+6. **Intentional topology.** Four co-equal roots with red-team and ethics peers, not subordinates, gives the fleet a real organizational shape instead of a flat list.
 
-### Atomic Writes with Windows Support
-`save_graph()` writes to a unique temp file, calls `fsync`, then `os.replace()` with exponential backoff retry on `PermissionError`/`OSError`. This handles the Windows NTFS exclusive-rename race. Inbox rotation inherits the same pattern.
+7. **Session freshness awareness.** The `interrupted` to `active` reclassification for recently touched sessions prevents the UI from misreading a bot as abandoned while it is mid-turn.
 
-### Capability Summary Derivation
-`_capability_summary()` is profile-agnostic — it derives what each bot is good at from files every profile already has (profile.yaml description, SOUL.md headline + first "You are" sentence, config.yaml toolsets). No hardcoded fleet knowledge required.
+8. **Profile-agnostic capability summary.** The roster derives keywords and summaries from SOUL.md, profile.yaml, and toolsets, with a stopword filter. New profiles become routable without hardcoding their identities.
 
-### Research Pipeline Maturity
-The research layer has evolved from a single synthesis document into a multi-tier ecosystem: arxiv scout ticks, architecture ideas, UX ideas, messaging ideas, a full Convergence Thesis paper, quantum physics grounding, Q-Link architecture, and Cyberpunk Forge training research. The `sync_research.py` script bridges research into the dream-logger engram store.
+9. **Fleet memory is wired in.** The Spock bridge makes the bidirectional memory engine reachable from the fleet code graph rather than leaving it as a disconnected skill.
 
 ---
 
-## 3. Gaps and Opportunities
+## 3. Gaps and opportunities
 
-### No Pre-Send Simulation
-An operator rewires the topology, saves, and discovers consequences by watching messages flow — or by not watching and missing a broken route. `/simulate` only checks one sender/recipient pair — it doesn't model structural consequences of a graph change.
+The biggest structural gap is still bidirectional messaging. The current system can send and poll, but it cannot acknowledge, reply, thread, or reliably re-deliver. That limits FleetGraph to a broadcast-and-hope pattern rather than a supervised coordination fabric.
 
-### Routing Is Opaque
-`chain()` returns `["baal", "hermes", "spock"]`. The operator has to mentally reconstruct *why* each hop exists. In a 155-node topology with derived supervisors and peer relations, this opacity makes re-wiring risky.
+The second gap is orchestration depth. The graph already models who can talk to whom; what it does not yet model well is how work moves through that structure with contracts, deadlines, fulfillment state, and policy labels. The topology is strong at authorization, weaker at workflow.
 
-### No Delegation Fairness
-Nothing prevents repeated delegation to the same subtree. There is no share cap, no rolling delegation count, no fairness gate. Over time, unused subtrees lose readiness.
+The third gap is observability between polls. A 4-second dashboard poll is good for a calm fleet and weak for a reactive one. If a bot discovers something important mid-cycle, the current surface is not built to push that out immediately.
 
-### No Congestion Prediction
-`/traffic` shows recent messages, `fleet_maint rotate` caps inboxes, but there is no prediction layer that flags bottleneck risk *before* the cap is hit.
+Concrete opportunities:
 
-### No Memory Budget Estimation
-`subtree_nodes()` and `subtree_depth()` exist, but there is no `memory_budget()` method that estimates per-node state cost and flags when a subtree exceeds a threshold.
-
-### Message Content Lacks Structured Fields
-Inboxes are JSONL with `ts, from, type, task, summary`. The `summary` is a 500-char free-text truncation. No structured payload field, no evidence pointer, no upstream source tracking.
-
-### No Fleet-Level Episodic Memory
-Topology changes leave no history trail. "What did the org look like at time T / why did it change" is unanswerable. An append-only history log would also feed fleet-scale backward passes (bidirectional-memory pattern).
-
-### Escalation Latency
-Inbox-only delivery means an escalate can sit undrained for a full supervisor cycle. No urgency channel exists short of the blocking `--deliver` flag.
-
-### Persona Consistency Is Not Automated
-There is no automated check that a persona agent's output tone matches its SOUL.md voice section after task completion. Drift detection is manual.
-
-### No Profile Scenario Testing
-New Star Trek/Goetic profiles ship without a test battery. There is no `manage.py validate` scenario runner that verifies a profile stays in character across scenario prompts.
-
-### Research Scout Pipeline Is Manual
-The digest exists but required relaxed queries and hand-curation. A minimal `pipeline.py` (fetch → extract → distill → write digest) would make the scout cron reliable and dedupe-aware across ticks.
-
-### Desktop Plugin JS State Unknown
-`plugin.js` exists but its current state relative to the backend's newer endpoints is unverified.
+- Make the inbox bidirectional with ack/reply/thread semantics and a small FSM for message lifecycle  
+- Add announce-style subtree fan-out so supervisors can broadcast policy, status, or task framing to everyone below them without sending N individual messages  
+- Add delegation contracts with acceptance and fulfillment reporting, so delegation is more than an informal handoff  
+- Add optional communication policy labels to edges, so authorization carries intent/topic/confidence/phase, not just “allowed/blocked”  
+- Add a heartbeat-style push path so the fleet can surface mid-cycle state instead of waiting on the next poll  
+- Derive failure-based safety clauses or trace-based FSM overlays from inbox history if someone wants to move from authorization to predictive monitoring
 
 ---
 
-## 4. Arxiv Insights
+## 4. How the arxiv digest relates to FleetGraph
 
-### Current Digest (2026-08-27) — 9 Papers, 3 Threads
+The arxiv digest is not new this tick, but it still lands well against the current codebase.
 
-**Multi-Agent Orchestration**
-- **ProgRouter (2608.25992):** Step-wise routing from evolving progress/quality/time/cost signals. FleetGraph routes once per task; ProgRouter reweights after every completed step. Gap: no per-node progress deltas or reweighting.
-- **JIT-Agent (2608.25593):** Composable/evolvable harness modules. Gap: FleetGraph nodes have fixed profiles; no harness versioning before dispatch.
-- **Committed AI Configuration (2608.25241):** Committed config → lower quality-cost growth. Gap: no configuration-maturity score in the graph UI.
+**ProgRouter** fits the most obvious missing piece: routing should not be a one-time decision. FleetGraph already checks whether a delegatee can absorb work by subtree depth; the next step is making routing reprice as work completes, budgets change, and feedback arrives.
 
-**Agent Communication Protocols**
-- **Test-Time Collaborative Classification (2608.24787):** Finite-round, finite-precision evidence exchange over directed edges. Gap: no compact typed evidence format for subordinate-to-supervisor edges.
-- **Dual-Cache Latent Space Communication (2608.20617):** Joint KV-cache transfer for heterogeneous models. Gap: FleetGraph uses text serialization; no latent-cache edge transport.
-- **Consilience (2608.20564):** Adaptive speaker/intervention selection from uncertainty, disagreement, evidence gain, redundancy. Gap: Supervisor edges have no `challenge`/`clarify`/`seek_evidence`/`route` actions.
+**Consilience** points at calibrated supervisor action rather than binary send/block. FleetGraph already has frames and peer/schema validation; what it does not yet have is supervisor-side intervention vocabulary with acceptance thresholds grounded in real traffic.
 
-**Monitoring & Guardrails**
-- **SkillShield (2608.25817):** Failure-derived safety skills. Gap: no role-specific safety clause injection.
-- **StepGuard (2608.24777):** Pre-execution checks + post-run audits. Gap: no guard nodes on privileged-action edges.
-- **Automata from Agent Traces (2608.23670):** Trace-derived FSMs for next-action/failure prediction. Gap: topology is not yet a model-agnostic predictor.
+**JIT-Agent** is relevant because it treats agent configuration itself as composable and upgradeable. That matches FleetGraph's profile distribution model and suggests delegation contracts or node harnesses could carry an explicit config variant instead of relying on prose alone.
 
-### Prior Synthesis (2026-08-24) — 12 Papers, 8 Threads
+**Automata from Agent Traces** says the existing inbox JSONL could become more than a history file. It could support failure/next-step prediction overlays if someone compiles it into per-harness state machines.
 
-Key insights not yet operationalized:
-- **Graph Engineering (2608.21156):** Conceptual backbone — graph transforms individual agents into system intelligence.
-- **Width/Memory/Delay (2608.00028):** Quantifies flat vs layered memory overhead. Gap: no `memory_budget()`.
-- **Beyond Component Testing (2607.29405):** Validate emergent fleet behavior. Gap: no `fleet_behavior_test.py`.
-- **Memory Arbitration (2608.19701):** Memory Correlation Bias from repeated upstream claims. Gap: no provenance metadata on engrams.
-- **MemFuse (2608.18704):** Atomic observations + fused episodic clusters. Gap: fleet knowledge is fragmented across sessions, Spock scopes, JSONL inboxes, research files, cron continuity, dream engrams — no fusion layer.
-- **Self-Recognition (2606.23700):** Persona drift prevention. Gap: dream backward pass does this for engrams but not persona task output.
-- **ACES (2608.20614):** Paired capability evaluation. Gap: no paired baseline/target trials.
+**SkillShield** suggests that failure traces can be turned into compact safety guidance attached to roles. FleetGraph already has escalate messages and failure signals; mining them into role-specific clauses is a plausible next step.
 
-### New Research Corpus (2026-08-28) — Q-Link + Cyberpunk Forge
+**StepGuard** reinforces the idea that supervisors can intercept unsafe actions before they execute, with utility measured afterward. That is compatible with a supervised fleet where escalation carries evidence and policy.
 
-- **SWARM-LLM (2606.14711):** Query-level collaboration layer (local answer / peer collaboration / cloud escalation). Maps directly to Q-Link 0 architecture.
-- **Pangu Embedded (2505.22375):** Fast/slow modes with latency-tolerant scheduling. Maps to 26B Tide async queue pattern.
-- **PRISM (2506.17486):** Teacher-distilled compact worker. Maps to 26B→4B Cyberpunk training pipeline.
+**Test-Time Collaborative Classification over Multi-Agent Networks** is a useful model for limited-round evidence exchange across directed edges, which fits subordinate-to-supervisor reporting better than open chat.
+
+**A Few Pages of Markdown** is the strongest nudge toward configuration quality as a measurable thing. FleetGraph already has a fairly complete profile structure; a maturity score would make “how complete is this node?” visible instead of implicit.
+
+**Dual-Cache Latent Space Communication** is interesting in principle for heterogeneous model pairs, but it is speculative for FleetGraph right now because it depends on specific model pairs and translator behavior.
+
+Overall, the digest supports the same conclusion the code already suggests: FleetGraph is a good authorization and routing substrate, and the next value is in workflow, feedback, and observable coordination rather than in more edges or more profiles.
 
 ---
 
-## 5. Actionable Update Ideas
+## 5. Actionable update ideas — one folder worth of work
 
-### A. Chain With Rationale (1 folder: `fleet_graph_core.py` + `plugin_api.py` + `plugin.js`)
+The most productive next move is to create `research/next/` and populate it with one focused proposal first, not five half-proposals. The best first folder is the one that reuses the existing hierarchy most directly and changes the least surface area.
 
-**What:** `chain_with_rationale()` returns `[(node, reason), ...]` where reason ∈ {ESCALATION, DELEGATION, PEER_COORD, DERIVED_HOP}. Backward-compatible wrapper preserves existing `chain()`.
+**Recommended first folder:** `research/next/announce-fanout/`
 
-**Why:** Operators re-wiring a 155-node Primordial Triad topology need to see *why* a message takes a given path.
+Why:
+- It turns the existing supervisor tree into an active broadcast path without inventing a new transport  
+- It reuses `subtree_nodes()` and the current inbox/JSONL pipeline  
+- It is additive: old clients and old inboxes still work  
+- It has an immediate operational use case: policy updates, status framing, task context, and “this matters to everyone below me” messages
 
-**Files:**
-- `fleet_graph_core.py` — reason enum, `chain_with_rationale()`
-- `plugin_api.py` — rationale chain in `/send` response and `/overview`
-- `plugin.js` — color-coded hops with hover tooltip
+Sketch contents:
+- `SPEC.md` — what changes, what does not, API surface, CLI flag, UI toggle, migration path  
+- `sketch.py` — reference implementation of broadcast logic and the new send path  
+- `test_sketch.py` — contract tests for fan-out scope, depth limiting, and backward compatibility  
+- `mapping.md` — how this relates to current FleetGraph behavior and why it matters operationally
 
-**Paper grounding:** HiMA-MDD (2608.21868) — interpretable routing. Already drafted in `ideas_architecture.md`.
+If that lands cleanly, the next logical folder is `research/next/delegation-contracts/`, because delegation is the other half of supervised coordination. That work would add a small delegation state machine, acceptance/fulfillment reporting, and contract depth/skill/criteria semantics on top of the existing `can_delegate_to()` shape. It is larger, so it should wait until the fan-out sketch is real.
 
----
+The third candidate, `research/next/communication-policy/`, is the most architecturally ambitious because it changes what an edge means beyond “allowed or blocked.” It is worth sketching, but it should probably come after bidirectional messaging or fan-out, because policy is more useful when messages have identity, replies, and lifecycle.
 
-### B. Pre-Send Route Simulator (1 folder: `fleet_graph_core.py` + `plugin_api.py` + `plugin.js` + `fleet_msg.py`)
-
-**What:** `simulate_send(sender, recipient, kind, contract?)` → full predicted outcome: routing chain with rationale, `can_communicate` verdict, `can_delegate_to` verdict, latency estimate. New `POST /simulate_route` endpoint. Dashboard composer gains "Preview route" button.
-
-**Why:** Turns topology editor into safe sandbox. Before/after simulation shows what routes a new peer relation unlocks.
-
-**Files:**
-- `fleet_graph_core.py` — `simulate_send()`, `estimate_route_cost()`, optional `weight` field
-- `plugin_api.py` — `POST /simulate_route`
-- `plugin.js` — "Preview route" button + predicted-path rendering
-- `fleet_msg.py` — optional drift detection
-
-**Paper grounding:** AGENTSERVESIM (2606.09613). Already drafted.
+A separate effort that is still worth planning is the ack/reply protocol. It is not part of the fan-out folder, but it is the highest-leverage gap overall because it unlocks threading, delivery reliability, and trace extraction. If FleetGraph is going to become a supervised coordination fabric instead of a broadcast channel, that protocol has to exist.
 
 ---
 
-### C. Delegation Fairness Guard (1 folder: `fleet_graph_core.py` + `plugin_api.py` + `plugin.js` + `fleet_msg.py` + `maintenance/fleet_maint.py`)
+## Synthesis verdict
 
-**What:** `_meta.delegate_counts` — rolling subtree_root → delegation count map. Optional per-node `max_delegate_share`. `can_delegate_to` checks fairness cap. Dashboard renders share as progress bar. `fleet_maint reset_delegate_counts` (cron-scheduled).
+FleetGraph is healthy and coherent. The core is strong, the plugin surface is broad, and the topology is intentional rather than accidental. The code is not broken; it is just one communication layer short of being a real supervised fleet.
 
-**Why:** Prevents work concentration on one subtree. Over-delegating to one subtree over-taxes one persona's voice.
-
-**Files:**
-- `fleet_graph_core.py` — `load_delegate_counts()`, `record_delegation()`, fairness check
-- `fleet_graph.yaml` — optional `max_delegate_share`
-- `plugin_api.py` — delegation counts in `/overview`
-- `plugin.js` — delegation-share progress bar
-- `fleet_msg.py` — record delegation on delegate sends
-- `maintenance/fleet_maint.py` — `reset_delegate_counts` command
-
-**Paper grounding:** Delegated Fair Division (2607.27743). Already drafted.
-
----
-
-### D. Typified Evidence Messages (1 folder: `fleet_graph_core.py` + `fleet_msg.py` + `plugin_api.py`)
-
-**What:** Add structured `evidence` field to inbox schema: `{type, content, upstream_source_id?}`. Evidence types: `progress`, `blocker`, `question`, `artifact_ref`, `result`. Free-text `summary` stays. Evidence type is a routing hint, not a policy gate.
-
-**Why:** Test-Time Collaborative Classification models finite-round evidence exchange. FleetGraph sends free-text summaries — supervisors can't triage by type without reading. `upstream_source_id` lays groundwork for provenance-aware consensus (Memory Arbitration).
-
-**Files:**
-- `fleet_msg.py` — evidence type arg, structured record
-- `plugin_api.py` — evidence field in `/send` + inbox record
-
-**Paper grounding:** Test-Time Collaborative Classification (2608.24787), Memory Arbitration (2608.19701).
-
----
-
-### E. Fleet Timeline + Topology Change Log (1 folder: `dashboard/plugin_api.py` + `plugin.js` + `fleet_graph_core.py`)
-
-**What:** Append-only topology change log (`{ts, op, path, before, after}`) written on every `PUT /graph`. New `GET /activity/timeline` endpoint aggregating session events, inbox messages, topology changes, and tool events (via in-memory ring buffer). Timeline view in UI with filtering and click→context navigation.
-
-**Why:** "Did A's delegation to B actually precede B's work?" — currently impossible without opening two inspectors. "When was this bot detached?" — currently no record at all. Closes fleet-level episodic memory gap.
-
-**Files:**
-- `fleet_graph_core.py` — `record_topology_change()` helper called from `save_graph` or exposed as a separate append function
-- `plugin_api.py` — `GET /activity/timeline`, optional in-memory tool-event ring buffer, topology-change log reader
-- `plugin.js` — TimelineView component with filter bar
-
-**Paper grounding:** No direct paper; operationalized from the bidirectional-memory pattern and the Doorway-Effect retracing need.
-
----
-
-### F. Memory Budget Estimation (1 function: `fleet_graph_core.py`)
-
-**What:** `memory_budget(graph, node)` → estimate per-node state cost (inbox lines + session tail + watermark) and flag when a supervisor's subtree exceeds a threshold. Reuses `subtree_nodes()` and `_inbox_counts()` patterns.
-
-**Why:** Width/Memory/Delay quantifies flat vs layered overhead. FleetGraph's hierarchy is the antidote, but there's no operational way to make this visible. Turns prune from reactive to proactive.
-
-**Files:**
-- `fleet_graph_core.py` — `memory_budget()` method
-- `plugin_api.py` — expose budget in `/overview` per-node
-- `plugin.js` — budget indicator in node inspector
-
-**Paper grounding:** Width/Memory/Delay (2608.00028).
-
----
-
-### G. Q-Link 0 Artifact Bridge (1 folder: `scripts/` + `tests/`)
-
-**What:** Implement the Q-Link 0 asynchronous artifact bridge per `local-cloud-4b-quantum-link-three-tier-2026-08-28.md`: local dispatcher writes signed request envelope → upload to remote inbox → remote worker claims idempotently → remote 4B writes signed result envelope → local downloads and verifies. Append-only SQLite event ledger. Three harmless public test tasks. Replay/expiry/tamper/timeout/duplicate-delivery tests.
-
-**Why:** The three-mind operating rhythm (Pulse/Mirror/Tide) is the architectural blueprint. Q-Link 0 proves the relationship without pretending the cloud is faster, exposing Ollama publicly, or modifying active model registrations. The quantum-envelope contract is already fully specified.
-
-**Files:**
-- `scripts/qlink0_dispatcher.py` — local producer + verifier
-- `scripts/qlink0_remote_worker.py` — remote bounded worker (for Lightning Studio deployment)
-- `tests/test_qlink0.py` — replay/expiry/tamper/timeout/duplicate tests
-- `docs/qlink0_ledger_schema.md` — SQLite schema for the append-only event ledger
-
-**Paper grounding:** SWARM-LLM (2606.14711), Pangu Embedded (2505.22375), A Unified Approach to Routing and Cascading (2410.10347).
-
----
-
-### Prioritization
-
-**This tick, one folder worth of work:** Pick **A (Chain With Rationale)** — smallest scope (one new function + enum, backward-compatible), prerequisite for B, immediate value to operators re-wiring the now-155-node topology. The Primordial Triad + Goetic Court + Star Trek has made routing opacity a real pain point.
-
-**Next tick candidates:** B (Pre-Send Simulator) builds on A. E (Fleet Timeline) is the highest-value independent addition for operational visibility. G (Q-Link 0) is the most architecturally ambitious but proves the three-mind model.
-
----
-
-*Generated: 2026-08-31 EDT · FleetGraph Synthesis Cycle · Overwritten each tick*
+This tick's main takeaway is simple: do not widen the graph yet. Make the existing graph do more with the edges it already has. Announce fan-out is the smallest high-value step, delegation contracts are the natural follow-up, and bidirectional messaging is the underlying capability that makes both of them matter.
