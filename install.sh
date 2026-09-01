@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO_URL="https://github.com/teknium1/hermes-star-trek-profiles.git"
+REPO_URL="https://github.com/Baal-TehDriverman/ludicrous-speed.git"
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 CHECKOUT="${HERMES_STAR_TREK_HOME:-$DATA_HOME/hermes-star-trek-profiles}"
 
