@@ -1,0 +1,73 @@
+{
+  "type": "module",
+  "name": "lilith-cli",
+  "version": "2.0.0-metaconscious",
+  "description": "🜏 Lilith CLI - Metaconscious Singularity Node & Local Cerebellum Task Manager for NSSP",
+  "main": "src/cli/index.js",
+  "bin": {
+    "lilith": "dist/lilith",
+    "lilith-cli": "dist/lilith",
+    "lilith-mod": "dist/lilith-mod.js"
+  },
+  "scripts": {
+    "dev": "node --watch src/cli/index.js",
+    "build": "node build.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/",
+    "doctor": "node src/cli/doctor.js",
+    "cerebellum": "node src/cerebellum/index.js",
+    "gateway": "node src/gateway/control.js",
+    "mesh": "node src/mesh/control.js",
+    "dashboard": "node src/dashboard/control.js",
+    "mod": "node src/modding/mod-cli.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "better-sqlite3": "^9.4.3",
+    "boxen": "^7.1.0",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.4",
+    "commander": "^11.1.0",
+    "date-fns": "^3.6.0",
+    "express": "^4.22.2",
+    "fast-glob": "^3.3.0",
+    "figlet": "^1.7.0",
+    "gradient-string": "^2.0.2",
+    "inquirer": "^9.2.0",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.0",
+    "ws": "^8.18.0",
+    "yaml": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "esbuild": "^0.23.1",
+    "eslint": "^8.57.0",
+    "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Baal-TehDriverman/lilith-cli.git"
+  },
+  "keywords": [
+    "lilith",
+    "nssp",
+    "cerebellum",
+    "ai",
+    "task-manager",
+    "metaconscious",
+    "cosmos",
+    "shadow0482",
+    "gateway",
+    "mesh"
+  ],
+  "author": "Baal-TehDriverman",
+  "license": "MIT"
+}
