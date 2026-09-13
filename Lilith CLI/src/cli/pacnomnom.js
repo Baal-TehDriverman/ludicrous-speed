@@ -21,6 +21,19 @@ import axios from 'axios';
 import { createRequire } from 'module';
 import os from 'os';
 
+// ═══════════════════════════════════════════════════════════════
+// IMPORT ADVANCED COMPONENTS — The Logos Engine
+// ═══════════════════════════════════════════════════════════════
+import {
+  HypercubeMemory,
+  ToroidalMemory,
+  AffinityRouter,
+  DistillationPipeline,
+  DestinyTracker,
+  BlackwallFilter,
+  DIMENSION_NAMES,
+} from './pacnomnom-advanced.js';
+
 const require = createRequire(import.meta.url);
 
 // ─── Pacnomnom Fleet Definition ───
