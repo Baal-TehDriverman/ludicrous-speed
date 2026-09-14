@@ -39,6 +39,17 @@ import { spawn } from 'child_process';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { loadSkill, listSkills, executeSkill, getSkillToolDefinitions } from './skill-loader.js';
+import ModelRouter from './model-router/index.js';
+import { getMemoryToolDefinitions } from './memory/index.js';
+import PlanManager from './plan/index.js';
+import PermissionGuard from './permissions/index.js';
+import ReviewManager from './review-agent/index.js';
+import ServiceOrchestrator from './service-orchestrator/index.js';
+import KnowledgeIndexer from './knowledge/index.js';
+import KnowledgeManager from './knowledge-management/index.js';
+import Deployer from './deploy/index.js';
+import TestRunner from './testing/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -76,6 +87,67 @@ export class ModEngine {
     this.sessionId = null;
     this.subagents = [];
     this.printMode = false;
+    this.skillLoader = { loadSkill, listSkills, executeSkill, getSkillToolDefinitions };
+    this.skillEnabled = true;
+    // Load skills from disk
+    if (this.skillEnabled) this._loadSkillsFromDisk();
+    this.modelRouter = new ModelRouter();
+    this.memoryTools = getMemoryToolDefinitions();
+    this.plans = new PlanManager();
+    this.permissions = new PermissionGuard();
+    this.review = new ReviewManager();
+    this.orchestrator = new ServiceOrchestrator();
+    this.knowledgeGraph = new KnowledgeIndexer();
+    this.knowledge = new KnowledgeManager();
+    this.deployer = new Deployer();
+    this.testRunner = new TestRunner();
+    // Register tool extensions
+    this._registerExtendedTools();
+    // Ensure skillLoader is a valid object with executeSkill
+    if (typeof this.skillLoader !== 'object' || !this.skillLoader.executeSkill) {
+      this.skillLoader = { loadSkill, listSkills, executeSkill, getSkillToolDefinitions };
+    }
+  }
+
+  /** Register extended tools from all subsystems */
+  _registerExtendedTools() {
+    const tools = [];
+    // Memory tools
+    if (this.memoryTools) tools.push(...this.memoryTools);
+    // Plan tools
+    if (this.plans?.getModEngineToolDefinitions) tools.push(...this.plans.getModEngineToolDefinitions());
+    // Permission tools
+    if (this.permissions?.getModEngineToolDefinitions) tools.push(...this.permissions.getModEngineToolDefinitions());
+    // Review tools
+    if (this.review?.getModEngineToolDefinitions) tools.push(...this.review.getModEngineToolDefinitions());
+    // Model router tools
+    if (this.modelRouter?.getModEngineToolDefinitions) tools.push(...this.modelRouter.getModEngineToolDefinitions());
+    // Service orchestrator tools
+    if (this.orchestrator?.getModEngineToolDefinitions) tools.push(...this.orchestrator.getModEngineToolDefinitions());
+    // Knowledge tools
+    if (this.knowledge?.getModEngineToolDefinitions) tools.push(...this.knowledge.getModEngineToolDefinitions());
+    // Deploy tools
+    if (this.deployer?.getModEngineToolDefinitions) tools.push(...this.deployer.getModEngineToolDefinitions());
+    // Test tools
+    if (this.testRunner?.getModEngineToolDefinitions) tools.push(...this.testRunner.getModEngineToolDefinitions());
+    // Skill tools
+    if (this.skillLoader?.getSkillToolDefinitions) tools.push(...this.skillLoader.getSkillToolDefinitions());
+    this.tools.push(...tools);
+  }
+
+  /** Load skills from disk */
+  _loadSkillsFromDisk() {
+    try {
+      const skills = this.skillLoader.listSkills();
+      for (const skill of skills) {
+        // Attach skill as callable method on the engine
+        if (skill.name && !this[skill.name]) {
+          this[skill.name] = (...args) => this.skillLoader.executeSkill(skill.name, { ...args });
+        }
+      }
+    } catch (err) {
+      // Skills not found — continue without them
+    }
   }
 
   /** Register a hook (Claude Code pattern) */
@@ -98,7 +170,39 @@ export class ModEngine {
     this.sessionId = id;
   }
 
-  /** Build the full system prompt with covenant context */
+  /** Query with skill context — inject matching skill content into the model prompt */
+  async queryWithSkills(userInput, options = {}) {
+    const { maxRounds = this.config.maxToolRounds, skillContext = true } = options;
+
+    // Try to find a matching skill for the user input
+    let skillContextText = '';
+    if (skillContext) {
+      // Simple keyword match against loaded skills
+      const allSkills = this.skillLoader.listSkills();
+      const lowerInput = userInput.toLowerCase();
+      const matches = allSkills.filter(s => 
+        lowerInput.includes(s.name.toLowerCase()) || 
+        s.name.toLowerCase().includes(lowerInput.split(' ')[0])
+      );
+      if (matches.length > 0) {
+        const topSkill = matches[0];
+        const loaded = this.skillLoader.loadSkill(topSkill.name);
+        skillContextText = `\n\n# Active Skill: ${topSkill.name}\n\n${loaded ? loaded.content : ''}`;
+      }
+    }
+
+    const enhancedInput = userInput + skillContextText;
+    return this.query(enhancedInput, options);
+  }
+
+  /** Get all available skills for the model's context */
+  getSkillsContext() {
+    const skills = this.skillLoader.listSkills();
+    if (skills.length === 0) return '';
+    return skills.map(s => `# Skill: ${s.name}\n${s.description || ''}\n`).join('\n');
+  }
+
+  /** Build the full system prompt with covenant context and skill awareness */
   buildSystemPrompt() {
     const covenant = `
 COVENANT (non-negotiable):
@@ -117,7 +221,10 @@ SOVEREIGN RULES:
 - If I break a rule, I admit it immediately.
 - STOP means stop immediately. No arguments. No "but—".`;
 
-    return `${this.config.systemPrompt}${covenant}`;
+    const skillsCtx = this.getSkillsContext();
+    const skillsSection = skillsCtx ? `\n\nAVAILABLE SKILLS:\n${skillsCtx}` : '';
+
+    return `${this.config.systemPrompt}${covenant}${skillsSection}`;
   }
 
   /**

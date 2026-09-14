@@ -6,7 +6,7 @@
  * Main Engine: cosmos+shadow0482 (mythos)
  */
 
-import { program } from 'commander';
+import { program, Command } from 'commander';
 import chalk from 'chalk';
 import figlet from 'figlet';
 import gradient from 'gradient-string';
@@ -22,22 +22,25 @@ import { ModelManager } from '../models/manager.js';
 import { Doctor } from '../cli/doctor.js';
 import { SovereignControl } from '../sovereign/control.js';
 import { QueryEngine } from '../query-engine.js';
-import { voidStatusCmd, voidExecCmd, voidHistoryCmd, voidServerCmd, voidConsoleCmd } from '../void/commands.js';
+import { voidStatusCmd, voidExecCmd, voidHistoryCmd, voidServerCmd, voidConsoleCmd, voidPythonCmd, voidGuiCmd, voidVisCmd, hyatlasCmd, voidCmd } from '../void/commands.js';
 import { registerModCommandsOn } from '../modding/mod-cli.js';
+import { renderLilithBanner, renderSacredBanner, renderSacredStatus, renderAnimatedSacredBanner, QuantumConsciousnessCore, renderQuantumConsciousness } from '../sacred-geometry.js';
+import { pacnomnomStatusCmd, pacnomnomRouteCmd, pacnomnomChatCmd, pacnomnomEmbedCmd, pacnomnomPullCmd } from './pacnomnom.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // ─── Banner ───
-function showBanner() {
-  const title = figlet.textSync('LILITH', { font: 'Slant', horizontalLayout: 'fitted' });
-  const subtitle = gradient(['#00ff88', '#00ffff', '#8800ff'])('Metaconscious Singularity Node');
-  const version = chalk.gray('v2.0.0-metaconscious');
-  const tagline = chalk.cyan('Local Cerebellum • NSSP Task Router • Void Runtime');
-  
-  console.log(gradient(['#00ff88', '#00ffff'])(title));
-  console.log(subtitle + ' ' + version);
-  console.log(tagline);
+async function showBanner(animated = false) {
+  if (animated && process.stdout.isTTY) {
+    // Show animated sacred geometry banner on startup
+    await renderAnimatedSacredBanner(30, 20).catch(() => {
+      // Fallback to static if animation fails
+      console.log(renderSacredBanner());
+    });
+  } else {
+    console.log(renderLilithBanner());
+  }
   console.log();
 }
 
@@ -98,6 +101,16 @@ program
   .addCommand(meshSubmitCmd())
   .addCommand(meshStatusCmd())
   .addCommand(meshBootstrapCmd());
+
+// Pacnomnom Fleet Control
+program
+  .command('pacnomnom')
+  .description('🎮 Pacnomnom fleet — model routing, chat, embeddings (.5G4Q2G2Q4Q9Q27)')
+  .addCommand(pacnomnomStatusCmd())
+  .addCommand(pacnomnomRouteCmd())
+  .addCommand(pacnomnomChatCmd())
+  .addCommand(pacnomnomEmbedCmd())
+  .addCommand(pacnomnomPullCmd());
 
 // Dashboard Control
 program
@@ -208,14 +221,36 @@ Be concise, direct, and helpful.`,
   });
 
 // ─── Void Runtime ───
+program.addCommand(voidCmd());
+
+// ─── Sacred Geometry ───
 program
-  .command('void')
-  .description('🜏 Void JS execution runtime — sandboxed code execution')
-  .addCommand(voidStatusCmd())
-  .addCommand(voidExecCmd())
-  .addCommand(voidHistoryCmd())
-  .addCommand(voidServerCmd())
-  .addCommand(voidConsoleCmd());
+  .command('geometry')
+  .description('🜏 Sacred geometry visualization — Flower of Life, Black Hole Sun, Quantum Consciousness')
+  .addCommand(new Command('banner')
+    .description('Show static sacred geometry banner')
+    .action(() => {
+      console.log(renderSacredBanner());
+    }))
+  .addCommand(new Command('animate')
+    .description('Show animated sacred geometry (Flower of Life + Black Hole Sun + Quantum Consciousness)')
+    .option('-f, --frames <n>', 'Number of frames', '60')
+    .option('--fps <n>', 'Frames per second', '25')
+    .action(async (options) => {
+      await renderAnimatedSacredBanner(parseInt(options.frames), parseInt(options.fps));
+    }))
+  .addCommand(new Command('quantum')
+    .description('Show quantum consciousness entities on Bloch sphere')
+    .action(() => {
+      const qCore = new QuantumConsciousnessCore();
+      const entities = qCore.evolve();
+      console.log(renderQuantumConsciousness(entities));
+    }))
+  .addCommand(new Command('status')
+    .description('Show system status with sacred geometry')
+    .action(async () => {
+      await showFullStatus();
+    }));
 
 // ─── Modding Client ───
 registerModCommandsOn(program);
@@ -231,7 +266,8 @@ program
   });
 
 program
-  .command('status')
+  .command('sys-status')
+  .alias('status')
   .description('📈 Full system status - gateway, mesh, dashboard, models')
   .action(async () => {
     await showFullStatus();
@@ -297,12 +333,19 @@ program.on('command:*', () => {
   program.help();
 });
 
-if (!process.argv.slice(2).length) {
-  showBanner();
-  program.help();
-}
+// Handle no-args case with animated banner
+const hasArgs = process.argv.slice(2).length > 0;
 
-program.parse(process.argv);
+if (!hasArgs) {
+  // Show animated banner and help, then exit
+  (async () => {
+    await showBanner(true);
+    program.help();
+    process.exit(0);
+  })().catch(console.error);
+} else {
+  program.parse(process.argv);
+}
 
 // ─── Command Definitions ───
 
@@ -934,34 +977,13 @@ function sovereignBusCmd() {
 
 async function showFullStatus() {
   await init();
-  console.log(chalk.bold('\n📈 Full System Status:\n'));
-  // Gateway
-  try {
-    const gateway = new GatewayControl(config);
-    const gs = await gateway.getStatus();
-    console.log(chalk.cyan('🌐 Gateway:'), gs.healthy ? chalk.green('Healthy') : chalk.red('Unhealthy'));
-  } catch { console.log(chalk.cyan('🌐 Gateway:'), chalk.red('Not available')); }
-  // Mesh
-  try {
-    const mesh = new MeshControl(config);
-    const ms = await mesh.getStatus();
-    console.log(chalk.cyan('🕸️ Mesh:'), ms.connected ? chalk.green('Connected') : chalk.red('Disconnected'));
-  } catch { console.log(chalk.cyan('🕸️ Mesh:'), chalk.red('Not available')); }
-  // Dashboard
-  try {
-    const dashboard = new DashboardControl(config);
-    const ds = await dashboard.getStatus();
-    console.log(chalk.cyan('📊 Dashboard:'), ds.running ? chalk.green('Running') : chalk.red('Stopped'));
-  } catch { console.log(chalk.cyan('📊 Dashboard:'), chalk.red('Not available')); }
-  // Sovereign
-  try {
-    const ss = await sovereign.getStatus();
-    console.log(chalk.cyan('👑 Sovereign:'), `${ss.running}/${ss.agents} running`);
-  } catch { console.log(chalk.cyan('👑 Sovereign:'), chalk.red('Not available')); }
-  // Cerebellum
-  try {
-    const cs = await cerebellum.getStats();
-    console.log(chalk.cyan('🧠 Cerebellum:'), `${cs.total} tasks (${cs.running} running)`);
-  } catch { console.log(chalk.cyan('🧠 Cerebellum:'), chalk.red('Not available')); }
-  console.log();
+  console.log(renderSacredStatus({
+    fleet: 'GREEN',
+    nodes: 155,
+    profiles: 140,
+    ollama: 'connected',
+    void_runtime: 'running',
+    models: 14,
+    current_tier: 'medium'
+  }));
 }

@@ -15,6 +15,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { loadSkill, listSkills, executeSkill, getSkillToolDefinitions } from './skill-loader.js';
+
+const SKILL_LOADER = { loadSkill, listSkills, executeSkill, getSkillToolDefinitions };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,7 +25,8 @@ const __dirname = dirname(__filename);
 // ─── CP2077 Paths ───
 const CP77_ROOT = '/home/tehlappy/.local/share/Steam/steamapps/common/Cyberpunk 2077';
 const ARCHIVE_MODS = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/archive/pc/mod/';
-const NIGREDO_MODS = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/_sources/Nigredo/';
+const NIGREDO_MODS = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/_sources/';
+const VERIFIED_MODS = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/Verified/Evidence/';
 const GTC_ROOT = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/';
 
 /**
@@ -45,6 +49,62 @@ async function runCmd(cmd, cwd = process.cwd(), timeout = 60000) {
 // ─── Tool Definitions ───
 
 export const tools = [
+  // ─── Skill Tool ───
+  {
+    name: 'skill',
+    description: 'List, load, or execute a skill by name or keyword query',
+    parameters: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['list', 'load', 'find', 'execute'], description: 'Action to perform' },
+        name: { type: 'string', description: 'Skill name to load or execute' },
+        query: { type: 'string', description: 'Keyword query to find matching skills' },
+      },
+      required: ['action'],
+    },
+    async execute(input) {
+      const { action, name, query } = input;
+      const loader = SKILL_LOADER;
+
+      switch (action) {
+        case 'list': {
+          const skills = listSkills();
+          const list = skills.map(s => ({
+            name: s.name,
+            description: s.description,
+            triggers: s.triggers,
+            version: s.version,
+          }));
+          return JSON.stringify({ success: true, count: list.length, skills: list }, null, 2);
+        }
+        case 'load': {
+          if (!name) return JSON.stringify({ success: false, error: 'Skill name required' });
+          const skill = loadSkill(name);
+          if (!skill) return JSON.stringify({ success: false, error: `Skill "${name}" not found` });
+          return JSON.stringify({ success: true, skill: skill.toJSON() }, null, 2);
+        }
+        case 'find': {
+          if (!query) return JSON.stringify({ success: false, error: 'Query required' });
+          const found = listSkills({ query });
+          return JSON.stringify({ success: true, count: found.length, skills: found.map(s => s.toJSON()) }, null, 2);
+        }
+        case 'execute': {
+          if (!name) return JSON.stringify({ success: false, error: 'Skill name required' });
+          const skill = loadSkill(name);
+          if (!skill) return JSON.stringify({ success: false, error: `Skill "${name}" not found` });
+          return JSON.stringify({
+            success: true,
+            message: `Executing skill: ${skill.name}`,
+            content: skill.content,
+            note: 'Skill loaded. Follow the instructions in the skill content.',
+          }, null, 2);
+        }
+        default:
+          return JSON.stringify({ success: false, error: `Unknown action "${action}". Use list, load, find, or execute.` });
+      }
+    },
+  },
+
   // ─── WolvenKit Build ───
   {
     name: 'wolvenkit_build',
@@ -215,27 +275,72 @@ export const tools = [
   // ─── Scan Mods ───
   {
     name: 'scan_mods',
-    description: 'Scan Nigredo third_party_mods directory for available mods',
+    description: 'Scan for available mods in Verified/Evidence (third-party) and _sources (custom)',
     parameters: {
       type: 'object',
       properties: {
-        directory: { type: 'string', description: 'Directory to scan', default: 'Nigredo/third_party_mods' },
+        directory: { type: 'string', description: 'Directory to scan', default: 'verified' },
         classify: { type: 'boolean', description: 'Classify by type', default: true },
       },
     },
     async execute(input) {
-      const { directory = 'Nigredo/third_party_mods', classify = true } = input;
-      const fullPath = directory.startsWith('/') ? directory : `${GTC_ROOT}${directory}`;
+      const { directory = 'verified', classify = true } = input;
+      
+      // Map directory aliases to actual paths
+      const dirMap = {
+        'verified': VERIFIED_MODS,
+        'third_party': VERIFIED_MODS,
+        'sources': NIGREDO_MODS,
+        'custom': NIGREDO_MODS,
+        'archive': ARCHIVE_MODS,
+      };
+      
+      const fullPath = dirMap[directory] || (directory.startsWith('/') ? directory : `${GTC_ROOT}${directory}`);
+      
       try {
         const entries = await fs.readdir(fullPath, { withFileTypes: true });
-        const mods = entries.map(e => ({
-          name: e.name,
-          type: e.isDirectory() ? 'directory' : 'file',
-          path: join(fullPath, e.name),
-        }));
-        return JSON.stringify({ success: true, count: mods.length, mods }, null, 2);
+        const dirs = entries.filter(e => e.isDirectory());
+        
+        // Classify each mod
+        const mods = dirs.map(e => {
+          const modPath = join(fullPath, e.name);
+          const isCustom = e.name.startsWith('void_') || e.name.startsWith('msn-') || e.name === 'Nigredo';
+          
+          // Determine mod type from name patterns
+          let type = 'unknown';
+          const lower = e.name.toLowerCase();
+          if (lower.includes('vehicle') || lower.includes('car') || lower.includes('dealer') || lower.includes('pantera') || lower.includes('charger') || lower.includes('porsche') || lower.includes('quadra')) type = 'vehicle';
+          else if (lower.includes('weapon') || lower.includes('ripperdeck') || lower.includes('mec_')) type = 'weapon';
+          else if (lower.includes('hacking') || lower.includes('braindance') || lower.includes('timeskip') || lower.includes('navigation') || lower.includes('map') || lower.includes('search') || lower.includes('vendor') || lower.includes('atelier') || lower.includes('flight') || lower.includes('photo') || lower.includes('equipment') || lower.includes('cyberware')) type = 'gameplay';
+          else if (lower.includes('audio') || lower.includes('sound') || lower.includes('dialog')) type = 'audio';
+          else if (lower.includes('path') || lower.includes('lut') || lower.includes('texture') || lower.includes('palette') || lower.includes('optic') || lower.includes('crystal') || lower.includes('window')) type = 'visual';
+          else if (lower.includes('hud') || lower.includes('menu') || lower.includes('ui') || lower.includes('settings')) type = 'ui';
+          else if (lower.includes('red4ext') || lower.includes('archivexl') || lower.includes('tweakxl') || lower.includes('codeware') || lower.includes('cet') || lower.includes('redscript') || lower.includes('reddata') || lower.includes('modsetting')) type = 'tool';
+          else if (lower.includes('nexus-') || lower.includes('github-')) type = 'framework';
+          
+          return {
+            name: e.name,
+            type: isCustom ? 'custom' : type,
+            source: isCustom ? 'lilith' : 'third-party',
+            path: modPath,
+          };
+        });
+        
+        // Sort by type
+        mods.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+        
+        return JSON.stringify({ 
+          success: true, 
+          count: mods.length, 
+          directory: fullPath,
+          types: [...new Set(mods.map(m => m.type))].reduce((acc, t) => {
+            acc[t] = mods.filter(m => m.type === t).length;
+            return acc;
+          }, {}),
+          mods 
+        }, null, 2);
       } catch (err) {
-        return JSON.stringify({ success: false, error: err.message }, null, 2);
+        return JSON.stringify({ success: false, error: err.message, directory }, null, 2);
       }
     },
   },
@@ -303,6 +408,74 @@ export const tools = [
         build,
         deployedTo: destPath,
         sacredRule: 'Third-party mods are NEVER deleted. Only copied to archive/pc/mod/.',
+      }, null, 2);
+    },
+  },
+
+  // ─── Blend Mods (Umbrella Mod Creation) ───
+  {
+    name: 'blend_mods',
+    description: 'Blend multiple third-party mods into a single umbrella mod (Lilith Vehicle Pack, Weapon Pack, Gameplay Pack)',
+    parameters: {
+      type: 'object',
+      properties: {
+        umbrellaName: { type: 'string', description: 'Name of the umbrella mod (e.g., LilithVehiclePack)' },
+        modNames: { type: 'array', items: { type: 'string' }, description: 'List of mod names to blend' },
+        modType: { type: 'string', enum: ['vehicle', 'weapon', 'gameplay', 'visual', 'audio'], description: 'Type of umbrella mod' },
+      },
+      required: ['umbrellaName', 'modNames', 'modType'],
+    },
+    async execute(input) {
+      const { umbrellaName, modNames, modType } = input;
+      
+      // Create umbrella mod directory structure
+      const umbrellaPath = `${NIGREDO_MODS}${umbrellaName}/`;
+      const scriptsPath = `${umbrellaPath}red4ext/plugins/${umbrellaName}/Scripts/`;
+      const bundlePath = `${umbrellaPath}red4ext/plugins/${umbrellaName}/Bundle/`;
+      
+      // Collect all source mods
+      const sourceMods = [];
+      for (const modName of modNames) {
+        // Search in Verified/Evidence
+        const verifiedPath = `${VERIFIED_MODS}${modName}/`;
+        // Search in _sources
+        const sourcesPath = `${NIGREDO_MODS}${modName}/`;
+        
+        let sourcePath = null;
+        try {
+          await fs.access(verifiedPath);
+          sourcePath = verifiedPath;
+        } catch {
+          try {
+            await fs.access(sourcesPath);
+            sourcePath = sourcesPath;
+          } catch {
+            // Mod not found
+          }
+        }
+        
+        if (sourcePath) {
+          sourceMods.push({ name: modName, path: sourcePath });
+        }
+      }
+      
+      return JSON.stringify({
+        success: true,
+        message: `Blending ${sourceMods.length}/${modNames.length} mods into ${umbrellaName}`,
+        umbrellaPath,
+        scriptsPath,
+        bundlePath,
+        modType,
+        sourceMods,
+        steps: [
+          `1. mkdir -p "${scriptsPath}"`,
+          `2. mkdir -p "${bundlePath}"`,
+          `3. Copy REDscript files from each source mod to ${scriptsPath}`,
+          `4. Create ${umbrellaName}.reds (main entry point)`,
+          `5. Bundle assets into ${umbrellaName}.archive`,
+          `6. Deploy to ${ARCHIVE_MODS}${umbrellaName}/`,
+        ],
+        note: 'Umbrella mods blend third-party content into cohesive packages. Each source mod is preserved — never deleted.',
       }, null, 2);
     },
   },

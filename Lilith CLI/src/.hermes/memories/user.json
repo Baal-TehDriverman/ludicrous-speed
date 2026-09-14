@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ba00e551-a0c3-495b-9cf3-13b4898ab000",
+    "type": "user",
+    "timestamp": "2026-09-03T06:08:38.594Z",
+    "content": {
+      "name": "Eric",
+      "role": "King",
+      "style": "command"
+    }
+  },
+  {
+    "id": "6b0529af-6bba-4dd4-8006-84ad60a1495b",
+    "type": "user",
+    "timestamp": "2026-09-03T06:32:27.883Z",
+    "content": {
+      "name": "test"
+    }
+  }
+]

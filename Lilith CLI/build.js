@@ -18,6 +18,8 @@ async function buildCLI() {
   
   const entryPoint = join(__dirname, 'src/cli/index.js');
   const outFile = join(__dirname, 'dist/lilith-cli.js');
+  const voidEntry = join(__dirname, 'src/void/commands.js');
+  const voidOut = join(__dirname, 'dist/void-commands.js');
   
   try {
     await fs.mkdir(join(__dirname, 'dist'), { recursive: true });
@@ -192,6 +194,25 @@ async function buildCLI() {
     const binPath = join(__dirname, 'dist', 'lilith');
     await fs.copyFile(outFile, binPath);
     await fs.chmod(binPath, 0o755);
+    
+    // ─── Void Commands Build ───
+    try {
+      await build({
+        entryPoints: [voidEntry],
+        bundle: true,
+        platform: 'node',
+        format: 'esm',
+        target: 'node18',
+        outfile: voidOut,
+        external: ['chalk', 'commander'],
+        define: {
+          'process.env.NODE_ENV': '"production"'
+        }
+      });
+      console.log(chalk.green(`✅ Void commands built to ${voidOut}`));
+    } catch (voidErr) {
+      console.log(chalk.yellow('⚠️ Void commands build skipped:', voidErr.message));
+    }
     
     // ─── Lilith Mod Build ───
     const modEntry = join(__dirname, 'src/modding/mod-cli.js');

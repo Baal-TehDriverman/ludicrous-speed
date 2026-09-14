@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+node_modules_void/
+
+# Build artifacts
+dist/
+build/
+*.pyc
+*.pyo
+__pycache__/
+
+# Vendored runtimes (not fleet source) — Void
+Void/resources/
+Void/squashfs-root/
+Void_build/
+Void/HyAtlas-Memory/
+Void/node_modules/
+Void/tools/
+Void/*.exe
+Void/*.dll
+Void/*.pak
+Void/*.dat
+Void/locales/
+Void/claude-package-lock.json
+
+# Vendored Electron runtime (Void) — not fleet source
+Void/resources/
+
+# Parked duplicate or broken nested checkouts (see DIRECTORY_MAP.md)
+fleetgraph/
+hermes-star-trek-profiles/
+hermes-agent-self-evolution/
+Hermes Evolution Skill/
+
+# Nested checkout (has its own .git) — not fleet source
+impeccable/
+
+# Lilith CLI regenerable dirs
+studio_contents/
+studio_dump/
+data/

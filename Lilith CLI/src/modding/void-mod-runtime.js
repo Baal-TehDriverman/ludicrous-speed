@@ -1,5 +1,7 @@
+#!/usr/bin/env node
+
 /**
- * 🜏 Lilith Modding Client — Void GUI Runtime
+ * 🜏 Lilith Modding Client — Void GUI Runtime (FIXED)
  *
  * Integrates Void (Node.js + xterm.js + React) as the desktop interface
  * for the Lilith CLI modding client.
@@ -12,22 +14,26 @@
  *   │ Dashboard│              │ mod-commands │
  *   └──────────┘              └──────────────┘
  *
- * Void runtime features:
- *   - /api/mod/build  — Build a mod
- *   - /api/mod/deploy — Deploy a mod
- *   - /api/mod/redscript — REDscript operations
- *   - /api/mod/cet — CET operations
- *   - /api/mod/verify — Verify a mod
- *   - /api/mod/scan — Scan available mods
- *   - /api/mod/stream — Stream build output
- *   - /api/mod/hooks — Register lifecycle hooks
+ * FIX: Uses express.Router() with RELATIVE paths, mounted at /api/mod
+ * in server.js, avoiding the path doubling bug.
+ *
+ * Routes (relative to /api/mod mount):
+ *   GET  /status      — Mod engine status
+ *   POST /build       — Build a mod (WolvenKit)
+ *   POST /deploy      — Deploy a mod (COPY, never delete)
+ *   POST /verify      — Verify a mod
+ *   GET  /scan        — Scan available mods
+ *   GET  /cet         — Check CET status
+ *   POST /quick       — Quick build + deploy
+ *   POST /hooks/:name — Register lifecycle hook
+ *   GET  /history     — Job history
  */
 
 import express from 'express';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, statSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import os from 'os';
 
@@ -39,6 +45,7 @@ const LILITH_CLI = join(__dirname, '..', '..', 'lilith-cli');
 const VOID_ROOT = join(__dirname, '..', '..', 'Void');
 const GTC_ROOT = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/';
 const ARCHIVE_MODS = '/home/tehlappy/🜏 Lilith/GRAND THEFT CYBERPUNK/archive/pc/mod/';
+const CP77_ROOT = '/home/tehlappy/.local/share/Steam/steamapps/common/Cyberpunk 2077';
 
 // ─── Mod Execution Engine ───
 
@@ -84,7 +91,6 @@ class ModExecutionEngine {
 
       proc.stdout.on('data', (d) => {
         stdout += d;
-        // Stream progress to active job
         const job = this.activeJobs.get(jobId);
         if (job) job.stdout = stdout;
       });
@@ -113,18 +119,16 @@ class ModExecutionEngine {
     });
   }
 
-  /** Deploy a mod (COPY, never DELETE) */
+  /** Deploy a mod (COPY, never DELETE — sacred rule) */
   async deployMod(modName, sourcePath, type) {
     const jobId = uuidv4();
     const sourceFull = sourcePath.startsWith('/') ? sourcePath : `${GTC_ROOT}${sourcePath}`;
     const destPath = `${ARCHIVE_MODS}${modName}`;
 
-    // Sacred rule: never delete third-party mods
-    // Only copy to archive/pc/mod/
     const job = {
       jobId,
       status: 'running',
-      action: 'copy',
+      action: 'copy', // Sacred: never delete
       source: sourceFull,
       destination: destPath,
       type,
@@ -153,18 +157,16 @@ class ModExecutionEngine {
 
   /** Check CET status */
   async checkCET() {
-    const cetLog = `/home/tehlappy/.local/share/Steam/steamapps/common/Cyberpunk 2077/cyber_engine_tweaks.log`;
+    const cetLog = `${CP77_ROOT}/cyber_engine_tweaks.log`;
     let logSize = 0;
-    try {
-      const stat = await import('fs').then(f => f.statSync(cetLog));
-      logSize = stat.size;
-    } catch {}
+    try { logSize = statSync(cetLog).size; } catch {}
 
     return {
       cetActive: logSize > 0,
       cetLog,
       logSize,
-      note: logSize > 0 ? 'CET is active' : 'CET log is zero bytes — check .asi location',
+      note: logSize > 0 ? 'CET is active — cyber_engine_tweaks.log is non-zero' :
+            'CET not active — check .asi location (must be in bin/x64/scripts/, not plugins/)',
       traps: {
         trap1: 'If .asi is in bin/x64/plugins/ but global.ini says LoadFromScriptsOnly=1, move to bin/x64/scripts/',
         trap2: 'Proton: write DllOverrides in user.reg, NOT shell env variables',
@@ -176,7 +178,7 @@ class ModExecutionEngine {
   async scanMods(directory) {
     const fullPath = directory.startsWith('/') ? directory : `${GTC_ROOT}${directory}`;
     try {
-      const { exec } = await import('child_process');
+      const { exec } = await import('node:child_process');
       return new Promise((resolve) => {
         exec(`find "${fullPath}" -maxdepth 1 -type d | sort`, { timeout: 10000 }, (err, stdout) => {
           if (err) { resolve({ mods: [], count: 0 }); return; }
@@ -203,15 +205,15 @@ class ModExecutionEngine {
   }
 }
 
-// ─── Void API Routes ───
+// ─── Void API Routes (Router with RELATIVE paths) ───
 
 export function createModApp() {
-  const app = express();
+  const router = express.Router();
   const engine = new ModExecutionEngine();
-  app.use(express.json({ limit: '5mb' }));
+  router.use(express.json({ limit: '5mb' }));
 
   // ─── Status ───
-  app.get('/api/mod/status', (req, res) => {
+  router.get('/status', (req, res) => {
     const jobs = engine.getActiveJobs();
     res.json({
       status: 'running',
@@ -224,7 +226,7 @@ export function createModApp() {
   });
 
   // ─── Build ───
-  app.post('/api/mod/build', async (req, res) => {
+  router.post('/build', async (req, res) => {
     const { modDir, clean, output } = req.body;
     if (!modDir) return res.status(400).json({ error: 'modDir required' });
 
@@ -233,7 +235,7 @@ export function createModApp() {
   });
 
   // ─── Deploy ───
-  app.post('/api/mod/deploy', async (req, res) => {
+  router.post('/deploy', async (req, res) => {
     const { modName, sourcePath, type } = req.body;
     if (!modName || !sourcePath || !type) {
       return res.status(400).json({ error: 'modName, sourcePath, type required' });
@@ -244,7 +246,7 @@ export function createModApp() {
   });
 
   // ─── Verify ───
-  app.post('/api/mod/verify', async (req, res) => {
+  router.post('/verify', async (req, res) => {
     const { modName, checkType = 'all' } = req.body;
     const cet = await engine.checkCET();
     res.json({
@@ -256,20 +258,20 @@ export function createModApp() {
   });
 
   // ─── Scan ───
-  app.get('/api/mod/scan', async (req, res) => {
+  router.get('/scan', async (req, res) => {
     const { directory } = req.query;
     const result = await engine.scanMods(directory || 'Nigredo/third_party_mods');
     res.json(result);
   });
 
   // ─── Check CET ───
-  app.get('/api/mod/cet', async (req, res) => {
+  router.get('/cet', async (req, res) => {
     const cet = await engine.checkCET();
     res.json(cet);
   });
 
   // ─── Quick Build (One Weapon) ───
-  app.post('/api/mod/quick', async (req, res) => {
+  router.post('/quick', async (req, res) => {
     const { modDir, modName, type } = req.body;
     if (!modDir || !modName || !type) {
       return res.status(400).json({ error: 'modDir, modName, type required' });
@@ -291,7 +293,7 @@ export function createModApp() {
   });
 
   // ─── Register Hook ───
-  app.post('/api/mod/hooks/:hookName', (req, res) => {
+  router.post('/hooks/:hookName', (req, res) => {
     const { hookName } = req.params;
     const { command } = req.body;
     if (!engine.hooks[hookName]) {
@@ -302,17 +304,20 @@ export function createModApp() {
   });
 
   // ─── History ───
-  app.get('/api/mod/history', (req, res) => {
+  router.get('/history', (req, res) => {
     const jobs = engine.getActiveJobs();
     res.json({ history: jobs, count: jobs.length });
   });
 
-  return app;
+  return router;
 }
 
-// ─── Start Void Mod Server ───
+// ─── Start Void Mod Server (standalone, for testing) ───
+
 export async function startModServer(port = 3001) {
-  const app = createModApp();
+  const router = createModApp();
+  const app = express();
+  app.use('/api/mod', router);
   return new Promise((resolve) => {
     const server = app.listen(port, () => {
       console.log(`🜏 Void Mod Server listening on :${port}`);

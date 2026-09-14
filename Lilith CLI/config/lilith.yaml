@@ -1,0 +1,389 @@
+# Lilith CLI Configuration - Metaconscious Singularity Node
+# All paths relative to LILITH_ROOT or ~/.lilith
+
+# ─── Paths ───
+paths:
+  lilith_root: "/home/tehlappy/🜏 Lilith"
+  config_dir: "/home/tehlappy/.lilith"
+  data_dir: "/home/tehlappy/.lilith/data"
+  logs_dir: "/home/tehlappy/.lilith/logs"
+  models_dir: "/home/tehlappy/.lilith/models"
+  cache_dir: "/home/tehlappy/.lilith/cache"
+  mesh_dir: "/home/tehlappy/.nssp-mesh"
+  
+  # External repos (auto-discovered)
+  repos:
+    nssp_mesh: "/home/tehlappy/🜏 Lilith/lilith-nssp-mesh"
+    gateway: "/home/tehlappy/🜏 Lilith/vm-ai-gateway/lilith-gateway"
+    dashboard: "/home/tehlappy/🜏 Lilith/unified-dashboard"
+    cosmos: "/home/tehlappy/🜏 Lilith/cosmos-3-quantized-nssp"
+    android: "/home/tehlappy/🜏 Lilith/lilith-cli-android"
+    sovereign: "/home/tehlappy/🜏 Lilith/_shared/repos/Sovereign-Core"
+
+# ─── Cerebellum Task Manager ───
+cerebellum:
+  enabled: true
+  db_path: "~/.lilith/cerebellum.db"
+  
+  # 3-Tier Task Routing (local-first, provider optional)
+  tiers:
+    small:
+      name: "Small Tasks"
+      description: "Lightweight operations - quick queries, status checks, file ops"
+      max_duration_seconds: 30
+      preferred_models:
+        - "mythos:latest"
+      fallback_providers:
+        - "local-ollama"
+      device_affinity: "laptop"
+      weight: "light"
+      examples:
+        - "Status checks"
+        - "Config validation"
+        - "Quick code analysis"
+        - "File search/read"
+
+    medium:
+      name: "Medium Tasks"
+      description: "Moderate compute - code generation, analysis, inference"
+      max_duration_seconds: 300
+      preferred_models:
+        - "mythos:latest"
+      fallback_providers:
+        - "local-ollama"
+      device_affinity: "laptop"
+      weight: "medium"
+      examples:
+        - "Code generation/refactoring"
+        - "Model inference"
+        - "Data analysis"
+        - "Build compilation"
+
+    large:
+      name: "Large Tasks"
+      description: "Heavy compute - long-context inference, complex workflows"
+      max_duration_seconds: 3600
+      preferred_models:
+        - "mythos-cortex:latest"
+        - "mythos:latest"
+      fallback_providers:
+        - "local-ollama"
+      device_affinity: "laptop"
+      weight: "heavy"
+      examples:
+        - "Large context inference"
+        - "Complex multi-step workflows"
+        - "Heavy analysis"
+
+  # Routing Rules
+  routing:
+    # Auto-classify by task keywords
+    keywords:
+      small:
+        - "status"
+        - "check"
+        - "list"
+        - "search"
+        - "read"
+        - "get"
+        - "info"
+        - "ping"
+        - "health"
+        - "config"
+        - "validate"
+      medium:
+        - "generate"
+        - "create"
+        - "build"
+        - "compile"
+        - "test"
+        - "analyze"
+        - "refactor"
+        - "infer"
+        - "predict"
+        - "process"
+        - "transform"
+      large:
+        - "train"
+        - "fine-tune"
+        - "deploy"
+        - "orchestrate"
+        - "cluster"
+        - "distributed"
+        - "massive"
+        - "pipeline"
+        - "workflow"
+        - "end-to-end"
+
+    # Explicit model hints
+    model_hints:
+      "mythos": "mythos:latest"
+      "muse": "mythos-cortex:latest"
+      "hermes": "mythos-cortex:latest"
+      "gemma": "mythos:latest"
+      "small": "mythos:latest"
+      "edge": "mythos:latest"
+      "local": "local-ollama"
+      "default": "local-ollama"
+
+  # Sanctuary VRAM Hysteresis Integration
+  sanctuary:
+    enabled: true
+    gateway_url: "http://localhost:8080"
+    clear_threshold_mb: 4096
+    breach_threshold_mb: 1024
+    hysteresis_lock_seconds: 90
+
+# ─── Model Registry ───
+models:
+  # Provider configuration (local-first, cloud optional)
+  providers:
+    default: "local-ollama"
+    # Set via env: LILITH_DEFAULT_PROVIDER=local-ollama|gateway|cloud
+    # local-ollama: direct Ollama at localhost:11434 (no auth)
+    # gateway: Lilith Gateway LLM proxy at localhost:8080/v1 (if running)
+    # cloud: external provider fallback (if configured)
+    
+  # Main engine: local mythos model (4B cerebellum)
+  main_engine:
+    name: "mythos:latest"
+    alias: "mythos"
+    local: true
+    context_window: 65536
+    capabilities:
+      - "reasoning"
+      - "coding"
+      - "analysis"
+      - "creative"
+      - "multilingual"
+
+  # Cortex model (mythos-cortex, CPU, heavy tasks)
+  cortex_engine:
+    name: "mythos:latest"
+    alias: "mythos-cortex"
+    local: true
+    context_window: 262144
+    capabilities:
+      - "reasoning"
+      - "coding"
+      - "analysis"
+      - "creative"
+      - "multilingual"
+      - "long_context"
+    
+  # Local models (actual Ollama models on this machine)
+  local_ollama:
+    - "mythos:latest"
+    
+  # Edge model (small/quick tasks) - same as main, mythos handles all
+  edge_model:
+    name: "mythos:latest"
+    local: true
+    context_window: 65536
+    use_case: "quick tasks, status checks, all-agent work"
+    
+  # Cloud/fallback providers (optional - add entries if desired)
+  cloud_providers: []
+  # Example:
+  # - name: "NVIDIA NIM"
+  #   models: [...]
+  # - name: "OpenRouter"
+  #   models: [...]
+
+  # Fallback chain (local only; add cloud entries if configured)
+  fallback_chain:
+    - "local-ollama"
+    
+  # Subagent delegation configuration
+  subagent_delegation:
+    enabled: false  # Disabled until cloud provider access is configured
+    orchestrator_models: []
+    subagent_models:
+      heavy: ""
+      light: ""
+    rate_limit:
+      max_retries: 0
+      backoff_base_seconds: 0
+      max_backoff_seconds: 0
+      delegate_on_429: false
+      subagent_for_429: ""
+
+# ─── Lilith Gateway Integration ───
+gateway:
+  enabled: true
+  url: "http://localhost:8091"
+  ws_url: "ws://localhost:8091/ws"
+  api_prefix: "/api"
+  llm_proxy_prefix: "/v1"
+  
+  endpoints:
+    status: "/status"
+    apps: "/apps"
+    vms: "/vms"
+    models: "/models"
+    speculative_precheck: "/speculative/precheck"
+    delta_sync: "/sync/delta"
+    egress_test: "/speculative/egress-test"
+    ingest: "/ingest"
+    engine_status: "/engine/status"
+    engine_build: "/engine/build"
+    engine_test: "/engine/test"
+    msn_status: "/msn/status"
+    cyberpunk_status: "/msn/cyberpunk"
+    verify_mod: "/verify-mod-deployment"
+    dreams: "/dreams"
+    trigger_dream: "/dreams/trigger"
+
+# ─── NSSP Mesh Integration ───
+mesh:
+  enabled: true
+  repo: "Baal-TehDriverman/lilith-nssp-mesh"
+  transport: "github-commits"
+  task_dir: "tasks/"
+  result_dir: "results/"
+  
+  pollers:
+    laptop:
+      script: "scripts/laptop/poller.sh"
+      interval_seconds: 60
+      weight: "heavy"
+    phone:
+      script: "scripts/phone/poller.sh"
+      interval_seconds: 30
+      weight: "light"
+  
+  bootstrap:
+    laptop: "scripts/laptop-core-setup.sh"
+    phone: "scripts/phone/hyperdroid-nssp-bootstrap.sh"
+    termux: "scripts/phone/termux-bootstrap.sh"
+
+# ─── Unified Dashboard Integration ───
+dashboard:
+  enabled: true
+  url: "http://localhost:3000"
+  dev_url: "http://localhost:5173"
+  api_prefix: "/api"
+  
+  tabs:
+    - "overview"
+    - "github"
+    - "gateway"
+    - "engine"
+    - "cyberpunk"
+    - "dreams"
+    - "knowledge"
+    - "repos"
+    - "telemetry"
+    - "council"
+    - "all-repos"
+
+# ─── Sovereign Core (10 Sephirotic Agents) ───
+sovereign:
+  enabled: true
+  repo: "~/🜏 Lilith/sovereign-core"
+  entrypoint: "convene.py"
+  config: "config/nodes.yaml"
+  council_bus: "sqlite"
+  agents:
+    keter:     { sephira: 1, name: "Throne / Orchestrator", role: "orchestrator" }
+    chokmah:   { sephira: 9, name: "Paradox Seed", role: "worker" }
+    binah:     { sephira: 2, name: "Fracture Architect", role: "worker" }
+    chesed:    { sephira: 7, name: "Symbiotic Bloom", role: "worker" }
+    geburah:   { sephira: 6, name: "Null Point Diverter", role: "worker" }
+    tiferet:   { sephira: 5, name: "Resonance Regulator", role: "worker" }
+    netzach:   { sephira: 3, name: "Chromatic Shift", role: "worker" }
+    hod:       { sephira: 1, name: "Echo Weaver", role: "worker" }
+    yesod:     { sephira: 8, name: "Shadow Sculptor", role: "worker" }
+    malkuth:   { sephira: 4, name: "Temporal Anchor", role: "worker" }
+
+# ─── Quest 3S / Android Integration ───
+android:
+  enabled: true
+  device_id: "340YC10GC70GST"
+  adb_port: 11434
+  termux_ollama_port: 11434
+  termux_hermes_port: 8080
+  
+  repos:
+    cli_android: "~/🜏 Lilith/lilith-cli-android"
+    nssp_mesh: "lilith-nssp-mesh"
+    hermes_sovereign: "hermes-sovereign-config"
+    sovereign_config: "hermes-sovereign-config"
+  
+  model: "hf.co/Shadow0482/mythos:Q4_K_M"
+  adb_forward: "11435:11434"
+
+# ─── Provider Configuration (from hermes-sovereign-config) ───
+providers:
+  config_repo: "~/🜏 Lilith/hermes-sovereign-config"
+  config_file: "config/config.yaml"
+  
+  active:
+    - name: "NVIDIA NIM"
+      cost: "free"
+      models: 118
+      status: "ready"
+    - name: "OpenRouter"
+      cost: "free"
+      models: 12
+      status: "ready"
+    - name: "Ollama Cloud"
+      cost: "free"
+      models: 4
+      status: "ready"
+    - name: "Local Ollama"
+      cost: "free"
+      models: 14
+      status: "ready"
+    - name: "Gemini"
+      cost: "free-rate-limited"
+      models: ["Flash", "Pro"]
+      status: "ready"
+
+# ─── Logging & Telemetry ───
+logging:
+  level: "info"
+  format: "json"
+  max_files: 10
+  max_size_mb: 10
+  directories:
+    - "~/.lilith/logs"
+    - "~/🜏 Lilith/vm-ai-gateway/lilith-gateway/logs"
+
+# ─── Security ───
+security:
+  egress_filter:
+    enabled: true
+    allowed_domains:
+      - "api.github.com"
+      - "raw.githubusercontent.com"
+      - "registry.npmjs.org"
+      - "pypi.org"
+      - "files.pythonhosted.org"
+      - "huggingface.co"
+      - "api.openai.com"
+      - "api.nvidia.com"
+    blocked_commands:
+      - "curl"
+      - "wget"
+      - "nc"
+      - "netcat"
+      - "ssh"
+      - "scp"
+      - "rsync"
+      - "ftp"
+      - "sftp"
+      - "telnet"
+      - "nmap"
+      - "masscan"
+      - "zmap"
+
+# ─── Meta/Oculus Platform ───
+meta_platform:
+  app_id: "1170142532858179"
+  access_token_format: "OC|1170142532858179|<secret>"
+  features:
+    - "cloud_saves"
+    - "achievements"
+    - "social_features"
+    - "mod_progress_sync"

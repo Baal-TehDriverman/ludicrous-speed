@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+/**
+ * Lilith CLI - Quick start script
+ * Runs the CLI directly without building
+ */
+
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Run the main CLI
+import(join(__dirname, '../src/cli/index.js')).catch(err => {
+  console.error('Failed to start Lilith CLI:', err);
+  process.exit(1);
+});

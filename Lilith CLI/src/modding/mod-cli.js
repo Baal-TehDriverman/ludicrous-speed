@@ -9,6 +9,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { ModEngine } from './mod-engine.js';
 import { registerModCommands, printMode, resumeSession } from './mod-commands.js';
+import { loadSkill, listSkills, executeSkill, getSkillToolDefinitions } from './skill-loader.js';
 
 /**
  * Register all mod commands on a Commander program
@@ -55,7 +56,38 @@ export function registerModCommandsOn(program) {
       for await (const chunk of result) {
         if (chunk.type === 'text') process.stdout.write(chunk.content);
       }
-    }));
+    }))
+    .addCommand(new Command('skills').description('List and manage skills').action(async () => {
+      const loader = getSkillLoader();
+      await loader.loadAll();
+      const skills = loader.getAllSkills();
+      if (skills.length === 0) {
+        console.log(chalk.yellow('🜏 No skills found in src/modding/skills/'));
+        return;
+      }
+      console.log(chalk.cyan(`\n🜏 ${skills.length} skills loaded:\n`));
+      for (const skill of skills) {
+        console.log(chalk.green(`  ${skill.name}`) + ` — ${skill.description}`);
+        if (skill.triggers.length > 0) {
+          console.log(chalk.gray(`    triggers: ${skill.triggers.join(', ')}`));
+        }
+      }
+      console.log('');
+    }))
+    .addCommand(new Command('skill')
+      .description('Load a skill by name')
+      .argument('<name>', 'Skill name')
+      .action(async (name) => {
+        const loader = getSkillLoader();
+        await loader.loadAll();
+        const skill = loader.getSkill(name);
+        if (!skill) {
+          console.log(chalk.red(`🜏 Skill "${name}" not found. Available: ${loader.getSkillNames().join(', ')}`));
+          return;
+        }
+        console.log(chalk.cyan(`\n# Skill: ${skill.name}\n`));
+        console.log(chalk.white(skill.content));
+      }));
 
   return program;
 }
@@ -78,6 +110,8 @@ export async function runModCommand(cmd, args = []) {
       return engine.query('Scan Nigredo third_party_mods. Use scan_mods tool.');
     case 'cet':
       return engine.query('Check CET status. Use check_cet tool.');
+    case 'skills':
+      return engine.query('List all available skills. Use skill action=list.');
     case 'quick':
       return engine.query(`Quick build ${args[0]} from ${args[1]} type ${args[2]}. Use quick_build tool.`);
     default:

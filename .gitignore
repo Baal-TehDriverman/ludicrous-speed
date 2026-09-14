@@ -1,20 +1,34 @@
-
 # Dashboard build artifacts
+Lilith CLI/devdashboard/unified-dashboard-v2/node_modules/
+Lilith CLI/devdashboard/unified-dashboard-v2/dist/
+Lilith CLI/devdashboard/unified-dashboard-v2/.env.local
 devdashboard/unified-dashboard-v2/node_modules/
 devdashboard/unified-dashboard-v2/dist/
 devdashboard/unified-dashboard-v2/.env.local
 
 # Test dependencies
 tests/node_modules/
+Lilith CLI/tests/node_modules/
 
 # Python caches
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+Lilith CLI/__pycache__/
 
-# Void runtime dependencies and rebuildable output
-Void/node_modules/
-Void/squashfs-root/
-Void_build/
+# Vendored Electron runtime (Void inside Lilith CLI)
+Lilith CLI/Void/resources/
+Lilith CLI/Void/squashfs-root/
+Lilith CLI/Void_build/
+Lilith CLI/Void/HyAtlas-Memory/
+Lilith CLI/Void/node_modules/
+Lilith CLI/Void/tools/
+Lilith CLI/Void/*.exe
+Lilith CLI/Void/*.dll
+Lilith CLI/Void/*.pak
+Lilith CLI/Void/*.dat
+Lilith CLI/Void/locales/
+Lilith CLI/Void/claude-package-lock.json
 
 # Parked duplicate or broken nested checkouts (see DIRECTORY_MAP.md)
 fleetgraph/
@@ -23,7 +37,18 @@ hermes-agent-self-evolution/
 Hermes Evolution Skill/
 
 # Vendored Electron runtime (Void) — not fleet source
+Void/node_modules/
 Void/resources/
 
 # Nested checkout (has its own .git) — not fleet source
 impeccable/
+
+# Lilith CLI regenerable dirs
+Lilith CLI/studio_contents/
+Lilith CLI/studio_dump/
+Lilith CLI/data/
+Lilith CLI/node_modules/
+Lilith CLI/node_modules_void/
+Lilith CLI/dist/
+Lilith CLI/build/
+Lilith CLI/training/
