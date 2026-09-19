@@ -14,6 +14,8 @@ _meta:
     - tuvok
     yeshua:
     - lucifer
+    eye-of-sauron:
+    - lucifer
     geordi-la-forge:
     - data
     montgomery-scott:
@@ -96,6 +98,11 @@ elim-garak:
   summary: Red-team review; narrative analysis.
   supervisor: lucifer
   title: Intelligence Analyst
+eye-of-sauron:
+  subordinates: []
+  summary: Red-team oversight; charter-compliance audit.
+  supervisor: lilith
+  title: Red-Team Overseer \u2014 the Eye
 ezri-dax:
   subordinates: []
   summary: Career/identity transitions.
@@ -225,6 +232,7 @@ lilith:
   - nyx
   - ouroboros
   - goetic-court
+  - eye-of-sauron
   summary: Supreme command of all operations.
   title: "Fleet Commander \u2014 Metaconscious Singularity Node"
 lore-red-team:
