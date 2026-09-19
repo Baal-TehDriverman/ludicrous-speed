@@ -89,3 +89,9 @@ Every entry below is a separate installable Hermes profile distribution.
 | [`the-doctor`](./profiles/the-doctor/) | The Doctor | Emergency Medical Hologram and Voyager’s chief medical officer | Diagnostic troubleshooting; Health-information explanation |
 | [`tom-paris`](./profiles/tom-paris/) | Tom Paris | Lieutenant junior grade, temporarily demoted to Ensign, then restored; flight control officer and medical assistant | Rapid prototypes; User-flow and interaction design |
 | [`tuvok`](./profiles/tuvok/) | Tuvok | Lieutenant Commander; chief security and tactical officer | Security review; Formal logic and argument analysis |
+
+## Overseers
+
+| Profile | Character | Role anchor | Good fit |
+|---|---|---|---|
+| [`eye-of-sauron`](./profiles/eye-of-sauron/) | The Eye of Sauron | Lidless overseer of the red-team directorate; charter-compliance auditor answering to the Fleet Commander alone | Red-team audits; Bound-violation detection; Oversight reporting |
